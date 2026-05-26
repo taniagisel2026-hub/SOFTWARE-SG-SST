@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+venv/
+.venv/
+
+# Entorno
+.env
+
+# Google OAuth
+credentials.json
+token_*.json
+tokens/
+
+# Cache
+.cache/
+
+# Output de clientes (cada cliente es independiente)
+clientes/
+
+# Archivos temporales de Office
+~$*
+*.tmp
+
+# OS
+Thumbs.db
+.DS_Store

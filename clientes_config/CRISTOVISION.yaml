@@ -1,0 +1,97 @@
+# =============================================================================
+# CONFIGURACIÓN DEL CLIENTE - SG-SST
+# =============================================================================
+# Este archivo contiene todos los datos necesarios para generar el SG-SST
+# personalizado para el cliente. Llene cada campo con la información real.
+# =============================================================================
+
+# --- INFORMACIÓN DE LA EMPRESA ---
+razon_social: "FUNDACIÓN CRISTOVISIÓN"
+nit: "830114869-4"
+direccion_empresa: "Calle 18 # 97-61 "
+telefono_empresa: "747 0710"
+email_empresa: "talentohumano@cristovision.org"
+sitio_web: ""
+barrio_empresa: "Fontibón"
+ciudad_empresa: "Bogotá D.C"
+departamento_empresa: "Bogotá D.C"
+
+# --- ACTIVIDAD ECONÓMICA (según Cámara de Comercio y RUT) ---
+actividad_economica: >
+  Actividad Principal: 9491 (Actividades de organizaciones religiosas)
+ 
+
+# --- SEGURIDAD SOCIAL ---
+nivel_riesgo: "I - IV"                    # I, II, III, IV o V
+arl: "AXA COLPATRIA"
+numero_trabajadores_empresa: "75"
+color_corporativo: "azul"
+# --- SEDES ---
+sedes:
+  - nombre: ""
+    direccion: ""
+    ciudad: ""
+    telefono: ""
+  # - nombre: "Sede Producción"
+  #   direccion: "Km 5 Vía Siberia"
+  #   ciudad: "Cota, Cundinamarca"
+  #   telefono: "601 876 5432"
+
+# --- REPRESENTANTE LEGAL ---
+representante_legal: "Rolfi Rozo Villamizar"
+cedula_rl: ""
+cargo_rl: "Gerente General"
+ciudad_cedula_rl: ""
+
+# --- RESPONSABLE SST ---
+nombre_responsable_sst: "Pablo Alexander Medina Pedraza"
+cedula_responsable_sst: "1.014.179.739"
+cargo_sst: "Profesional SST"
+ciudad_cedula_sst: "Bogotá D.C"
+licencia_sst: "8866 del 30 de abril de 2021"
+
+# --- EMPRESA CONSULTORA SST ---
+empresa_consultora_sst: "MEDINA SST EMPRESARIAL S.A.S"
+nit_consultora_sst: "900.988.068-5"
+licencia_empresa_consultora: "25-996 de 2017"
+
+# --- IMÁGENES (rutas a los archivos) ---
+logo: "C:/Users/bts19/OneDrive/Desktop/Medina industrial/Cristovisión.png"
+firma_rl: ""
+firma_sst: "C:/Users/bts19/OneDrive/Desktop/Medina industrial/firma sst.jpg"
+
+# --- FECHAS Y VERSIÓN ---
+version: "7"
+fecha_emision: "20/04/2026"
+fecha: "20 de abril del 2026"
+año: "2026"
+ciudad: "Bogotá D.C"
+
+# --- OPCIONES DE GENERACIÓN ---
+generar_pesv: true                 # (true) si aplica Plan Estratégico de Seguridad Vial, si no aplica (false)
+generar_normograma_actualizado: true # Actualizar normograma eliminando normas derogadas
+
+# --- MATRIZ DE PELIGROS IPVR (SST-MTZ-012) ---
+# OPCIÓN A (recomendada): Subir manuales de funciones .docx en una carpeta.
+# El sistema lee cada manual y Claude genera la matriz de peligros adaptada
+# a las funciones reales descritas en cada documento.
+#
+# La carpeta puede ser absoluta o relativa al YAML.
+# Cada archivo .docx se interpreta como un cargo (extrae DENOMINACIÓN de la tabla;
+# si no la encuentra, usa el nombre del archivo).
+manuales_cargos_dir: "C:/Users/bts19/Downloads/MANUALES CRISTOVISION"
+
+# OPCIÓN B (legacy): Lista manual de cargos.
+# Si SE USAN AMBOS, los manuales tienen prioridad y la lista se usa solo para
+# overrides (num_expuestos, zona, etc. por nombre de cargo).
+# Campos: nombre (req), proceso, zona, tipo (administrativo|operativo|conductor|servicios_generales),
+#   num_expuestos (default 1), actividades, tareas, rutinaria (default "SI")
+# cargos:
+#   - nombre: "Director General"
+#     num_expuestos: 1
+#   - nombre: "Camarógrafo"
+#     num_expuestos: 4
+
+# --- INFORMACIÓN ADICIONAL PARA HUMANIZACIÓN ---
+descripcion_empresa: >
+  Empresa dedicada a la producción, realización y difusión de contenidos audiovisuales de carácter religioso, orientados a la evangelización, promoción de valores cristianos y fortalecimiento espiritual de la comunidad a través de medios de comunicación.

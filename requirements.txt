@@ -1,0 +1,29 @@
+# Motor de documentos
+python-docx==1.1.2
+docxtpl==0.18.0
+openpyxl==3.1.5
+lxml>=5.0.0
+
+# Lectura de PDF (manuales de cargos)
+pdfplumber>=0.11.0
+pypdf>=5.0.0
+
+# Claude API
+anthropic==0.42.0
+
+# CLI
+click==8.1.7
+rich==13.9.4
+
+# Utilidades
+pyyaml==6.0.2
+Pillow==11.1.0
+python-dotenv==1.0.1
+
+# Cache
+diskcache==5.6.3
+
+# Google Drive
+google-auth==2.36.0
+google-auth-oauthlib==1.2.1
+google-api-python-client==2.159.0

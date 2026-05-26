@@ -1,0 +1,216 @@
+# =============================================================================
+# CONFIGURACIÓN DEL CLIENTE - SG-SST
+# =============================================================================
+# Este archivo contiene todos los datos necesarios para generar el SG-SST
+# personalizado para el cliente. Llene cada campo con la información real.
+# =============================================================================
+
+# --- INFORMACIÓN DE LA EMPRESA ---
+razon_social: "URBANISMO Y CONSTRUCCIONES MUNAR S.A.S"
+nit: "901219822-8"
+direccion_empresa: "CR 10 NO. 8 35"
+telefono_empresa: ""
+email_empresa: "ALEX05088@HOTMAIL.COM "
+sitio_web: ""
+barrio_empresa: ""
+ciudad_empresa: "ZIPAQUIRÁ"
+departamento_empresa: "Cundinamarca"
+
+# --- ACTIVIDAD ECONÓMICA (según Cámara de Comercio y RUT) ---
+actividad_economica: >
+  ACTIVIDAD PRINCIPAL: 7730  (ALQUILER Y ARRENDAMIENTO DE OTROS TIPOS DE MAQUINARIA, EQUIPO Y
+  BIENES TANGIBLES N.C.P.)
+  ACTIVIDAD SECUNDARIA: 4290 (CONSTRUCCIÓN DE OTRAS OBRAS DE INGENIERÍA CIVIL)
+
+# --- SEGURIDAD SOCIAL ---
+nivel_riesgo: "V"                    # I, II, III, IV o V
+arl: "Sura"
+numero_trabajadores_empresa: "5"
+color_corporativo: "#CC0066"
+
+# --- SEDES ---
+sedes:
+  - nombre: ""
+    direccion: ""
+    ciudad: ""
+    telefono: ""
+  # - nombre: "Sede Producción"
+  #   direccion: "Km 5 Vía Siberia"
+  #   ciudad: "Cota, Cundinamarca"
+  #   telefono: "601 876 5432"
+
+# --- REPRESENTANTE LEGAL ---
+representante_legal: "JOSE   ALEXANDER  MUÑOZ  NARVAEZ "
+cedula_rl: "1.082.774.684"
+cargo_rl: "Gerente General"
+ciudad_cedula_rl: "Bogotá D.C."
+
+# --- RESPONSABLE SST ---
+nombre_responsable_sst: "Pablo Alexander Medina Pedraza"
+cedula_responsable_sst: "1.014.179.739"
+cargo_sst: "Profesional SST"
+ciudad_cedula_sst: "Bogotá D.C."
+licencia_sst: "8866 del 30 de abril de 2021"
+
+# --- EMPRESA CONSULTORA SST ---
+empresa_consultora_sst: "MEDINA SST EMPRESARIAL S.A.S"
+nit_consultora_sst: "900.988.068-5"
+licencia_empresa_consultora: "25-996 de 2017"
+
+# --- IMÁGENES (rutas a los archivos) ---
+logo: "C:/Users/bts19/OneDrive/Desktop/Medina industrial/CLIENTES SG-SST/MUNAR/LOGO MUNAR.jpeg"
+firma_rl: "C:/Users/bts19/OneDrive/Desktop/Medina industrial/CLIENTES SG-SST/MUNAR/FIRMA.jpeg"
+firma_sst: "C:/Users/bts19/OneDrive/Desktop/Medina industrial/firma sst.jpg"
+
+# --- FECHAS Y VERSIÓN ---
+version: "001"
+fecha_emision: "15/05/2026"
+fecha: "15 de mayo del 2026"
+año: "2026"
+ciudad: "Bogotá D.C."
+
+# --- OPCIONES DE GENERACIÓN ---
+generar_pesv:  true               # (true) si aplica Plan Estratégico de Seguridad Vial, si no aplica (false)
+generar_normograma_actualizado: true # Actualizar normograma eliminando normas derogadas
+
+# =============================================================================
+# MATRIZ DE PELIGROS IPVR (SST-MTZ-012)
+# =============================================================================
+# Tienes 2 opciones para definir los cargos del cliente.
+# Puedes usar UNA o LA OTRA (o las dos combinadas).
+#
+# Si NO defines ninguna, no se generará la matriz de peligros.
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# OPCIÓN A: Subir MANUALES de funciones en una carpeta
+# -----------------------------------------------------------------------------
+# Formato soportado: .docx (Word), .xlsx (Excel), .pdf (PDF)
+# Cada archivo = un cargo. El sistema detecta el nombre automáticamente.
+#
+# Descomenta la siguiente línea y pon la ruta a la carpeta:
+manuales_cargos_dir: "C:/Users/bts19/OneDrive/Desktop/Medina industrial/CLIENTES SG-SST/MUNAR/SG-SST 2026/SG-SST 2026/MUNAR S.A.S/2. HACER/3.1.3. Perfil de cargo - profesiograma/manuales"
+
+# -----------------------------------------------------------------------------
+# OPCIÓN B: Definir los cargos directamente en este YAML
+# -----------------------------------------------------------------------------
+# Estructura de cada cargo:
+#
+#   - nombre:           (obligatorio) Nombre del cargo
+#     proceso:          (opcional)    Nombre del proceso/área al que pertenece
+#                                     Ej: "ADMINISTRATIVO", "PRODUCCIÓN",
+#                                         "GESTIÓN HUMANA", "LOGÍSTICA",
+#                                         "FINANCIERA", "COMERCIAL", etc.
+#                                     Cargos del MISMO proceso quedan agrupados.
+#                                     Si no lo defines, usa ADMINISTRATIVO u
+#                                     OPERATIVO según el tipo del cargo.
+#     zona:             (opcional)    Lugar físico de trabajo
+#                                     Ej: "Oficinas Administrativas",
+#                                         "Planta de Producción",
+#                                         "Bodega Principal"
+#     tipo:             (opcional)    administrativo | operativo |
+#                                     conductor | servicios_generales
+#                                     Si no lo defines, se infiere del nombre.
+#     num_expuestos:    (opcional)    Cuántas personas tienen este cargo (default 1)
+#     actividades:      (opcional)    Descripción del cargo (1-3 líneas).
+#                                     Si vacío y hay manual, usa el del manual.
+#                                     Si vacío y sin manual, genera texto genérico.
+#     tareas:           (opcional)    Bullets de tareas reales del cargo.
+#                                     Usa "|" para texto en varias líneas.
+#     rutinaria:        (opcional)    "SI" o "NO" (default "SI")
+#
+# EJEMPLO REAL (descomenta y adapta a tu cliente):
+
+#cargos:
+#---- ADMINISTRATIVO ----
+#   - nombre: "Gerente General"
+#     proceso: "DIRECCIÓN GENERAL"
+#     zona: "Oficinas Administrativas"
+#     tipo: "administrativo"
+#     num_expuestos: 1
+#     actividades: "Dirigir estratégicamente la empresa, representarla legalmente y velar por el cumplimiento de los objetivos comerciales y financieros."
+#     tareas: |
+#       • Definir el rumbo estratégico
+#       • Aprobar presupuestos y políticas
+#       • Representar legalmente a la empresa
+#       • Liderar reuniones de junta directiva
+#       • Supervisar resultados de cada área
+#
+#   - nombre: "Asistente de Gerencia"
+#     proceso: "DIRECCIÓN GENERAL"
+#     tipo: "administrativo"
+#     num_expuestos: 1
+#     actividades: "Apoyar a la gerencia en agenda, comunicaciones y reuniones."
+#     tareas: |
+#       • Manejo de agenda gerencial
+#       • Atención de llamadas y correos
+#       • Coordinación de viajes
+#       • Elaboración de actas
+#
+#   # ---- FINANCIERA Y CONTABLE ----
+#   - nombre: "Contador"
+#     proceso: "FINANCIERA Y CONTABLE"
+#     tipo: "administrativo"
+#     num_expuestos: 1
+#     actividades: "Llevar la contabilidad y reportar estados financieros."
+#     tareas: |
+#       • Causación de facturas
+#       • Conciliaciones bancarias
+#       • Declaraciones tributarias
+#
+#   # ---- GESTIÓN HUMANA ----
+#   - nombre: "Coordinador de Talento Humano"
+#     proceso: "GESTIÓN HUMANA"
+#     tipo: "administrativo"
+#     num_expuestos: 1
+#     actividades: "Liderar selección, contratación, nómina y bienestar."
+#     tareas: |
+#       • Selección y reclutamiento
+#       • Liquidación de nómina
+#       • Programa de bienestar
+#
+#   # ---- PRODUCCIÓN ----
+#   - nombre: "Jefe de Planta"
+#     proceso: "PRODUCCIÓN"
+#     zona: "Planta de Producción"
+#     tipo: "operativo"
+#     num_expuestos: 1
+#     actividades: "Dirigir las operaciones de planta y controlar productividad."
+#
+#   - nombre: "Operario de Producción"
+#     proceso: "PRODUCCIÓN"
+#     zona: "Planta de Producción"
+#     tipo: "operativo"
+#     num_expuestos: 6
+#     actividades: "Operar maquinaria de producción siguiendo procedimientos seguros."
+#
+#   # ---- LOGÍSTICA Y TRANSPORTE ----
+#   - nombre: "Almacenista"
+#     proceso: "LOGÍSTICA Y BODEGA"
+#     zona: "Bodega Principal"
+#     tipo: "operativo"
+#     num_expuestos: 2
+#
+#   - nombre: "Conductor"
+#     proceso: "LOGÍSTICA Y BODEGA"
+#     tipo: "conductor"
+#     num_expuestos: 2
+#     actividades: "Conducir vehículos institucionales para transporte de productos."
+#
+#   # ---- COMERCIAL ----
+#   - nombre: "Asesor Comercial"
+#     proceso: "COMERCIAL Y VENTAS"
+#     tipo: "administrativo"
+#     num_expuestos: 3
+#     actividades: "Visitas comerciales a clientes y gestión de cartera."
+#
+#   # ---- SERVICIOS GENERALES ----
+#   - nombre: "Auxiliar de Servicios Generales"
+#     proceso: "SERVICIOS GENERALES"
+#     tipo: "servicios_generales"
+#     num_expuestos: 2
+#     actividades: "Realizar labores de aseo y limpieza de las instalaciones."
+
+# --- INFORMACIÓN ADICIONAL PARA HUMANIZACIÓN ---
+descripcion_empresa: >
+ Empresa dedicada al alquiler y arrendamiento de maquinaria, equipos y bienes tangibles para el sector de la construcción, combinando esta capacidad logística con la ejecución y desarrollo de obras de ingeniería civil. Su modelo de negocio le permite proveer soporte operativo con equipo especializado, así como ejecutar directamente proyectos de infraestructura vial, urbanismo, redes de servicios públicos y obras civiles complementarias.

@@ -1,0 +1,76 @@
+# =============================================================================
+# CONFIGURACIÓN DEL CLIENTE - SG-SST
+# =============================================================================
+# Este archivo contiene todos los datos necesarios para generar el SG-SST
+# personalizado para el cliente. Llene cada campo con la información real.
+# =============================================================================
+
+# --- INFORMACIÓN DE LA EMPRESA ---
+razon_social: "TRANSPORTE Y LOGÍSTICA YATS S.A.S"
+nit: "900.460.873 - 0"
+direccion_empresa: "Calle 68 B BIS 70 C 58 - Barrio Laurel"
+telefono_empresa: "6019054770"
+email_empresa: ""
+sitio_web: ""
+barrio_empresa: ""
+ciudad_empresa: "Bogotá D.C"
+departamento_empresa: "Bogotá D.C"
+
+# --- ACTIVIDAD ECONÓMICA (según Cámara de Comercio y RUT) ---
+actividad_economica: >
+  Actividad Principal: 4923  (Transporte de carga por carretera)
+ 
+
+# --- SEGURIDAD SOCIAL ---
+nivel_riesgo: "V"                    # I, II, III, IV o V
+arl: "AXA COLPATRIA"
+numero_trabajadores_empresa: "9"
+color_corporativo: "azul"
+# --- SEDES ---
+sedes:
+  - nombre: ""
+    direccion: ""
+    ciudad: ""
+    telefono: ""
+  # - nombre: "Sede Producción"
+  #   direccion: "Km 5 Vía Siberia"
+  #   ciudad: "Cota, Cundinamarca"
+  #   telefono: "601 876 5432"
+
+# --- REPRESENTANTE LEGAL ---
+representante_legal: "Yefrey Andrés Torres Sáenz"
+cedula_rl: "80.020.459"
+cargo_rl: "Representante Legal"
+ciudad_cedula_rl: "Bogotá D.C"
+
+# --- RESPONSABLE SST ---
+nombre_responsable_sst: "Pablo Alexander Medina Pedraza"
+cedula_responsable_sst: "1.014.179.739"
+cargo_sst: "Profesional SST"
+ciudad_cedula_sst: "Bogotá D.C"
+licencia_sst: "8866 del 30 de abril de 2021"
+
+# --- EMPRESA CONSULTORA SST ---
+empresa_consultora_sst: "MEDINA SST EMPRESARIAL S.A.S"
+nit_consultora_sst: "900.988.068-5"
+licencia_empresa_consultora: "25-996 de 2017"
+
+# --- IMÁGENES (rutas a los archivos) ---
+logo: "C:/Users/bts19/OneDrive/Desktop/Medina industrial/Yats.png"
+firma_rl: "C:/Users/bts19/OneDrive/Desktop/Medina industrial/firma rl yats.png"
+firma_sst: "C:/Users/bts19/OneDrive/Desktop/Medina industrial/firma sst.jpg"
+
+# --- FECHAS Y VERSIÓN ---
+version: "001"
+fecha_emision: "24/04/2026"
+fecha: "24 de abril del 2026"
+año: "2026"
+ciudad: "Bogotá D.C"
+
+# --- OPCIONES DE GENERACIÓN ---
+generar_pesv: true                 # (true) si aplica Plan Estratégico de Seguridad Vial, si no aplica (false)
+generar_normograma_actualizado: true # Actualizar normograma eliminando normas derogadas
+
+# --- INFORMACIÓN ADICIONAL PARA HUMANIZACIÓN ---
+descripcion_empresa: >
+  Empresa dedicada al transporte terrestre de carga y servicios logísticos, orientada al traslado eficiente de mercancías en Bogotá y a nivel nacional.
