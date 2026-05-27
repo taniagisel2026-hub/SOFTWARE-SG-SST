@@ -204,21 +204,16 @@ def generar_sgsst(
         _actualizar_normograma_carpeta(output_base, cliente)
     stats["normas_corregidas"] = normas_corregidas
 
-    # 6b. Adaptar COPASST / Vigía según número de trabajadores
-    # CON PLANTILLA DUAL: Ya no necesario - la carpeta correcta fue elegida en línea 105-107
-    # num_trab = _obtener_num_trabajadores(cliente)
-    # if num_trab < 10:
-    #     console.print(f"\n[yellow]6.[/yellow] Adaptando documentos: Vigía de SST ({num_trab} trabajadores)...")
-    #     cambios_cv = _adaptar_copasst_vigia(output_base, es_copasst=False)
-    #     carpetas_renombradas = _renombrar_carpetas_copasst(output_base, es_copasst=False)
-    #     archivos_renombrados = _renombrar_archivos_copasst(output_base, es_copasst=False)
-    #     console.print(f"   [green]{cambios_cv} reemplazos de texto en documentos[/green]")
-    #     if carpetas_renombradas:
-    #         console.print(f"   [green]{carpetas_renombradas} carpetas renombradas[/green]")
-    #     if archivos_renombrados:
-    #         console.print(f"   [green]{archivos_renombrados} archivos renombrados[/green]")
-    # else:
-    #     console.print(f"\n[yellow]6.[/yellow] COPASST aplica ({num_trab} trabajadores) - sin cambios necesarios")
+    # 6b. Adaptar contenido COPASST → Vigía en los documentos generados
+    # La plantilla dual elige la carpeta correcta, pero el contenido interno de
+    # los .docx de la carpeta VIGÍA SST sigue diciendo "COPASST" (solo se
+    # renombraron los archivos). Esta función reemplaza el texto en el cuerpo.
+    if usar_vigia:
+        console.print(f"\n[yellow]6.[/yellow] Adaptando contenido de documentos: Vigía de SST ({num_trab} trabajadores)...")
+        cambios_cv = _adaptar_copasst_vigia(output_base, es_copasst=False)
+        console.print(f"   [green]{cambios_cv} reemplazos de texto aplicados en documentos[/green]")
+    else:
+        console.print(f"\n[yellow]6.[/yellow] COPASST aplica ({num_trab} trabajadores) - sin adaptación necesaria")
 
     # 6c. Colores corporativos
     color_corp = cliente.get("color_corporativo", "")
