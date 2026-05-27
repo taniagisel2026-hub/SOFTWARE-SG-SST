@@ -292,7 +292,17 @@ def aplicar_colores_docx(docx_path: str, mapa_colores: dict[str, str]) -> int:
                 zout.writestr(item, data)
 
         import os
-        os.replace(temp_path, docx_path)
+        import time
+        # Reintentos para tolerar OneDrive sincronizando en ese momento
+        for intento in range(5):
+            try:
+                os.replace(temp_path, docx_path)
+                break
+            except PermissionError:
+                if intento < 4:
+                    time.sleep(0.5 * (intento + 1))  # 0.5s, 1s, 1.5s, 2s
+                else:
+                    raise
     except Exception as e:
         import os
         if os.path.exists(temp_path):
@@ -382,7 +392,17 @@ def _ajustar_fuentes_xml(docx_path: str, cambios: list):
                 zout.writestr(item, data)
 
         import os
-        os.replace(temp_path, docx_path)
+        import time
+        # Reintentos para tolerar OneDrive sincronizando en ese momento
+        for intento in range(5):
+            try:
+                os.replace(temp_path, docx_path)
+                break
+            except PermissionError:
+                if intento < 4:
+                    time.sleep(0.5 * (intento + 1))  # 0.5s, 1s, 1.5s, 2s
+                else:
+                    raise
     except Exception as e:
         import os
         if os.path.exists(temp_path):
@@ -477,7 +497,17 @@ def aplicar_colores_xlsx(xlsx_path: str, mapa_colores: dict[str, str]) -> int:
                 zout.writestr(item, data)
 
         import os
-        os.replace(temp_path, xlsx_path)
+        import time
+        # Reintentos para tolerar OneDrive sincronizando
+        for intento in range(5):
+            try:
+                os.replace(temp_path, xlsx_path)
+                break
+            except PermissionError:
+                if intento < 4:
+                    time.sleep(0.5 * (intento + 1))
+                else:
+                    raise
     except Exception as e:
         import os
         if os.path.exists(temp_path):

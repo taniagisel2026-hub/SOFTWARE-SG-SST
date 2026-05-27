@@ -95,7 +95,16 @@ def generar_sgsst(
     # 5. Procesar archivos
     console.print(f"\n[yellow]4.[/yellow] Procesando plantilla desde: [cyan]{PLANTILLA_PATH}[/cyan]")
 
-    archivos = _listar_archivos_plantilla()
+    # Determinar si usar versión VIGÍA o COPASST según número de trabajadores
+    num_trab = _obtener_num_trabajadores(cliente)
+    usar_vigia = num_trab < 10
+
+    if usar_vigia:
+        console.print(f"   [yellow]Usando versión VIGÍA DE SST ({num_trab} trabajadores)[/yellow]")
+    else:
+        console.print(f"   [yellow]Usando versión COPASST ({num_trab} trabajadores)[/yellow]")
+
+    archivos = _listar_archivos_plantilla(usar_vigia=usar_vigia)
     total = len(archivos)
 
     # Stats para auditoría (formato v7)
@@ -196,19 +205,20 @@ def generar_sgsst(
     stats["normas_corregidas"] = normas_corregidas
 
     # 6b. Adaptar COPASST / Vigía según número de trabajadores
-    num_trab = _obtener_num_trabajadores(cliente)
-    if num_trab < 10:
-        console.print(f"\n[yellow]6.[/yellow] Adaptando documentos: Vigía de SST ({num_trab} trabajadores)...")
-        cambios_cv = _adaptar_copasst_vigia(output_base, es_copasst=False)
-        carpetas_renombradas = _renombrar_carpetas_copasst(output_base, es_copasst=False)
-        archivos_renombrados = _renombrar_archivos_copasst(output_base, es_copasst=False)
-        console.print(f"   [green]{cambios_cv} reemplazos de texto en documentos[/green]")
-        if carpetas_renombradas:
-            console.print(f"   [green]{carpetas_renombradas} carpetas renombradas[/green]")
-        if archivos_renombrados:
-            console.print(f"   [green]{archivos_renombrados} archivos renombrados[/green]")
-    else:
-        console.print(f"\n[yellow]6.[/yellow] COPASST aplica ({num_trab} trabajadores) - sin cambios necesarios")
+    # CON PLANTILLA DUAL: Ya no necesario - la carpeta correcta fue elegida en línea 105-107
+    # num_trab = _obtener_num_trabajadores(cliente)
+    # if num_trab < 10:
+    #     console.print(f"\n[yellow]6.[/yellow] Adaptando documentos: Vigía de SST ({num_trab} trabajadores)...")
+    #     cambios_cv = _adaptar_copasst_vigia(output_base, es_copasst=False)
+    #     carpetas_renombradas = _renombrar_carpetas_copasst(output_base, es_copasst=False)
+    #     archivos_renombrados = _renombrar_archivos_copasst(output_base, es_copasst=False)
+    #     console.print(f"   [green]{cambios_cv} reemplazos de texto en documentos[/green]")
+    #     if carpetas_renombradas:
+    #         console.print(f"   [green]{carpetas_renombradas} carpetas renombradas[/green]")
+    #     if archivos_renombrados:
+    #         console.print(f"   [green]{archivos_renombrados} archivos renombrados[/green]")
+    # else:
+    #     console.print(f"\n[yellow]6.[/yellow] COPASST aplica ({num_trab} trabajadores) - sin cambios necesarios")
 
     # 6c. Colores corporativos
     color_corp = cliente.get("color_corporativo", "")
@@ -369,11 +379,33 @@ def generar_sgsst(
     }
 
 
-def _listar_archivos_plantilla() -> list[Path]:
+def _listar_archivos_plantilla(usar_vigia: bool = False) -> list[Path]:
+    """Lista archivos de la plantilla, excluyendo la carpeta COPASST/VIGÍA no relevante.
+
+    Args:
+        usar_vigia: Si True, usa carpeta "DESIGNACIÓN DEL VIGÍA SST"
+                   Si False, usa carpeta "CONFORMACIÓN DEL COPASST"
+    """
     archivos = []
     for archivo in PLANTILLA_PATH.rglob("*"):
         if archivo.is_file() and not debe_ignorar(archivo.name):
+            # Excluir la carpeta de COPASST/VIGÍA no relevante
+            ruta_str = str(archivo)
+
+            if usar_vigia:
+                # Si usa VIGÍA, excluir carpeta CONFORMACIÓN DEL COPASST
+                if "1.1.6 CONFORMACIÓN DEL COPASST" in ruta_str:
+                    continue
+                # También excluir 1.1.7 CAPACITACIÓN COPASST (se adaptará separadamente)
+                if "1.1.7 CAPACITACIÓN COPASST" in ruta_str:
+                    continue
+            else:
+                # Si usa COPASST, excluir carpeta DESIGNACIÓN DEL VIGÍA SST
+                if "1.1.6 DESIGNACIÓN DEL VIGÍA SST" in ruta_str:
+                    continue
+
             archivos.append(archivo)
+
     return sorted(archivos)
 
 
