@@ -131,8 +131,10 @@ def generar_sgsst(
 
         for archivo in archivos:
             ruta_relativa = archivo.relative_to(PLANTILLA_PATH)
-            output_path = output_base / ruta_relativa
-            desc = ruta_relativa.name[:50]
+            # Eliminar tags de versión dual del nombre de salida
+            nombre_salida = ruta_relativa.name.replace(" [COPASST]", "").replace(" [VIGÍA]", "")
+            output_path = output_base / ruta_relativa.parent / nombre_salida
+            desc = nombre_salida[:50]
 
             try:
                 if archivo.suffix.lower() == ".docx":
@@ -391,12 +393,18 @@ def _listar_archivos_plantilla(usar_vigia: bool = False) -> list[Path]:
                 # Si usa VIGÍA, excluir carpeta CONFORMACIÓN DEL COPASST
                 if "1.1.6 CONFORMACIÓN DEL COPASST" in ruta_str:
                     continue
-                # También excluir 1.1.7 CAPACITACIÓN COPASST (se adaptará separadamente)
+                # También excluir 1.1.7 CAPACITACIÓN COPASST
                 if "1.1.7 CAPACITACIÓN COPASST" in ruta_str:
+                    continue
+                # Excluir archivos con tag [COPASST] (tienen versión Vigía en la misma carpeta)
+                if "[COPASST]" in archivo.name:
                     continue
             else:
                 # Si usa COPASST, excluir carpeta DESIGNACIÓN DEL VIGÍA SST
                 if "1.1.6 DESIGNACIÓN DEL VIGÍA SST" in ruta_str:
+                    continue
+                # Excluir archivos con tag [VIGÍA] (tienen versión COPASST en la misma carpeta)
+                if "[VIGÍA]" in archivo.name:
                     continue
 
             archivos.append(archivo)
