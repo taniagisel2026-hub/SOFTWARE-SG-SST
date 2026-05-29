@@ -104,7 +104,12 @@ def generar_sgsst(
     else:
         console.print(f"   [yellow]Usando versión COPASST ({num_trab} trabajadores)[/yellow]")
 
-    archivos = _listar_archivos_plantilla(usar_vigia=usar_vigia)
+    from .matriz_documental import determinar_categoria, normalizar_nivel_riesgo
+    _nivel_riesgo = normalizar_nivel_riesgo(cliente.get("nivel_riesgo", "I"))
+    categoria_res0312 = determinar_categoria(_nivel_riesgo, num_trab)
+    console.print(f"   [yellow]Categoría Res. 0312: {categoria_res0312} ({_nivel_riesgo}, {num_trab} trabajadores)[/yellow]")
+
+    archivos = _listar_archivos_plantilla(usar_vigia=usar_vigia, categoria=categoria_res0312)
     total = len(archivos)
 
     # Stats para auditoría (formato v7)
@@ -131,8 +136,15 @@ def generar_sgsst(
 
         for archivo in archivos:
             ruta_relativa = archivo.relative_to(PLANTILLA_PATH)
-            # Eliminar tags de versión dual del nombre de salida
-            nombre_salida = ruta_relativa.name.replace(" [COPASST]", "").replace(" [VIGÍA]", "")
+            # Eliminar tags de versión dual y de categoría del nombre de salida
+            nombre_salida = (
+                ruta_relativa.name
+                .replace(" [COPASST]", "")
+                .replace(" [VIGÍA]", "")
+                .replace(" [CAT-I]", "")
+                .replace(" [CAT-II]", "")
+                .replace(" [CAT-III]", "")
+            )
             output_path = output_base / ruta_relativa.parent / nombre_salida
             desc = nombre_salida[:50]
 
@@ -301,33 +313,20 @@ def generar_sgsst(
             f"\n[yellow]10.[/yellow] Matriz IPVR: [dim]sin 'cargos' en YAML, se omite[/dim]"
         )
 
-    # 8. Filtrar Matriz de Gestión Documental según Res. 0312/2019
-    console.print(f"\n[yellow]11.[/yellow] Filtrando SST-MTZ-005 según Res. 0312/2019...")
-    try:
-        from .matriz_documental import filtrar_matriz_documental, normalizar_nivel_riesgo
-        nivel_riesgo = normalizar_nivel_riesgo(cliente.get("nivel_riesgo", "I"))
-        resultado_mtz = filtrar_matriz_documental(
-            output_base,
-            nivel_riesgo=nivel_riesgo,
-            num_trabajadores=num_trab,
-            usar_vigia=usar_vigia,
-        )
-        if resultado_mtz.get("error"):
-            console.print(f"   [yellow]{resultado_mtz['error']}[/yellow]")
-        else:
-            cat = resultado_mtz["categoria"]
-            art = resultado_mtz["articulo"]
-            eliminadas = resultado_mtz["filas_eliminadas"]
-            if cat == "III":
-                console.print(
-                    f"   [green]Categoría III ({art}) — todos los estándares incluidos[/green]"
-                )
-            else:
-                console.print(
-                    f"   [green]Categoría {cat} ({art}) — {eliminadas} filas eliminadas[/green]"
-                )
-    except Exception as e:
-        console.print(f"   [red]Error filtrando MTZ-005: {e}[/red]")
+    # 8. Adaptar texto COPASST→Vigía en SST-MTZ-005 si aplica
+    if usar_vigia:
+        try:
+            from .matriz_documental import _adaptar_vigia_xlsx
+            mtz005 = next(
+                (f for f in output_base.rglob("*.xlsx")
+                 if "MTZ-005" in f.name and not f.name.startswith("~$")),
+                None,
+            )
+            if mtz005:
+                _adaptar_vigia_xlsx(mtz005)
+                console.print(f"\n[yellow]11.[/yellow] SST-MTZ-005 adaptado: COPASST → Vigía SST")
+        except Exception as e:
+            console.print(f"\n[yellow]11.[/yellow] [yellow]No se pudo adaptar MTZ-005 para Vigía: {e}[/yellow]")
 
     # 9. Generar reporte de auditoría
     console.print("\n[yellow]12.[/yellow] Generando reporte de auditoria...")
@@ -404,37 +403,42 @@ def generar_sgsst(
     }
 
 
-def _listar_archivos_plantilla(usar_vigia: bool = False) -> list[Path]:
-    """Lista archivos de la plantilla, excluyendo la carpeta COPASST/VIGÍA no relevante.
+def _listar_archivos_plantilla(usar_vigia: bool = False, categoria: str = "III") -> list[Path]:
+    """Lista archivos de la plantilla filtrando por versión COPASST/Vigía y categoría Res. 0312.
 
     Args:
-        usar_vigia: Si True, usa carpeta "DESIGNACIÓN DEL VIGÍA SST"
-                   Si False, usa carpeta "CONFORMACIÓN DEL COPASST"
+        usar_vigia:  Si True, usa carpeta VIGÍA; si False, carpeta COPASST.
+        categoria:   'I', 'II' o 'III' — selecciona el MTZ-005 correcto.
     """
+    otras_cats = {"I", "II", "III"} - {categoria}
+
     archivos = []
     for archivo in PLANTILLA_PATH.rglob("*"):
-        if archivo.is_file() and not debe_ignorar(archivo.name):
-            # Excluir la carpeta de COPASST/VIGÍA no relevante
-            ruta_str = str(archivo)
+        if not archivo.is_file() or debe_ignorar(archivo.name):
+            continue
 
-            if usar_vigia:
-                # Si usa VIGÍA, excluir carpeta CONFORMACIÓN DEL COPASST
-                if "1.1.6 CONFORMACIÓN DEL COPASST" in ruta_str:
-                    continue
-                # También excluir 1.1.7 CAPACITACIÓN COPASST
-                if "1.1.7 CAPACITACIÓN COPASST" in ruta_str:
-                    continue
-                # Excluir archivos con tag [COPASST] (tienen versión Vigía en la misma carpeta)
-                if "[COPASST]" in archivo.name:
-                    continue
-            else:
-                # Si usa COPASST, excluir carpeta DESIGNACIÓN DEL VIGÍA SST
-                if "1.1.6 DESIGNACIÓN DEL VIGÍA SST" in ruta_str:
-                    continue
-                # Excluir archivos con tag [VIGÍA] (tienen versión COPASST en la misma carpeta)
-                if "[VIGÍA]" in archivo.name:
-                    continue
+        ruta_str = str(archivo)
 
+        # ── Filtro COPASST / VIGÍA ────────────────────────────────────────
+        if usar_vigia:
+            if "1.1.6 CONFORMACIÓN DEL COPASST" in ruta_str:
+                continue
+            if "1.1.7 CAPACITACIÓN COPASST" in ruta_str:
+                continue
+            if "[COPASST]" in archivo.name:
+                continue
+        else:
+            if "1.1.6 DESIGNACIÓN DEL VIGÍA SST" in ruta_str:
+                continue
+            if "[VIGÍA]" in archivo.name:
+                continue
+
+        # ── Filtro por categoría Res. 0312 ────────────────────────────────
+        # Excluir los [CAT-X] que NO corresponden a esta categoría
+        for otra in otras_cats:
+            if f"[CAT-{otra}]" in archivo.name:
+                break
+        else:
             archivos.append(archivo)
 
     return sorted(archivos)
