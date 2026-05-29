@@ -304,8 +304,8 @@ def generar_sgsst(
     # 8. Filtrar Matriz de Gestión Documental según Res. 0312/2019
     console.print(f"\n[yellow]11.[/yellow] Filtrando SST-MTZ-005 según Res. 0312/2019...")
     try:
-        from .matriz_documental import filtrar_matriz_documental
-        nivel_riesgo = str(cliente.get("nivel_riesgo", "I")).upper().strip()
+        from .matriz_documental import filtrar_matriz_documental, normalizar_nivel_riesgo
+        nivel_riesgo = normalizar_nivel_riesgo(cliente.get("nivel_riesgo", "I"))
         resultado_mtz = filtrar_matriz_documental(
             output_base,
             nivel_riesgo=nivel_riesgo,

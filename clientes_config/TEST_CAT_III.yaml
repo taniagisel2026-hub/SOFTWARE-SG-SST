@@ -1,0 +1,67 @@
+# =============================================================================
+# CLIENTE DE PRUEBA — CATEGORÍA III (Art. 16 Res. 0312)
+# Gran empresa: >50 trabajadores → 60 estándares (sin filtro)
+# =============================================================================
+
+# --- INFORMACIÓN DE LA EMPRESA ---
+razon_social: "INDUSTRIAS METALCO SAS"
+nit: "900.555.666-3"
+direccion_empresa: "Calle 13 # 50-20 Zona Industrial"
+telefono_empresa: "601 345 6789"
+email_empresa: "sgsst@metalco.com.co"
+sitio_web: "www.metalco.com.co"
+barrio_empresa: "Zona Industrial Puente Aranda"
+ciudad_empresa: "Bogotá D.C."
+departamento_empresa: "Cundinamarca"
+
+# --- ACTIVIDAD ECONÓMICA ---
+actividad_economica: >
+  Actividad Principal: 2599 (Fabricación de otros productos elaborados de metal)
+  Actividad Secundaria: 2591 (Forja, prensado, estampado y laminado de metal)
+
+# --- SEGURIDAD SOCIAL ---
+nivel_riesgo: "III"
+arl: "AXA Colpatria"
+numero_trabajadores_empresa: "80"
+color_corporativo: ""
+
+# --- SEDES ---
+sedes:
+  - nombre: "Planta Principal"
+    direccion: "Calle 13 # 50-20 Zona Industrial"
+    ciudad: "Bogotá D.C."
+    telefono: "601 345 6789"
+
+# --- REPRESENTANTE LEGAL ---
+representante_legal: "Jorge Enrique Salcedo Mora"
+cedula_rl: "19.555.666"
+cargo_rl: "Gerente General"
+ciudad_cedula_rl: "Bogotá D.C."
+
+# --- RESPONSABLE SST ---
+nombre_responsable_sst: "Pablo Alexander Medina Pedraza"
+cedula_responsable_sst: "1.014.179.739"
+cargo_sst: "Profesional SST"
+ciudad_cedula_sst: "Bogotá D.C."
+licencia_sst: "8866 del 30 de abril de 2021"
+
+# --- EMPRESA CONSULTORA SST ---
+empresa_consultora_sst: "MEDINA SST EMPRESARIAL S.A.S"
+nit_consultora_sst: "900.988.068-5"
+licencia_empresa_consultora: "25-996 de 2017"
+
+# --- IMÁGENES ---
+logo: ""
+firma_rl: ""
+firma_sst: ""
+
+# --- FECHAS Y VERSIÓN ---
+version: "1"
+fecha_emision: "29/05/2026"
+fecha: "29 de mayo del 2026"
+año: "2026"
+ciudad: "Bogotá D.C."
+
+# --- OPCIONES DE GENERACIÓN ---
+generar_pesv: false
+generar_normograma_actualizado: true

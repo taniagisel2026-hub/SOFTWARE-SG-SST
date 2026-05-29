@@ -46,6 +46,19 @@ ESTANDARES_CAT_II: frozenset[str] = frozenset({
 # Categoría III → sin filtro (todos los estándares)
 
 _RE_ESTANDAR = re.compile(r"^(\d+\.\d+\.\d+)")
+_RE_ROMANO = re.compile(r"\b(V|IV|III|II|I)\b")
+_ORDEN_RIESGO = {"V": 5, "IV": 4, "III": 3, "II": 2, "I": 1}
+
+
+def normalizar_nivel_riesgo(valor: str) -> str:
+    """
+    Extrae el nivel de riesgo más alto de una cadena.
+    "I - IV" → "IV", "III" → "III", "V" → "V".
+    """
+    encontrados = _RE_ROMANO.findall(str(valor).upper())
+    if not encontrados:
+        return "I"
+    return max(encontrados, key=lambda r: _ORDEN_RIESGO.get(r, 0))
 
 # Reemplazos COPASST → Vigía para celdas del Excel
 _REEMPLAZOS_VIGIA = [
