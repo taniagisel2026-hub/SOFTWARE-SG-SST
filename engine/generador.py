@@ -301,8 +301,36 @@ def generar_sgsst(
             f"\n[yellow]10.[/yellow] Matriz IPVR: [dim]sin 'cargos' en YAML, se omite[/dim]"
         )
 
-    # 8. Generar reporte de auditoría
-    console.print("\n[yellow]11.[/yellow] Generando reporte de auditoria...")
+    # 8. Filtrar Matriz de Gestión Documental según Res. 0312/2019
+    console.print(f"\n[yellow]11.[/yellow] Filtrando SST-MTZ-005 según Res. 0312/2019...")
+    try:
+        from .matriz_documental import filtrar_matriz_documental
+        nivel_riesgo = str(cliente.get("nivel_riesgo", "I")).upper().strip()
+        resultado_mtz = filtrar_matriz_documental(
+            output_base,
+            nivel_riesgo=nivel_riesgo,
+            num_trabajadores=num_trab,
+            usar_vigia=usar_vigia,
+        )
+        if resultado_mtz.get("error"):
+            console.print(f"   [yellow]{resultado_mtz['error']}[/yellow]")
+        else:
+            cat = resultado_mtz["categoria"]
+            art = resultado_mtz["articulo"]
+            eliminadas = resultado_mtz["filas_eliminadas"]
+            if cat == "III":
+                console.print(
+                    f"   [green]Categoría III ({art}) — todos los estándares incluidos[/green]"
+                )
+            else:
+                console.print(
+                    f"   [green]Categoría {cat} ({art}) — {eliminadas} filas eliminadas[/green]"
+                )
+    except Exception as e:
+        console.print(f"   [red]Error filtrando MTZ-005: {e}[/red]")
+
+    # 9. Generar reporte de auditoría
+    console.print("\n[yellow]12.[/yellow] Generando reporte de auditoria...")
     ruta_reporte = generar_reporte(output_base, stats, config_info=cliente)
     console.print(f"   Reporte: {ruta_reporte}")
 
