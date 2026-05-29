@@ -612,53 +612,57 @@ def _adaptar_copasst_vigia(output_base: Path, es_copasst: bool) -> int:
             # 1) LIMPIEZAS DE REDUNDANCIAS GENERADAS POR REEMPLAZOS PREVIOS
             # (van primero para limpiar cualquier resto de versiones anteriores)
             # ============================================================
-            # "Comité Paritario ... (Vigía de SST)" -> "Vigía de SST"
+            # "Comité Paritario ... (Vigía SST)" -> "Vigía SST"
             r"Comit[eé]\s+Paritario\s+de\s+(?:la\s+)?Seguridad\s+y\s+Salud\s+en\s+el\s+Trabajo"
-            r"\s*\(\s*Vig[ií]a\s+de\s+SST\s*\)":
-                "Vigía de SST",
-            # "Comité Paritario ... - Vigía de SST" -> "Vigía de SST"
+            r"\s*\(\s*Vig[ií]a\s+(?:de\s+)?SST\s*\)":
+                "Vigía SST",
+            # "Comité Paritario ... - Vigía SST" -> "Vigía SST"
             r"Comit[eé]\s+Paritario\s+de\s+(?:la\s+)?Seguridad\s+y\s+Salud\s+en\s+el\s+Trabajo"
             r"\s*[-—–]\s*"
-            r"Vig[ií]a\s+de\s+SST":
-                "Vigía de SST",
-            # "Vigía de SST - Vigía de SST" -> "Vigía de SST"
-            r"Vig[ií]a\s+de\s+(?:Seguridad y Salud en el Trabajo|SST)"
+            r"Vig[ií]a\s+(?:de\s+)?SST":
+                "Vigía SST",
+            # "Vigía ... - Vigía ..." -> "Vigía SST"
+            r"Vig[ií]a\s+de\s+(?:Seguridad\s+y\s+Salud\s+en\s+el\s+Trabajo|SST)"
             r"\s*[-—–]\s*"
-            r"Vig[ií]a\s+de\s+(?:Seguridad y Salud en el Trabajo|SST)":
-                "Vigía de SST",
-            # "Vigía de Seguridad y Salud en el Trabajo (COPASST)" → "Vigía de SST"
+            r"Vig[ií]a\s+de\s+(?:Seguridad\s+y\s+Salud\s+en\s+el\s+Trabajo|SST)":
+                "Vigía SST",
+            # "Vigía de Seguridad y Salud en el Trabajo (COPASST)" → "Vigía SST"
             r"Vig[ií]a\s+de\s+Seguridad\s+y\s+Salud\s+en\s+el\s+Trabajo\s*\(\s*COPASST\s*\)":
-                "Vigía de SST",
+                "Vigía SST",
 
             # ============================================================
             # 2) "COPASST / Vigía" (la plantilla a veces los pone juntos)
             # ============================================================
-            r"COPASST\s*[/oó]\s*Vig[ií]a\s*de\s*SST": "Vigía de SST",
-            r"COPASST\s*[/oó]\s*Vig[ií]a": "Vigía de SST",
+            r"COPASST\s*[/oó]\s*Vig[ií]a\s*(?:de\s*)?SST": "Vigía SST",
+            r"COPASST\s*[/oó]\s*Vig[ií]a": "Vigía SST",
 
             # ============================================================
-            # 3) "Comité Paritario de la Seguridad y Salud..." (con o sin "la")
+            # 3) Nombre completo "Comité Paritario de Seguridad y Salud..."
+            # Se reemplaza por el nombre completo correcto del Vigía.
             # ============================================================
             # Versión con paréntesis (COPASST)
             r"Comit[eé]\s+Paritario\s+de\s+(?:la\s+)?Seguridad\s+y\s+Salud\s+en\s+el\s+Trabajo\s*\(\s*COPASST\s*\)":
-                "Vigía de SST",
+                "Vigía de Seguridad y Salud en el Trabajo",
             r"COMIT[EÉ]\s+PARITARIO\s+DE\s+(?:LA\s+)?SEGURIDAD\s+Y\s+SALUD\s+EN\s+EL\s+TRABAJO\s*\(\s*COPASST\s*\)":
-                "VIGÍA DE SST",
+                "Vigía de Seguridad y Salud en el Trabajo",
             # Versión sin paréntesis
             r"Comit[eé]\s+Paritario\s+de\s+(?:la\s+)?Seguridad\s+y\s+Salud\s+en\s+el\s+Trabajo":
-                "Vigía de SST",
+                "Vigía de Seguridad y Salud en el Trabajo",
             r"COMIT[EÉ]\s+PARITARIO\s+DE\s+(?:LA\s+)?SEGURIDAD\s+Y\s+SALUD\s+EN\s+EL\s+TRABAJO":
-                "VIGÍA DE SST",
-            # Versión corta "Comité Paritario" solo (con o sin "el")
+                "Vigía de Seguridad y Salud en el Trabajo",
+            # Versión corta "Comité Paritario" solo
             r"\bComit[eé]\s+Paritario\b": "Vigía",
-            r"\bCOMIT[EÉ]\s+PARITARIO\b": "VIGÍA",
+            r"\bCOMIT[EÉ]\s+PARITARIO\b": "Vigía",
 
             # ============================================================
-            # 4) "COPASST" como sigla (respeta mayúsculas/minúsculas)
+            # 4) "COPASST" como sigla → siempre "Vigía SST"
+            # Nota: IGNORECASE en el sub hace que el primer patrón capture
+            # cualquier capitalización de COPASST; los dos siguientes son
+            # fallback por si acaso se cambia la lógica.
             # ============================================================
-            r"\bCOPASST\b": "VIGÍA DE SST",   # MAYÚSCULAS (encabezados)
-            r"\bCopasst\b": "Vigía de SST",   # Capitalizado (texto normal)
-            r"\bcopasst\b": "vigía de SST",   # minúsculas
+            r"\bCOPASST\b": "Vigía SST",
+            r"\bCopasst\b": "Vigía SST",
+            r"\bcopasst\b": "Vigía SST",
         }
     else:
         return 0  # Plantillas ya están en COPASST, no hay que cambiar nada
