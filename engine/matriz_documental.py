@@ -28,6 +28,7 @@ ESTANDARES_CAT_I: frozenset[str] = frozenset({
     "1.1.8",                                    # CCL — obligatorio Res. 652/2012
     "1.2.1",                                    # Capacitación en SST
     "2.4.1",                                    # Plan Anual de Trabajo
+    "2.5.1",                                    # Archivo documental — siempre incluir MTZ-005
     "3.1.4",                                    # Evaluaciones médicas ocupacionales
     "4.1.1", "4.1.2",                           # Identificación de peligros
     "4.2.1", "4.2.2", "4.2.3", "4.2.4",        # Medidas de prevención y control

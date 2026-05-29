@@ -1,8 +1,11 @@
 """Orquestador principal: genera el SG-SST completo - FUSIONADO v7.6 + nuevo."""
+import re
 import shutil
 import tempfile
 import warnings
 from pathlib import Path
+
+_RE_CARPETA_ESTANDAR = re.compile(r"^(\d+\.\d+\.\d+)")
 
 # Silenciar warnings de openpyxl (fechas fuera de rango, validaciones no soportadas)
 # Son inofensivos: los valores se conservan, solo no se interpretan como fecha
@@ -104,12 +107,25 @@ def generar_sgsst(
     else:
         console.print(f"   [yellow]Usando versión COPASST ({num_trab} trabajadores)[/yellow]")
 
-    from .matriz_documental import determinar_categoria, normalizar_nivel_riesgo
+    from .matriz_documental import (
+        determinar_categoria, normalizar_nivel_riesgo,
+        ESTANDARES_CAT_I, ESTANDARES_CAT_II,
+    )
     _nivel_riesgo = normalizar_nivel_riesgo(cliente.get("nivel_riesgo", "I"))
     categoria_res0312 = determinar_categoria(_nivel_riesgo, num_trab)
     console.print(f"   [yellow]Categoría Res. 0312: {categoria_res0312} ({_nivel_riesgo}, {num_trab} trabajadores)[/yellow]")
 
-    archivos = _listar_archivos_plantilla(usar_vigia=usar_vigia, categoria=categoria_res0312)
+    _estandares_validos = (
+        ESTANDARES_CAT_I  if categoria_res0312 == "I"  else
+        ESTANDARES_CAT_II if categoria_res0312 == "II" else
+        None              # Cat III → sin filtro
+    )
+
+    archivos = _listar_archivos_plantilla(
+        usar_vigia=usar_vigia,
+        categoria=categoria_res0312,
+        estandares_validos=_estandares_validos,
+    )
     total = len(archivos)
 
     # Stats para auditoría (formato v7)
@@ -403,12 +419,17 @@ def generar_sgsst(
     }
 
 
-def _listar_archivos_plantilla(usar_vigia: bool = False, categoria: str = "III") -> list[Path]:
+def _listar_archivos_plantilla(
+    usar_vigia: bool = False,
+    categoria: str = "III",
+    estandares_validos: "frozenset[str] | None" = None,
+) -> list[Path]:
     """Lista archivos de la plantilla filtrando por versión COPASST/Vigía y categoría Res. 0312.
 
     Args:
-        usar_vigia:  Si True, usa carpeta VIGÍA; si False, carpeta COPASST.
-        categoria:   'I', 'II' o 'III' — selecciona el MTZ-005 correcto.
+        usar_vigia:         Si True, usa carpeta VIGÍA; si False, carpeta COPASST.
+        categoria:          'I', 'II' o 'III' — selecciona el MTZ-005 correcto.
+        estandares_validos: Conjunto de códigos aplicables. Si None → todo incluido.
     """
     otras_cats = {"I", "II", "III"} - {categoria}
 
@@ -433,12 +454,23 @@ def _listar_archivos_plantilla(usar_vigia: bool = False, categoria: str = "III")
             if "[VIGÍA]" in archivo.name:
                 continue
 
-        # ── Filtro por categoría Res. 0312 ────────────────────────────────
-        # Excluir los [CAT-X] que NO corresponden a esta categoría
+        # ── Filtro por categoría Res. 0312 (selección del MTZ-005) ───────
         for otra in otras_cats:
             if f"[CAT-{otra}]" in archivo.name:
                 break
         else:
+            # ── Filtro de carpetas por estándares aplicables ──────────────
+            if estandares_validos is not None:
+                ruta_rel = archivo.relative_to(PLANTILLA_PATH)
+                codigo_carpeta = None
+                for parte in ruta_rel.parts:
+                    m = _RE_CARPETA_ESTANDAR.match(parte)
+                    if m:
+                        codigo_carpeta = m.group(1)
+                        break
+                if codigo_carpeta and codigo_carpeta not in estandares_validos:
+                    continue
+
             archivos.append(archivo)
 
     return sorted(archivos)
