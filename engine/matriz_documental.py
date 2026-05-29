@@ -19,9 +19,13 @@ import openpyxl
 # ─── Estándares por categoría ─────────────────────────────────────────────────
 
 # Artículo 3 — 7 ítems
+# Nota: 1.1.8 (CCL) no es uno de los 7 estándares del Art. 3, pero el
+# Comité de Convivencia Laboral es obligatorio para TODAS las empresas
+# por Res. 652/2012, independientemente de la categoría Res. 0312.
 ESTANDARES_CAT_I: frozenset[str] = frozenset({
     "1.1.1",                                    # Responsable / persona SG-SST
     "1.1.4",                                    # Afiliación SGRL
+    "1.1.8",                                    # CCL — obligatorio Res. 652/2012
     "1.2.1",                                    # Capacitación en SST
     "2.4.1",                                    # Plan Anual de Trabajo
     "3.1.4",                                    # Evaluaciones médicas ocupacionales
