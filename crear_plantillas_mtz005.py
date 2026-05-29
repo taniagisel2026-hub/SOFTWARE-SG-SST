@@ -8,7 +8,8 @@ Resultado en la plantilla:
   SST-MTZ-005 MATRIZ DE GESTIÓN DOCUMENTAL [CAT-II].xlsx  (21 estándares Art. 9)
   SST-MTZ-005 MATRIZ DE GESTIÓN DOCUMENTAL [CAT-III].xlsx (60 estándares Art. 16)
 
-El archivo original sin tag se elimina al final.
+Las filas que no aplican se ELIMINAN (no se ocultan) para que los números
+de fila queden continuos y el documento se vea hecho desde cero.
 """
 import sys
 import shutil
@@ -21,17 +22,16 @@ import openpyxl
 from engine.matriz_documental import ESTANDARES_CAT_I, ESTANDARES_CAT_II
 
 PLANTILLA = Path("Plantilla SG-SST 2026")
-CARPETA_MTZ = PLANTILLA / "I. PLANEAR" / "2.5.1 ARCHIVO Y RETENCIÓN DOCUMENTAL"
 NOMBRE_BASE = "SST-MTZ-005 MATRIZ DE GESTIÓN DOCUMENTAL"
-ORIGINAL = CARPETA_MTZ / f"{NOMBRE_BASE}.xlsx"
+FILA_DATOS = 7          # primera fila con datos reales (las anteriores son encabezado)
+
+_RE_ESTANDAR = re.compile(r"^(\d+\.\d+\.\d+)")
 
 CATEGORIAS = {
     "CAT-I":   ESTANDARES_CAT_I,
     "CAT-II":  ESTANDARES_CAT_II,
-    "CAT-III": None,   # None = sin filtro, todos visibles
+    "CAT-III": None,
 }
-
-_RE_ESTANDAR = re.compile(r"^(\d+\.\d+\.\d+)")
 
 
 def extraer_codigo(valor) -> str | None:
@@ -42,59 +42,91 @@ def extraer_codigo(valor) -> str | None:
 
 
 def crear_plantilla(origen: Path, destino: Path, estandares_validos: set | None):
-    shutil.copy2(str(origen), str(destino))
     if estandares_validos is None:
-        print(f"  [CAT-III] copiado sin cambios → {destino.name}")
-        return
+        if origen != destino:
+            shutil.copy2(str(origen), str(destino))
+        print(f"  [CAT-III] sin cambios → {destino.name}")
+        return 0
+
+    shutil.copy2(str(origen), str(destino))
 
     wb = openpyxl.load_workbook(str(destino))
     ws = wb["LISTADO MAESTRO PHVA"]
 
-    estandar_actual = None
-    filas_ocultas = 0
+    # ── 1. Determinar qué filas eliminar ─────────────────────────────────
+    est_actual = None
+    filas_eliminar: set[int] = set()
 
-    for fila_num in range(7, ws.max_row + 1):
-        val_c = ws.cell(row=fila_num, column=3).value
+    for fila in range(FILA_DATOS, ws.max_row + 1):
+        val_c = str(ws.cell(row=fila, column=3).value or "").strip()
         codigo = extraer_codigo(val_c)
         if codigo:
-            estandar_actual = codigo
+            est_actual = codigo
+        if est_actual and est_actual not in estandares_validos:
+            filas_eliminar.add(fila)
 
-        if estandar_actual and estandar_actual not in estandares_validos:
-            ws.row_dimensions[fila_num].hidden = True
-            filas_ocultas += 1
+    if not filas_eliminar:
+        wb.save(str(destino))
+        return 0
+
+    # ── 2. Guardar y deshacer celdas combinadas del área de datos ─────────
+    rangos_a_rehacer: list[tuple[int, int, int, int]] = []
+
+    for rango in list(ws.merged_cells.ranges):
+        min_r, min_c = rango.min_row, rango.min_col
+        max_r, max_c = rango.max_row, rango.max_col
+
+        # Solo trabajar rangos que tocan el área de datos
+        if max_r < FILA_DATOS:
+            continue
+
+        sobreviven = [r for r in range(min_r, max_r + 1) if r not in filas_eliminar]
+        ws.unmerge_cells(str(rango))
+
+        if len(sobreviven) > 1:
+            # Guardar rango original — se recalcula después de la eliminación
+            rangos_a_rehacer.append((min(sobreviven), min_c, max(sobreviven), max_c))
+
+    # ── 3. Eliminar filas de abajo hacia arriba ───────────────────────────
+    for fila in sorted(filas_eliminar, reverse=True):
+        ws.delete_rows(fila)
+
+    # ── 4. Re-aplicar celdas combinadas con posiciones ajustadas ─────────
+    for orig_min_r, min_c, orig_max_r, max_c in rangos_a_rehacer:
+        elim_antes_min = sum(1 for f in filas_eliminar if f < orig_min_r)
+        elim_antes_max = sum(1 for f in filas_eliminar if f < orig_max_r)
+        nuevo_min_r = orig_min_r - elim_antes_min
+        nuevo_max_r = orig_max_r - elim_antes_max
+        if nuevo_min_r < nuevo_max_r:
+            ws.merge_cells(
+                start_row=nuevo_min_r, start_column=min_c,
+                end_row=nuevo_max_r, end_column=max_c,
+            )
 
     wb.save(str(destino))
-    print(f"  {destino.name}: {filas_ocultas} filas ocultas")
+    print(f"  [{destino.name.split('[')[1].split(']')[0]}] {len(filas_eliminar)} filas eliminadas → {destino.name}")
+    return len(filas_eliminar)
 
 
 def main():
-    if not ORIGINAL.exists():
-        # Buscar por glob si el nombre tiene caracteres especiales
-        encontrado = next(
-            (f for f in CARPETA_MTZ.glob("*.xlsx")
-             if "MTZ-005" in f.name and "[CAT" not in f.name and "~$" not in f.name),
-            None,
-        )
-        if not encontrado:
-            print(f"ERROR: No se encontró {NOMBRE_BASE}.xlsx en {CARPETA_MTZ}")
-            return
-        origen = encontrado
-    else:
-        origen = ORIGINAL
+    base = Path("Plantilla SG-SST 2026")
+    origen = next(
+        (f for f in base.rglob("*.xlsx")
+         if "MTZ-005" in f.name and "[CAT-III]" in f.name and "~$" not in f.name),
+        None,
+    )
+    if not origen:
+        print("ERROR: No se encontró SST-MTZ-005 [CAT-III].xlsx en la plantilla")
+        return
 
-    print(f"Archivo origen: {origen.name}\n")
+    carpeta = origen.parent
+    print(f"Origen: {origen.name}\n")
 
     for tag, estandares in CATEGORIAS.items():
-        destino = CARPETA_MTZ / f"{NOMBRE_BASE} [{tag}].xlsx"
+        destino = carpeta / f"{NOMBRE_BASE} [{tag}].xlsx"
         crear_plantilla(origen, destino, estandares)
 
-    # Eliminar el archivo original sin tag
-    if origen.exists():
-        origen.unlink()
-        print(f"\nArchivo original eliminado: {origen.name}")
-
-    print("\nPlantillas creadas correctamente.")
-    print("Recuerda hacer commit de los 3 archivos nuevos.")
+    print("\nPlantillas creadas. Verifica en Excel que los números de fila son continuos.")
 
 
 if __name__ == "__main__":
