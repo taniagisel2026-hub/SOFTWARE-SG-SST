@@ -1,0 +1,242 @@
+# =============================================================================
+# CONFIGURACIÓN DEL CLIENTE - SG-SST
+# =============================================================================
+# Este archivo contiene todos los datos necesarios para generar el SG-SST
+# personalizado para el cliente. Llene cada campo con la información real.
+# =============================================================================
+
+# --- INFORMACIÓN DE LA EMPRESA ---
+razon_social: "FRIGOTEC S.A.S"
+nit: "830038561-6"
+direccion_empresa: "CARRERA 7 B BIS 63 39"
+telefono_empresa: "315 343 9034 - 313 395 3338"
+email_empresa: "frigotec@frigotec.com.co"
+sitio_web: "www.frigotec.com.co"
+barrio_empresa: ""
+ciudad_empresa: "BOGOTÁ D.C."
+departamento_empresa: "BOGOTÁ D.C."
+
+# --- ACTIVIDAD ECONÓMICA (según Cámara de Comercio y RUT) ---
+actividad_economica: >
+  Actividad Principal: 4659  (COMERCIO  AL  POR  MAYOR  DE OTROS TIPOS DE MAQUINARIA Y EQUIPO
+  N.C.P.)
+  Actividad Secundaria:  3319  (MANTENIMIENTO  Y  REPARACIÓN  DE  OTROS  TIPOS DE EQUIPOS Y SUS
+  COMPONENTES N.C.P.)
+  4290 (CONSTRUCCIÓN DE OTRAS OBRAS DE INGENIERÍA CIVIL)
+
+# --- SEGURIDAD SOCIAL ---
+nivel_riesgo: "V"                    # I, II, III, IV o V
+arl: "POSITIVA"
+numero_trabajadores_empresa: "3"
+color_corporativo: "#006600"
+
+# --- SEDES ---
+#sedes:
+ # - nombre: "Sede Principal"
+  #   direccion: ""
+  #   ciudad: ""
+  #   telefono: ""
+  # - nombre: "Sede Producción"
+  #   direccion: "Km 5 Vía Siberia"
+  #   ciudad: "Cota, Cundinamarca"
+  #   telefono: "601 876 5432"
+
+# --- REPRESENTANTE LEGAL ---
+representante_legal: "Raúl Cano Florez"
+cedula_rl: "79151677 "
+cargo_rl: "Representante Legal"
+ciudad_cedula_rl: ""
+
+# --- RESPONSABLE SST ---
+nombre_responsable_sst: "Pablo Alexander Medina Pedraza"
+cedula_responsable_sst: "1.014.179.739"
+cargo_sst: "Profesional SST"
+ciudad_cedula_sst: "Bogotá D.C."
+licencia_sst: "8866 del 30 de abril de 2021"
+
+# --- EMPRESA CONSULTORA SST ---
+empresa_consultora_sst: "MEDINA SST EMPRESARIAL S.A.S"
+nit_consultora_sst: "900.988.068-5"
+licencia_empresa_consultora: "25-996 de 2017"
+
+# --- IMÁGENES (rutas a los archivos) ---
+logo: "C:/Users/bts19/OneDrive/Desktop/Medina industrial/CLIENTES SG-SST/FRIGOTEC/LOGO FRIGO X.jpg.jpeg"
+firma_rl: "C:/Users/bts19/OneDrive/Desktop/Medina industrial/CLIENTES SG-SST/FRIGOTEC/FIRMA RL.jpeg"
+firma_sst: "C:/Users/bts19/OneDrive/Desktop/Medina industrial/firma sst.jpg"
+
+# --- FECHAS Y VERSIÓN ---
+version: "002"
+fecha_emision: "20/01/2025"
+fecha: "20 de enero del 2025"
+año: "2025"
+ciudad: "Bogotá D.C."
+mes_año: "enero,2025"
+
+# --- OPCIONES DE GENERACIÓN ---
+generar_pesv: false                  # (true) si aplica Plan Estratégico de Seguridad Vial, si no aplica (false)
+generar_normograma_actualizado: true # Actualizar normograma eliminando normas derogadas
+
+# =============================================================================
+# MATRIZ DE PELIGROS IPVR (SST-MTZ-012)
+# =============================================================================
+# Tienes 2 opciones para definir los cargos del cliente.
+# Puedes usar UNA o LA OTRA (o las dos combinadas).
+#
+# Si NO defines ninguna, no se generará la matriz de peligros.
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# OPCIÓN A: Subir MANUALES de funciones en una carpeta
+# -----------------------------------------------------------------------------
+# Formato soportado: .docx (Word), .xlsx (Excel), .pdf (PDF)
+# Cada archivo = un cargo. El sistema detecta el nombre automáticamente.
+#
+# Descomenta la siguiente línea y pon la ruta a la carpeta:
+manuales_cargos_dir: ""
+
+# -----------------------------------------------------------------------------
+# OPCIÓN B: Definir los cargos directamente en este YAML
+# -----------------------------------------------------------------------------
+# Estructura de cada cargo:
+#
+#   - nombre:           (obligatorio) Nombre del cargo
+#     proceso:          (opcional)    Nombre del proceso/área al que pertenece
+#                                     Ej: "ADMINISTRATIVO", "PRODUCCIÓN",
+#                                         "GESTIÓN HUMANA", "LOGÍSTICA",
+#                                         "FINANCIERA", "COMERCIAL", etc.
+#                                     Cargos del MISMO proceso quedan agrupados.
+#                                     Si no lo defines, usa ADMINISTRATIVO u
+#                                     OPERATIVO según el tipo del cargo.
+#     zona:             (opcional)    Lugar físico de trabajo
+#                                     Ej: "Oficinas Administrativas",
+#                                         "Planta de Producción",
+#                                         "Bodega Principal"
+#     tipo:             (opcional)    administrativo | operativo |
+#                                     conductor | servicios_generales
+#                                     Si no lo defines, se infiere del nombre.
+#     num_expuestos:    (opcional)    Cuántas personas tienen este cargo (default 1)
+#     actividades:      (opcional)    Descripción del cargo (1-3 líneas).
+#                                     Si vacío y hay manual, usa el del manual.
+#                                     Si vacío y sin manual, genera texto genérico.
+#     tareas:           (opcional)    Bullets de tareas reales del cargo.
+#                                     Usa "|" para texto en varias líneas.
+#     rutinaria:        (opcional)    "SI" o "NO" (default "SI")
+#
+# EJEMPLO REAL (descomenta y adapta a tu cliente):
+
+#cargos:
+#---- ADMINISTRATIVO ----
+nombre: "Representante Legal / Gerente General"
+proceso: "ESTRATEGICO / ADMINISTRATIVO"
+zona: "Oficinas Administrativas"
+tipo: "administrativo"
+num_expuestos: 1
+actividades: "Ejercer la representación legaL, liderar la toma de decisiones corporativas, gestionar la contratación de proyectos metalmecánicos, supervisar el presupuesto y realizar visitas técnicas o comerciales a las plantas y frigoríficos de los clientes."
+tareas: 
+  - "Definir el rumbo estratégico de la empresa"
+  - "Aprobar presupuestos generales y políticas corporativas"
+  - "Representar legalmente a la empresa ante entidades públicas y privadas"
+  - "Liderar reuniones de junta directiva y comités"
+  - "Supervisar resultados financieros y operativos de cada área"
+  - "Revisar y firmar contratos comerciales con frigoríficos y clientes"
+  - "Gestionar llamadas, correos y atención a proveedores estratégicos"
+  - "Digitar informes y realizar lectura de documentos en computador"
+  - "Efectuar desplazamientos viales o aéreos para visitas de negocios"
+  - "Recorrer las plantas de beneficio o proyectos de montaje de los clientes"
+#  
+#   - nombre: "Asistente de Gerencia"
+#     proceso: "DIRECCIÓN GENERAL"
+#     tipo: "administrativo"
+#     num_expuestos: 1
+#     actividades: "Apoyar a la gerencia en agenda, comunicaciones y reuniones."
+#     tareas: |
+#       • Manejo de agenda gerencial
+#       • Atención de llamadas y correos
+#       • Coordinación de viajes
+#       • Elaboración de actas
+#
+#   # ---- FINANCIERA Y CONTABLE ----
+#   - nombre: "Contador"
+#     proceso: "FINANCIERA Y CONTABLE"
+#     tipo: "administrativo"
+#     num_expuestos: 1
+#     actividades: "Llevar la contabilidad y reportar estados financieros."
+#     tareas: |
+#       • Causación de facturas
+#       • Conciliaciones bancarias
+#       • Declaraciones tributarias
+#
+#   # ---- GESTIÓN HUMANA ----
+#   - nombre: "Coordinador de Talento Humano"
+#     proceso: "GESTIÓN HUMANA"
+#     tipo: "administrativo"
+#     num_expuestos: 1
+#     actividades: "Liderar selección, contratación, nómina y bienestar."
+#     tareas: |
+#       • Selección y reclutamiento
+#       • Liquidación de nómina
+#       • Programa de bienestar
+#
+# ----   PRODUCCIÓN     ------
+
+nombre: "Soldador (Taller de Fabricación)"
+proceso: "PRODUCCIÓN"
+zona: "Taller Central de Metalmecánica"
+tipo: "operativo"
+num_expuestos: 1
+actividades: "Realizar corte, pulido, preparación de superficies y soldadura (TIG/MIG) de láminas, tuberías y estructuras de acero inoxidable para maquinaria industrial."
+tareas:
+    - "Interpretar planos técnicos de diseño y hojas de corte para estructuras"
+    - "Preparar láminas y tuberías de acero inoxidable mediante el uso de cizallas, tronzadoras o plasma"
+    - "Realizar limpieza y biselado de juntas mecánicas con pulidoras"
+    - "Operar equipos de soldadura de arco eléctrico bajo procesos TIG y MIG"
+    - "Aplicar decapantes químicos o pasivadores para el acabado limpio del acero inoxidable"
+    - "Efectuar inspección visual y control de calidad de los cordones de soldadura realizados"
+    - "Realizar el orden y aseo del puesto de trabajo, incluyendo recolección de residuos metálicos"
+#
+nombre: "Soldador / Montador (Campo)"
+proceso: "PRODUCCIÓN"
+zona: "Plantas de Clientes / Frigoríficos"
+tipo: "operativo"
+num_expuestos: 1
+actividades: "Realizar montaje, nivelación, anclaje y soldadura en sitio de estructuras pesadas, líneas de sacrificio y sistemas de rieles aéreos, incluyendo trabajos en alturas."
+tareas:
+    - "Inspeccionar el área de trabajo en el frigorífico y diligenciar el Análisis de Trabajo Seguro (ATS)"
+    - "Revisar y asegurar el uso correcto del arnés y equipos de protección contra caídas"
+    - "Instalar andamios, escaleras o posicionar plataformas elevadoras de personal"
+    - "Izar, alinear y nivelar vigas, rieles aéreos y soportes de gran peso"
+    - "Realizar soldadura en alturas de las líneas de sacrificio y estructuras del techo"
+    - "Efectuar perforaciones y anclajes mecánicos o químicos en muros y placas de concreto"
+    - "Manipular extensiones eléctricas portátiles y transformadores de soldar en ambientes húmedos u obras"
+    - "Coordinar maniobras de movimiento de cargas con el resto del equipo de montaje"
+#
+#   # ---- LOGÍSTICA Y TRANSPORTE ----
+#   - nombre: "Almacenista"
+#     proceso: "LOGÍSTICA Y BODEGA"
+#     zona: "Bodega Principal"
+#     tipo: "operativo"
+#     num_expuestos: 2
+#
+#   - nombre: "Conductor"
+#     proceso: "LOGÍSTICA Y BODEGA"
+#     tipo: "conductor"
+#     num_expuestos: 2
+#     actividades: "Conducir vehículos institucionales para transporte de productos."
+#
+#   # ---- COMERCIAL ----
+#   - nombre: "Asesor Comercial"
+#     proceso: "COMERCIAL Y VENTAS"
+#     tipo: "administrativo"
+#     num_expuestos: 3
+#     actividades: "Visitas comerciales a clientes y gestión de cartera."
+#
+#   # ---- SERVICIOS GENERALES ----
+#   - nombre: "Auxiliar de Servicios Generales"
+#     proceso: "SERVICIOS GENERALES"
+#     tipo: "servicios_generales"
+#     num_expuestos: 2
+#     actividades: "Realizar labores de aseo y limpieza de las instalaciones."
+
+# --- INFORMACIÓN ADICIONAL PARA HUMANIZACIÓN ---
+descripcion_empresa: >
+  Es una empresa colombiana dedicada a la consultoría, diseño, construcción y suministro de equipos industriales para plantas de sacrificio (frigoríficos), salas de desposte y plantas de procesamiento de alimentos, asegurando el cumplimiento de las normativas sanitarias vigentes.

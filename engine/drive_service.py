@@ -96,6 +96,10 @@ def crear_carpeta(service, nombre: str, parent_id: str = None) -> str:
     query = f"name='{safe_nombre}' and mimeType='{FOLDER_MIME}' and trashed=false"
     if parent_id:
         query += f" and '{parent_id}' in parents"
+    else:
+        # Sin parent explícito: restringir a la raíz de Mi Unidad para no
+        # encontrar carpetas con el mismo nombre que fueron compartidas o movidas.
+        query += " and 'root' in parents"
 
     results = service.files().list(
         q=query, fields="files(id, name)", pageSize=1
@@ -187,6 +191,7 @@ def subir_sgsst_completo(
     service,
     output_dir: Path,
     razon_social: str,
+    año: str = None,
     parent_id: str = None,
     progreso_callback=None,
 ) -> dict:
@@ -196,14 +201,17 @@ def subir_sgsst_completo(
         service: Servicio de Drive autenticado
         output_dir: Directorio local con el SG-SST generado
         razon_social: Nombre de la empresa
+        año: Año del SG-SST (ej. "2026"). Se incluye en el nombre de la carpeta
+             para evitar pisar versiones anteriores del mismo cliente.
         parent_id: ID carpeta padre en Drive (opcional)
         progreso_callback: Funcion(archivo_nombre, progreso) para reportar avance
 
     Returns:
         Dict con estadisticas y mapeo {ruta_relativa: {id, webViewLink}}
     """
-    # Crear carpeta raiz
-    raiz_id = crear_carpeta(service, f"SG-SST {razon_social}", parent_id)
+    # Crear carpeta raiz — el año distingue versiones del mismo cliente
+    nombre_carpeta = f"SG-SST {año} {razon_social}" if año else f"SG-SST {razon_social}"
+    raiz_id = crear_carpeta(service, nombre_carpeta, parent_id)
     cache_carpetas = {"": raiz_id}
     archivos_subidos = {}
     errores = []

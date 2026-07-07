@@ -649,6 +649,7 @@ def _ejecutar_subida_drive(
             service=service,
             output_dir=output_dir,
             razon_social=razon_social,
+            año=cliente.get("año"),
             progreso_callback=progreso_cb,
         )
 

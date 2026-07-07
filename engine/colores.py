@@ -198,12 +198,12 @@ def _generar_paleta_desde_hex(hex_color: str) -> dict:
             "claro4":     _hex(r * 0.12 + 210, g * 0.12 + 210, b * 0.12 + 210),
         }
     else:
-        # Color claro/medio: oscurecer para los encabezados de tablas
+        # Color claro/medio: usar tal cual en encabezados; fuentes serán negras
         return {
             "nombre":     f"Personalizado #{hex_color}",
-            "oscuro":     _hex(r * 0.45, g * 0.45, b * 0.45),
-            "oscuro2":    _hex(r * 0.60, g * 0.60, b * 0.60),
-            "muy_oscuro": _hex(r * 0.35, g * 0.35, b * 0.35),
+            "oscuro":     hex_color,
+            "oscuro2":    hex_color,
+            "muy_oscuro": _hex(r * 0.85, g * 0.85, b * 0.85),
             "medio":      hex_color,
             "intermedio": _hex(r * 0.7 + 77, g * 0.7 + 77, b * 0.7 + 77),
             "claro1":     _hex(r * 0.15 + 217, g * 0.15 + 217, b * 0.15 + 217),
@@ -358,11 +358,11 @@ def _ajustar_fuentes_xml(docx_path: str, cambios: list):
                             return match.group(0)
 
                         fill_hex = fill_match.group(1)
-                        if not _es_color_oscuro(fill_hex):
-                            return match.group(0)
-
-                        # Fondo oscuro: poner fuente blanca
-                        color_tag = '<w:color w:val="FFFFFF"/>'
+                        # Fondo oscuro → fuente blanca; fondo claro → fuente negra
+                        color_tag = (
+                            '<w:color w:val="FFFFFF"/>' if _es_color_oscuro(fill_hex)
+                            else '<w:color w:val="000000"/>'
+                        )
                         nuevo_body = tc_body
 
                         # En rPr existentes: reemplazar o agregar w:color
