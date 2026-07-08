@@ -1,0 +1,1874 @@
+{
+  "Decreto 1072 de 2015": {
+    "tipo": "Decreto",
+    "numero": 1072,
+    "anio": 2015,
+    "citas": [
+      "DECRETO 1072 DE 2015",
+      "Decreto 1072 DE 2015",
+      "Decreto 1072 de\n2015",
+      "Decreto 1072 de \n2015",
+      "Decreto 1072 de 2015",
+      "Decreto 1072 del 2015",
+      "Decreto Único Reglamentario 1072 de 2015",
+      "decreto 1072 de 2015",
+      "decreto 1072 del 2015"
+    ],
+    "archivos": [
+      "I. PLANEAR\\1.1.2 ASIGNACIÓN DE RESPONSABILIDADES\\1. RESPONSABILIDADES\\SST-FMT-005 RESPONSABILIDADES DEL VIGÍA SST [VIGÍA].docx",
+      "I. PLANEAR\\1.1.3 ASIGNACIÓN DE RECURSOS PARA EL SG-SST\\SST-FMT-009 ASIGNACIÓN DE RECURSOS PARA EL SG-SST.docx",
+      "I. PLANEAR\\1.1.6 CONFORMACIÓN DEL COPASST\\2. FORMATOS\\SST-FTM-011 INSCRIPCIÓN AL COPASST.docx",
+      "I. PLANEAR\\1.1.6 CONFORMACIÓN DEL COPASST\\2. FORMATOS\\SST-FTM-014 ACTA DE CONFORMACIÓN.docx",
+      "I. PLANEAR\\1.1.6 DESIGNACIÓN DEL VIGÍA SST\\1. PROCEDIMIENTO\\SST-PRO-001 PROCEDIMIENTO PARA LA DESIGNACIÓN DEL VIGÍA DE SST.docx",
+      "I. PLANEAR\\1.1.6 DESIGNACIÓN DEL VIGÍA SST\\2. FORMATOS\\SST-FTM-014 ACTA DE DESIGNACIÓN DEL VIGÍA DE SST.docx",
+      "I. PLANEAR\\1.1.6 DESIGNACIÓN DEL VIGÍA SST\\4. INFORMES\\SST-FMT-016 INFORME TRIMESTRAL VIGÍA DE SST.docx",
+      "I. PLANEAR\\1.1.8 COMITÉ DE CONVIVENCIA LABORAL\\4. FORMATOS\\SST-FMT-018 INSCRIPCIONES CCL.docx",
+      "I. PLANEAR\\1.2.1 CAPACITACIÓN PYP\\2. PROGRAMA\\SST-PRG-001 PROGRAMA DE CAPACITACIÓN Y FORMACIÓN EN SST.docx",
+      "I. PLANEAR\\1.2.1 CAPACITACIÓN PYP\\3. PROCEDIMIENTO\\SST-PRO-004 PROCEDIMIENTO DE CAPACITACIÓN Y ENTRENAMIENTO.docx",
+      "I. PLANEAR\\1.2.2 INDUCCIÓN Y REINDUCCIÓN\\1. PROCEDIMIENTO\\SST-PRO-005 PROCEDIMIENTO DE INDUCCIÓN Y REINDUCCIÓN.docx",
+      "I. PLANEAR\\2.10.1 EVALUACIÓN Y SELECCIÓN DE PROVEEDORES Y CONTRATISTAS\\1. PROCEDIMIENTO\\SST-PRO-010 PROCEDIMIENTO DE SELECCIÓN Y EVALUACIÓN DE PROVEEDORES Y CONTRATISTAS.docx",
+      "I. PLANEAR\\2.4.1 PLAN DE TRABAJO ANUAL\\SST-PLN-002 PLAN DE TRABAJO ANUAL.xlsx",
+      "I. PLANEAR\\2.6.1 RENDICIÓN DE CUENTAS\\2. INFORME\\SST-FTM-031 INFORME DE RENDICIÓN DE CUENTAS.docx",
+      "I. PLANEAR\\2.7.1 MATRIZ LEGAL\\SST-MTZ-006 MATRIZ DE REQUISITOS LEGALES.xlsx",
+      "I. PLANEAR\\2.9.1 ADQUISICIONES SST\\SST-PRO-009 PROCEDIMIENTO DE ADQUISICIÓN DE BIENES Y SERVICIOS.docx",
+      "II. HACER\\3.1.1 DESCRIPCIÓN SOCIODEMOGRÁFICA\\3. INFORME\\SST-FMT-039 INFORME DEL PERFIL SOCIODEMOGRÁFICO.docx",
+      "II. HACER\\3.1.2 ACTIVIDADES DE PROMOCIÓN Y PREVENCIÓN DE LA SALUD\\1. MORBILIDAD SENTIDA\\3. INFORME\\SST-FMT-041 INFORME DE MORBILIDAD SENTIDA.docx",
+      "II. HACER\\3.1.2 ACTIVIDADES DE PROMOCIÓN Y PREVENCIÓN DE LA SALUD\\2. PAUSAS ACTIVAS\\SST-PRG-002 PROGRAMA DE PAUSAS ACTIVAS.docx",
+      "II. HACER\\3.1.2 ACTIVIDADES DE PROMOCIÓN Y PREVENCIÓN DE LA SALUD\\5. REGLAMENTO DE HIGIENE Y SEGURIDAD INDUSTRIAL\\SST-RGL-001 REGLAMENTO DE HIGIENE Y SEGURIDAD INDUSTRIAL.docx",
+      "II. HACER\\3.1.4 EXÁMENES MÉDICOS OCUPACIONALES\\1. PROCEDIMIENTO\\SST-PRO-014 PROCEDIMIENTO DE EXÁMENES MÉDICOS OCUPACIONALES.docx",
+      "II. HACER\\3.1.6 RESTRICCIONES Y RECOMENDACIONES\\1. RECOMENDACIONES MÉDICAS\\1. FORMATO\\SST-FMT-045 FORMATO DE RECOMENDACIONES EMO.docx",
+      "II. HACER\\3.1.7 ESTILOS DE VIDA Y ENTORNOS SALUDABLES\\SST-PRG-007 PROGRAMA ESTILOS DE VIDA Y ENTORNOS SALUDABLES.docx",
+      "II. HACER\\3.3.6 MEDICIÓN DEL AUSENTISMO\\4. INFORME\\SST-FMT-055 INFORME DE AUSENTISMO LABORAL.docx",
+      "II. HACER\\4.1.1 METODOLOGÍA PARA LA IDENTIFICACIÓN DE PELIGROS Y VALORACIÓN DE RIESGOS\\SST-PRO-016 PROCEDIMIETO IDENTIFICACIÓN DE PELIROS Y VALORACIÓN DE RIESGOS.docx",
+      "II. HACER\\4.1.3 IDENTIFICACIÓN DE SUSTANCIAS\\SST-SGA-001 SISTEMA GLOBALMENTE ARMONIZADO.docx",
+      "II. HACER\\4.1.4 REALIZACIÓN DE MEDICIONES AMBIENTALES\\INFORME DE MEDICIÓN SONOMETRICO.docx",
+      "II. HACER\\4.1.4 REALIZACIÓN DE MEDICIONES AMBIENTALES\\INFORME DE SONOMETRIA.docx",
+      "II. HACER\\4.2.1 IMPLEMENTACIÓN DE MEDIDAS DE PREVENCIÓN Y CONTROL\\SST-FMT-057 INFORME SOBRE LA ENCUESTA DE CLIMA LABORAL.docx",
+      "II. HACER\\4.2.6 ENTREGA DE ELEMENTOS DE PROTECCIÓN PERSONAL\\2. FORMATO DE ENTREGA DE EPP\\1. FORMATO\\SST-FMT-073 ENTREGA DE ELEMENTOS DE PROTECCIÓN PERSONAL.docx",
+      "II. HACER\\5.1.1 PPPRE\\2. PPPRE\\SST-PLN-004 PLAN DE PREVENCIÓN, PREPARACIÓN Y RESPUESTA ANTE EMERGENCIAS.docx",
+      "III. VERIFICAR\\6.1.2 ADELANTO DE AUDITORIA\\1. PROCEDIMIENTO\\SST-PRO-027 PROCEDIMIENTO DE AUDITORIA INTERNA ANUAL.docx",
+      "III. VERIFICAR\\6.1.2 ADELANTO DE AUDITORIA\\2. FORMATOS\\SST-FMT-079 PLAN DE AUDITORIA INTERNA.xlsx",
+      "III. VERIFICAR\\6.1.3 REVISIÓN POR ALTA DIRECCIÓN\\2. FORMATO\\SST-FMT-080 INFORME DE REVISIÓN POR LA ALTA GERENCIA.docx",
+      "III. VERIFICAR\\6.1.4 PLANIFICACIÓN DE AUDITORIA CON EL COPASST\\SST-FMT-081 INFORME DE AUDITORIA - VIGÍA SST [VIGÍA].docx",
+      "PLAN ESTRATÉGICO DE SEGURIDAD VIAL\\FASE 2\\12. PLAN DE PREPARACIÓN Y RESPUESTA ANTE EMERGENCIAS VIALES\\PESV-PLN-003 PLAN DE PREPARACIÓN Y RESPUESTA ANTE EMERGENCIAS VIALES.docx"
+    ]
+  },
+  "Resolución 312 de 2019": {
+    "tipo": "Resolución",
+    "numero": 312,
+    "anio": 2019,
+    "citas": [
+      "Resolución 0312 de 2019",
+      "Resolución 0312 del 2019",
+      "Resolución 312 de 2019",
+      "Resolución No. 0312 de 2019",
+      "resolución 0312 de 2019"
+    ],
+    "archivos": [
+      "I. PLANEAR\\1.1.3 ASIGNACIÓN DE RECURSOS PARA EL SG-SST\\SST-FMT-009 ASIGNACIÓN DE RECURSOS PARA EL SG-SST.docx",
+      "I. PLANEAR\\1.1.6 CONFORMACIÓN DEL COPASST\\2. FORMATOS\\SST-FTM-010 CONVOCATORIA AL COPASST.docx",
+      "I. PLANEAR\\1.1.6 CONFORMACIÓN DEL COPASST\\2. FORMATOS\\SST-FTM-014 ACTA DE CONFORMACIÓN.docx",
+      "I. PLANEAR\\1.1.6 DESIGNACIÓN DEL VIGÍA SST\\1. PROCEDIMIENTO\\SST-PRO-001 PROCEDIMIENTO PARA LA DESIGNACIÓN DEL VIGÍA DE SST.docx",
+      "I. PLANEAR\\1.1.6 DESIGNACIÓN DEL VIGÍA SST\\2. FORMATOS\\SST-FTM-014 ACTA DE DESIGNACIÓN DEL VIGÍA DE SST.docx",
+      "I. PLANEAR\\1.1.6 DESIGNACIÓN DEL VIGÍA SST\\4. INFORMES\\SST-FMT-016 INFORME TRIMESTRAL VIGÍA DE SST.docx",
+      "I. PLANEAR\\2.10.1 EVALUACIÓN Y SELECCIÓN DE PROVEEDORES Y CONTRATISTAS\\1. PROCEDIMIENTO\\SST-PRO-010 PROCEDIMIENTO DE SELECCIÓN Y EVALUACIÓN DE PROVEEDORES Y CONTRATISTAS.docx",
+      "I. PLANEAR\\2.10.1 EVALUACIÓN Y SELECCIÓN DE PROVEEDORES Y CONTRATISTAS\\1. PROCEDIMIENTO\\SST-PRO-011 PROCEDIMIENTO INGRESO DE PROVEEDORES Y CONTRATISTAS.docx",
+      "I. PLANEAR\\2.10.1 EVALUACIÓN Y SELECCIÓN DE PROVEEDORES Y CONTRATISTAS\\2. FORMATOS\\SST-FMT-034 SELECCIÓN Y EVALUACIÓN DE PROVEEDORES Y CONTRATISTAS.xlsx",
+      "I. PLANEAR\\2.4.1 PLAN DE TRABAJO ANUAL\\SST-PLN-002 PLAN DE TRABAJO ANUAL.xlsx",
+      "I. PLANEAR\\2.6.1 RENDICIÓN DE CUENTAS\\2. INFORME\\SST-FTM-031 INFORME DE RENDICIÓN DE CUENTAS.docx",
+      "I. PLANEAR\\2.7.1 MATRIZ LEGAL\\SST-MTZ-006 MATRIZ DE REQUISITOS LEGALES.xlsx",
+      "I. PLANEAR\\2.9.1 ADQUISICIONES SST\\SST-PRO-009 PROCEDIMIENTO DE ADQUISICIÓN DE BIENES Y SERVICIOS.docx",
+      "II. HACER\\3.1.1 DESCRIPCIÓN SOCIODEMOGRÁFICA\\3. INFORME\\SST-FMT-039 INFORME DEL PERFIL SOCIODEMOGRÁFICO.docx",
+      "II. HACER\\3.1.2 ACTIVIDADES DE PROMOCIÓN Y PREVENCIÓN DE LA SALUD\\1. MORBILIDAD SENTIDA\\3. INFORME\\SST-FMT-041 INFORME DE MORBILIDAD SENTIDA.docx",
+      "II. HACER\\3.1.2 ACTIVIDADES DE PROMOCIÓN Y PREVENCIÓN DE LA SALUD\\2. PAUSAS ACTIVAS\\SST-PRG-002 PROGRAMA DE PAUSAS ACTIVAS.docx",
+      "II. HACER\\3.1.2 ACTIVIDADES DE PROMOCIÓN Y PREVENCIÓN DE LA SALUD\\5. REGLAMENTO DE HIGIENE Y SEGURIDAD INDUSTRIAL\\SST-RGL-001 REGLAMENTO DE HIGIENE Y SEGURIDAD INDUSTRIAL.docx",
+      "II. HACER\\3.1.6 RESTRICCIONES Y RECOMENDACIONES\\1. RECOMENDACIONES MÉDICAS\\1. FORMATO\\SST-FMT-045 FORMATO DE RECOMENDACIONES EMO.docx",
+      "II. HACER\\3.3.6 MEDICIÓN DEL AUSENTISMO\\4. INFORME\\SST-FMT-055 INFORME DE AUSENTISMO LABORAL.docx",
+      "II. HACER\\4.1.3 IDENTIFICACIÓN DE SUSTANCIAS\\SST-SGA-001 SISTEMA GLOBALMENTE ARMONIZADO.docx",
+      "II. HACER\\4.1.4 REALIZACIÓN DE MEDICIONES AMBIENTALES\\INFORME DE MEDICIÓN SONOMETRICO.docx",
+      "II. HACER\\4.1.4 REALIZACIÓN DE MEDICIONES AMBIENTALES\\INFORME DE SONOMETRIA.docx",
+      "II. HACER\\4.2.1 IMPLEMENTACIÓN DE MEDIDAS DE PREVENCIÓN Y CONTROL\\SST-FMT-057 INFORME SOBRE LA ENCUESTA DE CLIMA LABORAL.docx",
+      "III. VERIFICAR\\6.1.2 ADELANTO DE AUDITORIA\\1. PROCEDIMIENTO\\SST-PRO-027 PROCEDIMIENTO DE AUDITORIA INTERNA ANUAL.docx",
+      "III. VERIFICAR\\6.1.2 ADELANTO DE AUDITORIA\\2. FORMATOS\\SST-FMT-079 PLAN DE AUDITORIA INTERNA.xlsx",
+      "III. VERIFICAR\\6.1.3 REVISIÓN POR ALTA DIRECCIÓN\\2. FORMATO\\SST-FMT-080 INFORME DE REVISIÓN POR LA ALTA GERENCIA.docx",
+      "III. VERIFICAR\\6.1.4 PLANIFICACIÓN DE AUDITORIA CON EL COPASST\\SST-FMT-081 INFORME DE AUDITORIA - VIGÍA SST [VIGÍA].docx"
+    ]
+  },
+  "Decreto 2090 de 2003": {
+    "tipo": "Decreto",
+    "numero": 2090,
+    "anio": 2003,
+    "citas": [
+      "Decreto 2090 de 2003",
+      "Decreto 2090 del\n2003"
+    ],
+    "archivos": [
+      "I. PLANEAR\\1.1.5 IDENTIFICACIÓN DE TAREAS DE ALTO RIESGO\\ACTIVIDADES DE ALTO RIESGO.docx",
+      "I. PLANEAR\\2.7.1 MATRIZ LEGAL\\SST-MTZ-006 MATRIZ DE REQUISITOS LEGALES.xlsx"
+    ]
+  },
+  "Ley 2191 de 2022": {
+    "tipo": "Ley",
+    "numero": 2191,
+    "anio": 2022,
+    "citas": [
+      "Ley 2191 de 2022"
+    ],
+    "archivos": [
+      "I. PLANEAR\\2.1.1 POLÍTICAS DEL SG-SST\\SST-POL-008 POLÍTICA DE DESCONEXIÓN LABORAL.docx",
+      "I. PLANEAR\\2.7.1 MATRIZ LEGAL\\SST-MTZ-006 MATRIZ DE REQUISITOS LEGALES.xlsx",
+      "II. HACER\\4.2.3 ELABORACIÓN DE PROCEDIMIENTOS, INSTRUCTIVOS, FICHAS O PROTOCOLOS\\SST-PRO-017 PROCEDIMIENTO DE DESCONEXIÓN LABORAL.docx"
+    ]
+  },
+  "Ley 1562 de 2012": {
+    "tipo": "Ley",
+    "numero": 1562,
+    "anio": 2012,
+    "citas": [
+      "Ley  1562  de  2012",
+      "Ley 1562 de 2012",
+      "Ley 1562 del 2012",
+      "ley 1562 de 2012"
+    ],
+    "archivos": [
+      "I. PLANEAR\\1.1.6 CONFORMACIÓN DEL COPASST\\4. INFORMES\\SST-FMT-016 INFORME TRIMESTRAL COPASST.docx",
+      "I. PLANEAR\\1.2.1 CAPACITACIÓN PYP\\2. PROGRAMA\\SST-PRG-001 PROGRAMA DE CAPACITACIÓN Y FORMACIÓN EN SST.docx",
+      "I. PLANEAR\\2.7.1 MATRIZ LEGAL\\SST-MTZ-006 MATRIZ DE REQUISITOS LEGALES.xlsx",
+      "I. PLANEAR\\2.7.1 MATRIZ LEGAL\\SST-PRO-007 PROCEDIMIENTO DE IDENTIFICACIÓN DE REQUISITOS LEGALES.docx",
+      "II. HACER\\3.1.1 DESCRIPCIÓN SOCIODEMOGRÁFICA\\3. INFORME\\SST-FMT-039 INFORME DEL PERFIL SOCIODEMOGRÁFICO.docx",
+      "II. HACER\\3.1.2 ACTIVIDADES DE PROMOCIÓN Y PREVENCIÓN DE LA SALUD\\1. MORBILIDAD SENTIDA\\3. INFORME\\SST-FMT-041 INFORME DE MORBILIDAD SENTIDA.docx",
+      "II. HACER\\3.1.6 RESTRICCIONES Y RECOMENDACIONES\\3. PROGRAMA DE REINTEGRO LABORAL\\SST-PRG-006 PROGRAMA DE REINTEGRO LABORAL.docx",
+      "II. HACER\\3.3.6 MEDICIÓN DEL AUSENTISMO\\3. INDICADOR\\SST-IND-001 INDICADOR AUSENTISMO LABORAL.xlsx",
+      "II. HACER\\3.3.6 MEDICIÓN DEL AUSENTISMO\\4. INFORME\\SST-FMT-055 INFORME DE AUSENTISMO LABORAL.docx",
+      "II. HACER\\4.1.1 METODOLOGÍA PARA LA IDENTIFICACIÓN DE PELIGROS Y VALORACIÓN DE RIESGOS\\SST-PRO-016 PROCEDIMIETO IDENTIFICACIÓN DE PELIROS Y VALORACIÓN DE RIESGOS.docx",
+      "II. HACER\\4.2.1 IMPLEMENTACIÓN DE MEDIDAS DE PREVENCIÓN Y CONTROL\\SST-FMT-057 INFORME SOBRE LA ENCUESTA DE CLIMA LABORAL.docx",
+      "II. HACER\\5.1.1 PPPRE\\2. PPPRE\\SST-PLN-004 PLAN DE PREVENCIÓN, PREPARACIÓN Y RESPUESTA ANTE EMERGENCIAS.docx",
+      "III. VERIFICAR\\6.1.2 ADELANTO DE AUDITORIA\\2. FORMATOS\\SST-FMT-079 PLAN DE AUDITORIA INTERNA.xlsx",
+      "PLAN ESTRATÉGICO DE SEGURIDAD VIAL\\FASE 1\\PESV-PLN-001 PLAN ESTRATÉGICO DE SEGURIDAD VIAL.docx",
+      "PLAN ESTRATÉGICO DE SEGURIDAD VIAL\\MANUAL PESV\\PESV-PLN-001 PLAN ESTRATÉGICO DE SEGURIDAD VIAL.docx"
+    ]
+  },
+  "Decreto Ley 1295 de 1994": {
+    "tipo": "Decreto Ley",
+    "numero": 1295,
+    "anio": 1994,
+    "citas": [
+      "Decreto Ley 1295 de 1994",
+      "Decreto-Ley 1295  de  1994",
+      "Decreto-ley 1295 de 1994"
+    ],
+    "archivos": [
+      "I. PLANEAR\\2.7.1 MATRIZ LEGAL\\SST-MTZ-006 MATRIZ DE REQUISITOS LEGALES.xlsx"
+    ]
+  },
+  "Resolución 2388 de 2016": {
+    "tipo": "Resolución",
+    "numero": 2388,
+    "anio": 2016,
+    "citas": [
+      "Resolución 2388 de 2016"
+    ],
+    "archivos": [
+      "I. PLANEAR\\2.7.1 MATRIZ LEGAL\\SST-MTZ-006 MATRIZ DE REQUISITOS LEGALES.xlsx"
+    ]
+  },
+  "Decreto 768 de 2022": {
+    "tipo": "Decreto",
+    "numero": 768,
+    "anio": 2022,
+    "citas": [
+      "Decreto 768 de 2022"
+    ],
+    "archivos": [
+      "I. PLANEAR\\2.7.1 MATRIZ LEGAL\\SST-MTZ-006 MATRIZ DE REQUISITOS LEGALES.xlsx"
+    ]
+  },
+  "Decreto 1273 de 2018": {
+    "tipo": "Decreto",
+    "numero": 1273,
+    "anio": 2018,
+    "citas": [
+      "Decreto 1273 de 2018"
+    ],
+    "archivos": [
+      "I. PLANEAR\\2.7.1 MATRIZ LEGAL\\SST-MTZ-006 MATRIZ DE REQUISITOS LEGALES.xlsx"
+    ]
+  },
+  "Resolución 881 de 2021": {
+    "tipo": "Resolución",
+    "numero": 881,
+    "anio": 2021,
+    "citas": [
+      "Resolución 881 de 2021"
+    ],
+    "archivos": [
+      "I. PLANEAR\\2.7.1 MATRIZ LEGAL\\SST-MTZ-006 MATRIZ DE REQUISITOS LEGALES.xlsx"
+    ]
+  },
+  "Decreto 1607 de 2002": {
+    "tipo": "Decreto",
+    "numero": 1607,
+    "anio": 2002,
+    "citas": [
+      "Decreto 1607 de 2002"
+    ],
+    "archivos": [
+      "I. PLANEAR\\2.7.1 MATRIZ LEGAL\\SST-MTZ-006 MATRIZ DE REQUISITOS LEGALES.xlsx"
+    ]
+  },
+  "Resolución 1798 de 2023": {
+    "tipo": "Resolución",
+    "numero": 1798,
+    "anio": 2023,
+    "citas": [
+      "Resolución 1798 de 2023"
+    ],
+    "archivos": [
+      "I. PLANEAR\\2.7.1 MATRIZ LEGAL\\SST-MTZ-006 MATRIZ DE REQUISITOS LEGALES.xlsx"
+    ]
+  },
+  "Resolución 3100 de 2019": {
+    "tipo": "Resolución",
+    "numero": 3100,
+    "anio": 2019,
+    "citas": [
+      "Resolución 3100 de 2019"
+    ],
+    "archivos": [
+      "I. PLANEAR\\2.7.1 MATRIZ LEGAL\\SST-MTZ-006 MATRIZ DE REQUISITOS LEGALES.xlsx"
+    ]
+  },
+  "Ley 2354 de 2024": {
+    "tipo": "Ley",
+    "numero": 2354,
+    "anio": 2024,
+    "citas": [
+      "Ley 2354 de 2024"
+    ],
+    "archivos": [
+      "I. PLANEAR\\2.7.1 MATRIZ LEGAL\\SST-MTZ-006 MATRIZ DE REQUISITOS LEGALES.xlsx"
+    ]
+  },
+  "Ley 1335 de 2009": {
+    "tipo": "Ley",
+    "numero": 1335,
+    "anio": 2009,
+    "citas": [
+      "Ley 1335 de 2009"
+    ],
+    "archivos": [
+      "I. PLANEAR\\2.7.1 MATRIZ LEGAL\\SST-MTZ-006 MATRIZ DE REQUISITOS LEGALES.xlsx"
+    ]
+  },
+  "Resolución 1843 de 2025": {
+    "tipo": "Resolución",
+    "numero": 1843,
+    "anio": 2025,
+    "citas": [
+      "Resolución 1843 de 2025"
+    ],
+    "archivos": [
+      "I. PLANEAR\\1.2.1 CAPACITACIÓN PYP\\1. PLAN\\SST-PLN-001 PLAN DE CAPACITACIÓN.xlsx",
+      "I. PLANEAR\\2.7.1 MATRIZ LEGAL\\SST-MTZ-006 MATRIZ DE REQUISITOS LEGALES.xlsx",
+      "II. HACER\\3.1.2 ACTIVIDADES DE PROMOCIÓN Y PREVENCIÓN DE LA SALUD\\1. MORBILIDAD SENTIDA\\3. INFORME\\SST-FMT-041 INFORME DE MORBILIDAD SENTIDA.docx"
+    ]
+  },
+  "Resolución 1075 de 1992": {
+    "tipo": "Resolución",
+    "numero": 1075,
+    "anio": 1992,
+    "citas": [
+      "Resolución 1075 de 1992"
+    ],
+    "archivos": [
+      "I. PLANEAR\\2.7.1 MATRIZ LEGAL\\SST-MTZ-006 MATRIZ DE REQUISITOS LEGALES.xlsx"
+    ]
+  },
+  "Ley 769 de 2002": {
+    "tipo": "Ley",
+    "numero": 769,
+    "anio": 2002,
+    "citas": [
+      "Ley 769 de 2002",
+      "Ley 769 del 2002",
+      "ley 769 de 2002"
+    ],
+    "archivos": [
+      "I. PLANEAR\\2.7.1 MATRIZ LEGAL\\SST-MTZ-006 MATRIZ DE REQUISITOS LEGALES.xlsx",
+      "PLAN ESTRATÉGICO DE SEGURIDAD VIAL\\FASE 1\\4. LIDERAZGO, COMPROMISO Y CORRESPONSABILIDAD\\4. ADQUISICIÓN\\PESV-POL-006 POLÍTICA DE ADQUISISIÓN.docx",
+      "PLAN ESTRATÉGICO DE SEGURIDAD VIAL\\FASE 1\\8. PROGRAMA DE GESRTIÓN DEL RIESGO\\1. PROGRAMA DE VELOCIDAD SEGURA\\PESV-PRG-001 PROGRAMA DE GESTIÓN DE LA VELOCIDAD SEGURA.docx",
+      "PLAN ESTRATÉGICO DE SEGURIDAD VIAL\\FASE 1\\PESV-PLN-001 PLAN ESTRATÉGICO DE SEGURIDAD VIAL.docx",
+      "PLAN ESTRATÉGICO DE SEGURIDAD VIAL\\FASE 2\\13. INVESTIGACIÓN INTERNA DE SINIESTROS VIALES\\PESV-PRO-004 PROCEDIMIENTO DE INVESTIGACIÓN DE ACCIDENTES VIALES.docx",
+      "PLAN ESTRATÉGICO DE SEGURIDAD VIAL\\FASE 2\\14. VÍAS SEGURAS ADMINISTRADAS POR LA ORGANIZACIÓN\\PESV-PRO-005 PROCEDIMIENTO DE OPERACIÓN Y MANTENIMIENTO DE VÍAS PÚBLICAS O PRIVADAS A CARGO.docx",
+      "PLAN ESTRATÉGICO DE SEGURIDAD VIAL\\FASE 2\\16. INSPECCIÓN DE VEHICULOS Y EQUIPOS\\2. PROTOCOLO\\PESV-PRT-001 PROTOCOLO PARA LA REALIZACIÓN DE INSPECCIONES PREOPERACIONALES.docx",
+      "PLAN ESTRATÉGICO DE SEGURIDAD VIAL\\MANUAL PESV\\PESV-PLN-001 PLAN ESTRATÉGICO DE SEGURIDAD VIAL.docx"
+    ]
+  },
+  "Ley 1383 de 2010": {
+    "tipo": "Ley",
+    "numero": 1383,
+    "anio": 2010,
+    "citas": [
+      "Ley 1383 de 2010"
+    ],
+    "archivos": [
+      "I. PLANEAR\\2.7.1 MATRIZ LEGAL\\SST-MTZ-006 MATRIZ DE REQUISITOS LEGALES.xlsx",
+      "PLAN ESTRATÉGICO DE SEGURIDAD VIAL\\FASE 1\\4. LIDERAZGO, COMPROMISO Y CORRESPONSABILIDAD\\4. ADQUISICIÓN\\PESV-POL-006 POLÍTICA DE ADQUISISIÓN.docx",
+      "PLAN ESTRATÉGICO DE SEGURIDAD VIAL\\FASE 1\\PESV-PLN-001 PLAN ESTRATÉGICO DE SEGURIDAD VIAL.docx",
+      "PLAN ESTRATÉGICO DE SEGURIDAD VIAL\\MANUAL PESV\\PESV-PLN-001 PLAN ESTRATÉGICO DE SEGURIDAD VIAL.docx"
+    ]
+  },
+  "Decreto 1530 de 1996": {
+    "tipo": "Decreto",
+    "numero": 1530,
+    "anio": 1996,
+    "citas": [
+      "Decreto 1530 de 1996"
+    ],
+    "archivos": [
+      "I. PLANEAR\\2.7.1 MATRIZ LEGAL\\SST-MTZ-006 MATRIZ DE REQUISITOS LEGALES.xlsx"
+    ]
+  },
+  "Ley 100 de 1993": {
+    "tipo": "Ley",
+    "numero": 100,
+    "anio": 1993,
+    "citas": [
+      "Ley 100 de 1993"
+    ],
+    "archivos": [
+      "I. PLANEAR\\2.7.1 MATRIZ LEGAL\\SST-MTZ-006 MATRIZ DE REQUISITOS LEGALES.xlsx"
+    ]
+  },
+  "Decreto 919 de 1989": {
+    "tipo": "Decreto",
+    "numero": 919,
+    "anio": 1989,
+    "citas": [
+      "Decreto 919 de 1989",
+      "decreto 919 de 1989"
+    ],
+    "archivos": [
+      "I. PLANEAR\\2.7.1 MATRIZ LEGAL\\SST-MTZ-006 MATRIZ DE REQUISITOS LEGALES.xlsx",
+      "PLAN ESTRATÉGICO DE SEGURIDAD VIAL\\FASE 2\\12. PLAN DE PREPARACIÓN Y RESPUESTA ANTE EMERGENCIAS VIALES\\PESV-PLN-003 PLAN DE PREPARACIÓN Y RESPUESTA ANTE EMERGENCIAS VIALES.docx"
+    ]
+  },
+  "Circular 38 de 2023": {
+    "tipo": "Circular",
+    "numero": 38,
+    "anio": 2023,
+    "citas": [
+      "circular 038 de 2023"
+    ],
+    "archivos": [
+      "I. PLANEAR\\2.7.1 MATRIZ LEGAL\\SST-MTZ-006 MATRIZ DE REQUISITOS LEGALES.xlsx"
+    ]
+  },
+  "Ley 1523 de 2012": {
+    "tipo": "Ley",
+    "numero": 1523,
+    "anio": 2012,
+    "citas": [
+      "Ley 1523 de 2012"
+    ],
+    "archivos": [
+      "I. PLANEAR\\2.7.1 MATRIZ LEGAL\\SST-MTZ-006 MATRIZ DE REQUISITOS LEGALES.xlsx",
+      "PLAN ESTRATÉGICO DE SEGURIDAD VIAL\\FASE 2\\12. PLAN DE PREPARACIÓN Y RESPUESTA ANTE EMERGENCIAS VIALES\\PESV-PLN-003 PLAN DE PREPARACIÓN Y RESPUESTA ANTE EMERGENCIAS VIALES.docx"
+    ]
+  },
+  "Resolución 1016 de 1989": {
+    "tipo": "Resolución",
+    "numero": 1016,
+    "anio": 1989,
+    "citas": [
+      "Resolución 1016 de 1989"
+    ],
+    "archivos": [
+      "I. PLANEAR\\2.7.1 MATRIZ LEGAL\\SST-MTZ-006 MATRIZ DE REQUISITOS LEGALES.xlsx",
+      "PLAN ESTRATÉGICO DE SEGURIDAD VIAL\\FASE 2\\12. PLAN DE PREPARACIÓN Y RESPUESTA ANTE EMERGENCIAS VIALES\\PESV-PLN-003 PLAN DE PREPARACIÓN Y RESPUESTA ANTE EMERGENCIAS VIALES.docx"
+    ]
+  },
+  "Decreto 13 de 1967": {
+    "tipo": "Decreto",
+    "numero": 13,
+    "anio": 1967,
+    "citas": [
+      "Decreto 13 de 1967"
+    ],
+    "archivos": [
+      "I. PLANEAR\\2.7.1 MATRIZ LEGAL\\SST-MTZ-006 MATRIZ DE REQUISITOS LEGALES.xlsx",
+      "II. HACER\\5.1.1 PPPRE\\2. PPPRE\\SST-PLN-004 PLAN DE PREVENCIÓN, PREPARACIÓN Y RESPUESTA ANTE EMERGENCIAS.docx"
+    ]
+  },
+  "Decreto 614 de 1984": {
+    "tipo": "Decreto",
+    "numero": 614,
+    "anio": 1984,
+    "citas": [
+      "Decreto 614 de 1984"
+    ],
+    "archivos": [
+      "I. PLANEAR\\1.2.1 CAPACITACIÓN PYP\\2. PROGRAMA\\SST-PRG-001 PROGRAMA DE CAPACITACIÓN Y FORMACIÓN EN SST.docx",
+      "I. PLANEAR\\2.7.1 MATRIZ LEGAL\\SST-MTZ-006 MATRIZ DE REQUISITOS LEGALES.xlsx"
+    ]
+  },
+  "Resolución 908 de 2025": {
+    "tipo": "Resolución",
+    "numero": 908,
+    "anio": 2025,
+    "citas": [
+      "Resolución 908 de 2025"
+    ],
+    "archivos": [
+      "I. PLANEAR\\2.7.1 MATRIZ LEGAL\\SST-MTZ-006 MATRIZ DE REQUISITOS LEGALES.xlsx"
+    ]
+  },
+  "Resolución 1918 de 2009": {
+    "tipo": "Resolución",
+    "numero": 1918,
+    "anio": 2009,
+    "citas": [
+      "Resolución 1918 de 2009"
+    ],
+    "archivos": [
+      "I. PLANEAR\\2.7.1 MATRIZ LEGAL\\SST-MTZ-006 MATRIZ DE REQUISITOS LEGALES.xlsx",
+      "II. HACER\\3.1.2 ACTIVIDADES DE PROMOCIÓN Y PREVENCIÓN DE LA SALUD\\5. REGLAMENTO DE HIGIENE Y SEGURIDAD INDUSTRIAL\\SST-RGL-001 REGLAMENTO DE HIGIENE Y SEGURIDAD INDUSTRIAL.docx"
+    ]
+  },
+  "Resolución 2346 de 2007": {
+    "tipo": "Resolución",
+    "numero": 2346,
+    "anio": 2007,
+    "citas": [
+      "Resolución 2346 de 2007"
+    ],
+    "archivos": [
+      "I. PLANEAR\\2.7.1 MATRIZ LEGAL\\SST-MTZ-006 MATRIZ DE REQUISITOS LEGALES.xlsx",
+      "II. HACER\\3.1.2 ACTIVIDADES DE PROMOCIÓN Y PREVENCIÓN DE LA SALUD\\5. REGLAMENTO DE HIGIENE Y SEGURIDAD INDUSTRIAL\\SST-RGL-001 REGLAMENTO DE HIGIENE Y SEGURIDAD INDUSTRIAL.docx",
+      "II. HACER\\3.1.4 EXÁMENES MÉDICOS OCUPACIONALES\\1. PROCEDIMIENTO\\SST-PRO-014 PROCEDIMIENTO DE EXÁMENES MÉDICOS OCUPACIONALES.docx"
+    ]
+  },
+  "Ley 1581 de 2012": {
+    "tipo": "Ley",
+    "numero": 1581,
+    "anio": 2012,
+    "citas": [
+      "Ley 1581 de 2012"
+    ],
+    "archivos": [
+      "I. PLANEAR\\2.7.1 MATRIZ LEGAL\\SST-MTZ-006 MATRIZ DE REQUISITOS LEGALES.xlsx"
+    ]
+  },
+  "Decreto 780 de 2016": {
+    "tipo": "Decreto",
+    "numero": 780,
+    "anio": 2016,
+    "citas": [
+      "Decreto 780 de 2016"
+    ],
+    "archivos": [
+      "I. PLANEAR\\2.7.1 MATRIZ LEGAL\\SST-MTZ-006 MATRIZ DE REQUISITOS LEGALES.xlsx"
+    ]
+  },
+  "Decreto Ley 19 de 2012": {
+    "tipo": "Decreto Ley",
+    "numero": 19,
+    "anio": 2012,
+    "citas": [
+      "Decreto Ley 019 de 2012"
+    ],
+    "archivos": [
+      "I. PLANEAR\\2.7.1 MATRIZ LEGAL\\SST-MTZ-006 MATRIZ DE REQUISITOS LEGALES.xlsx"
+    ]
+  },
+  "Resolución 2013 de 1986": {
+    "tipo": "Resolución",
+    "numero": 2013,
+    "anio": 1986,
+    "citas": [
+      "Resolución 2013 de 1986"
+    ],
+    "archivos": [
+      "I. PLANEAR\\1.1.6 CONFORMACIÓN DEL COPASST\\1. PROCEDIMIENTO\\SST-PRO-001 PROCEDIMIENTO PARA LA ELECCIÓN Y CONFORMACIÓN DEL COPASST.docx",
+      "I. PLANEAR\\1.1.6 CONFORMACIÓN DEL COPASST\\2. FORMATOS\\SST-FTM-010 CONVOCATORIA AL COPASST.docx",
+      "I. PLANEAR\\1.1.6 CONFORMACIÓN DEL COPASST\\2. FORMATOS\\SST-FTM-014 ACTA DE CONFORMACIÓN.docx",
+      "I. PLANEAR\\1.1.6 CONFORMACIÓN DEL COPASST\\4. INFORMES\\SST-FMT-016 INFORME TRIMESTRAL COPASST.docx",
+      "I. PLANEAR\\2.7.1 MATRIZ LEGAL\\SST-MTZ-006 MATRIZ DE REQUISITOS LEGALES.xlsx"
+    ]
+  },
+  "Ley 1010 de 2006": {
+    "tipo": "Ley",
+    "numero": 1010,
+    "anio": 2006,
+    "citas": [
+      "Ley  1010  de  2006",
+      "Ley 1010 de 2006",
+      "Ley 1010 de 2006",
+      "ley 1010 de 2006"
+    ],
+    "archivos": [
+      "I. PLANEAR\\1.1.8 COMITÉ DE CONVIVENCIA LABORAL\\2. MANUAL\\SST-MNL-001 MANUAL COMITE DE CONVIVENCIA LABORAL.docx",
+      "I. PLANEAR\\1.1.8 COMITÉ DE CONVIVENCIA LABORAL\\3. PROCEDIMIENTOS\\SST-PRO-003 PROCEDIMIENTO PARA LA ATENCIÓN DE QUEJAS.docx",
+      "I. PLANEAR\\1.1.8 COMITÉ DE CONVIVENCIA LABORAL\\4. FORMATOS\\SST-FMT-021 CONFORMACIÓN DEL CCL.docx",
+      "I. PLANEAR\\1.2.1 CAPACITACIÓN PYP\\2. PROGRAMA\\SST-PRG-001 PROGRAMA DE CAPACITACIÓN Y FORMACIÓN EN SST.docx",
+      "I. PLANEAR\\2.7.1 MATRIZ LEGAL\\SST-MTZ-006 MATRIZ DE REQUISITOS LEGALES.xlsx",
+      "II. HACER\\3.1.2 ACTIVIDADES DE PROMOCIÓN Y PREVENCIÓN DE LA SALUD\\5. REGLAMENTO DE HIGIENE Y SEGURIDAD INDUSTRIAL\\SST-RGL-001 REGLAMENTO DE HIGIENE Y SEGURIDAD INDUSTRIAL.docx"
+    ]
+  },
+  "Resolución 1356 de 2012": {
+    "tipo": "Resolución",
+    "numero": 1356,
+    "anio": 2012,
+    "citas": [
+      "Resolución 1356 de 2012",
+      "Resolución 1356 de 2012"
+    ],
+    "archivos": [
+      "I. PLANEAR\\1.1.8 COMITÉ DE CONVIVENCIA LABORAL\\4. FORMATOS\\SST-FMT-017 CONVOCATORIA PARA EL CCL.docx",
+      "I. PLANEAR\\1.1.8 COMITÉ DE CONVIVENCIA LABORAL\\4. FORMATOS\\SST-FMT-022 COMPROMISOS DE CONFIDENCIALIDAD.docx",
+      "I. PLANEAR\\2.7.1 MATRIZ LEGAL\\SST-MTZ-006 MATRIZ DE REQUISITOS LEGALES.xlsx",
+      "II. HACER\\3.1.2 ACTIVIDADES DE PROMOCIÓN Y PREVENCIÓN DE LA SALUD\\5. REGLAMENTO DE HIGIENE Y SEGURIDAD INDUSTRIAL\\SST-RGL-001 REGLAMENTO DE HIGIENE Y SEGURIDAD INDUSTRIAL.docx"
+    ]
+  },
+  "Resolución 652 de 2012": {
+    "tipo": "Resolución",
+    "numero": 652,
+    "anio": 2012,
+    "citas": [
+      "Resolución 652 de 2012"
+    ],
+    "archivos": [
+      "I. PLANEAR\\1.2.1 CAPACITACIÓN PYP\\2. PROGRAMA\\SST-PRG-001 PROGRAMA DE CAPACITACIÓN Y FORMACIÓN EN SST.docx",
+      "I. PLANEAR\\2.7.1 MATRIZ LEGAL\\SST-MTZ-006 MATRIZ DE REQUISITOS LEGALES.xlsx",
+      "II. HACER\\3.1.2 ACTIVIDADES DE PROMOCIÓN Y PREVENCIÓN DE LA SALUD\\5. REGLAMENTO DE HIGIENE Y SEGURIDAD INDUSTRIAL\\SST-RGL-001 REGLAMENTO DE HIGIENE Y SEGURIDAD INDUSTRIAL.docx"
+    ]
+  },
+  "Ley 11 de 1984": {
+    "tipo": "Ley",
+    "numero": 11,
+    "anio": 1984,
+    "citas": [
+      "Ley 11 de 1984"
+    ],
+    "archivos": [
+      "I. PLANEAR\\2.7.1 MATRIZ LEGAL\\SST-MTZ-006 MATRIZ DE REQUISITOS LEGALES.xlsx"
+    ]
+  },
+  "Circular 26 de 2023": {
+    "tipo": "Circular",
+    "numero": 26,
+    "anio": 2023,
+    "citas": [
+      "Circular 026 de 2023"
+    ],
+    "archivos": [
+      "I. PLANEAR\\1.1.2 ASIGNACIÓN DE RESPONSABILIDADES\\1. RESPONSABILIDADES\\SST-FMT-002 RESPONSABILIDADES DEL RESPONSABLE DEL SG-SST.docx",
+      "I. PLANEAR\\1.1.2 ASIGNACIÓN DE RESPONSABILIDADES\\1. RESPONSABILIDADES\\SST-FMT-004 RESPONSABILIDADES DEL REPRESENTANTE LEGAL.docx",
+      "I. PLANEAR\\1.1.2 ASIGNACIÓN DE RESPONSABILIDADES\\1. RESPONSABILIDADES\\SST-FMT-006 RESPONSABILIDADES DEL CCL.docx",
+      "I. PLANEAR\\1.1.2 ASIGNACIÓN DE RESPONSABILIDADES\\1. RESPONSABILIDADES\\SST-FMT-007 RESPONSABILIDADES DEL JEFE DE ÁREA.docx",
+      "I. PLANEAR\\1.1.2 ASIGNACIÓN DE RESPONSABILIDADES\\1. RESPONSABILIDADES\\SST-FMT-008 RESPONSABILIDADES DE LOS TRABAJADORES.docx",
+      "I. PLANEAR\\1.2.1 CAPACITACIÓN PYP\\3. PROCEDIMIENTO\\SST-PRO-004 PROCEDIMIENTO DE CAPACITACIÓN Y ENTRENAMIENTO.docx",
+      "I. PLANEAR\\1.2.2 INDUCCIÓN Y REINDUCCIÓN\\1. PROCEDIMIENTO\\SST-PRO-005 PROCEDIMIENTO DE INDUCCIÓN Y REINDUCCIÓN.docx",
+      "I. PLANEAR\\2.6.1 RENDICIÓN DE CUENTAS\\1. PROCEDIMIENTO\\SST-PRO-006 PROCEDIMIENTO DE RENDICIÓN DE CUENTAS.docx",
+      "I. PLANEAR\\2.7.1 MATRIZ LEGAL\\SST-MTZ-006 MATRIZ DE REQUISITOS LEGALES.xlsx"
+    ]
+  },
+  "Ley 1751 de 2015": {
+    "tipo": "Ley",
+    "numero": 1751,
+    "anio": 2015,
+    "citas": [
+      "ley 1751 de 2015"
+    ],
+    "archivos": [
+      "I. PLANEAR\\2.7.1 MATRIZ LEGAL\\SST-MTZ-006 MATRIZ DE REQUISITOS LEGALES.xlsx"
+    ]
+  },
+  "Ley 2365 de 2024": {
+    "tipo": "Ley",
+    "numero": 2365,
+    "anio": 2024,
+    "citas": [
+      "Ley 2365 de 2024",
+      "ley 2365 de 2024"
+    ],
+    "archivos": [
+      "I. PLANEAR\\1.1.8 COMITÉ DE CONVIVENCIA LABORAL\\1. REGLAMENTO\\SST-RGL-001 REGLAMENTO DEL COMITÉ DE CONVIVENCIA LABORAL.docx",
+      "I. PLANEAR\\1.1.8 COMITÉ DE CONVIVENCIA LABORAL\\2. MANUAL\\SST-MNL-001 MANUAL COMITE DE CONVIVENCIA LABORAL.docx",
+      "I. PLANEAR\\1.1.8 COMITÉ DE CONVIVENCIA LABORAL\\3. PROCEDIMIENTOS\\SST-PRO-003 PROCEDIMIENTO PARA LA ATENCIÓN DE QUEJAS.docx",
+      "I. PLANEAR\\2.7.1 MATRIZ LEGAL\\SST-MTZ-006 MATRIZ DE REQUISITOS LEGALES.xlsx",
+      "II. HACER\\4.2.3 ELABORACIÓN DE PROCEDIMIENTOS, INSTRUCTIVOS, FICHAS O PROTOCOLOS\\SST-PRO-018 PROCEDIMIENTO DE PREVENCIÓN PARA EL ACOSO SEXUAL Y DISCRIMINACIÓN LGBTIQ+.docx"
+    ]
+  },
+  "Ley 1482 de 2011": {
+    "tipo": "Ley",
+    "numero": 1482,
+    "anio": 2011,
+    "citas": [
+      "ley 1482 de 2011"
+    ],
+    "archivos": [
+      "I. PLANEAR\\2.7.1 MATRIZ LEGAL\\SST-MTZ-006 MATRIZ DE REQUISITOS LEGALES.xlsx"
+    ]
+  },
+  "Ley 776 de 2002": {
+    "tipo": "Ley",
+    "numero": 776,
+    "anio": 2002,
+    "citas": [
+      "Ley  776  de  2002",
+      "Ley 776 de 2002"
+    ],
+    "archivos": [
+      "I. PLANEAR\\1.1.6 CONFORMACIÓN DEL COPASST\\2. FORMATOS\\SST-FTM-014 ACTA DE CONFORMACIÓN.docx",
+      "I. PLANEAR\\2.7.1 MATRIZ LEGAL\\SST-MTZ-006 MATRIZ DE REQUISITOS LEGALES.xlsx",
+      "II. HACER\\3.1.2 ACTIVIDADES DE PROMOCIÓN Y PREVENCIÓN DE LA SALUD\\5. REGLAMENTO DE HIGIENE Y SEGURIDAD INDUSTRIAL\\SST-RGL-001 REGLAMENTO DE HIGIENE Y SEGURIDAD INDUSTRIAL.docx"
+    ]
+  },
+  "Ley 2069 de 2020": {
+    "tipo": "Ley",
+    "numero": 2069,
+    "anio": 2020,
+    "citas": [
+      "Ley 2069 de 2020"
+    ],
+    "archivos": [
+      "I. PLANEAR\\2.7.1 MATRIZ LEGAL\\SST-MTZ-006 MATRIZ DE REQUISITOS LEGALES.xlsx"
+    ]
+  },
+  "Ley 2121 de 2021": {
+    "tipo": "Ley",
+    "numero": 2121,
+    "anio": 2021,
+    "citas": [
+      "Ley 2121 de 2021"
+    ],
+    "archivos": [
+      "I. PLANEAR\\2.7.1 MATRIZ LEGAL\\SST-MTZ-006 MATRIZ DE REQUISITOS LEGALES.xlsx"
+    ]
+  },
+  "Ley 1419 de 2010": {
+    "tipo": "Ley",
+    "numero": 1419,
+    "anio": 2010,
+    "citas": [
+      "Ley 1419 de 2010"
+    ],
+    "archivos": [
+      "I. PLANEAR\\2.7.1 MATRIZ LEGAL\\SST-MTZ-006 MATRIZ DE REQUISITOS LEGALES.xlsx"
+    ]
+  },
+  "Resolución 2654 de 2019": {
+    "tipo": "Resolución",
+    "numero": 2654,
+    "anio": 2019,
+    "citas": [
+      "Resolución\n2654 de 2019",
+      "Resolución 2654 de 2019"
+    ],
+    "archivos": [
+      "I. PLANEAR\\2.7.1 MATRIZ LEGAL\\SST-MTZ-006 MATRIZ DE REQUISITOS LEGALES.xlsx"
+    ]
+  },
+  "Decreto 1295 de 1994": {
+    "tipo": "Decreto",
+    "numero": 1295,
+    "anio": 1994,
+    "citas": [
+      "Decreto 1295 de 1994"
+    ],
+    "archivos": [
+      "I. PLANEAR\\1.1.6 CONFORMACIÓN DEL COPASST\\2. FORMATOS\\SST-FTM-014 ACTA DE CONFORMACIÓN.docx",
+      "I. PLANEAR\\1.2.1 CAPACITACIÓN PYP\\2. PROGRAMA\\SST-PRG-001 PROGRAMA DE CAPACITACIÓN Y FORMACIÓN EN SST.docx",
+      "I. PLANEAR\\1.2.2 INDUCCIÓN Y REINDUCCIÓN\\2. FORMATOS\\SST-FMT-029 FORMATO ACTA DE INDUCCIÓN Y REINDUCCIÓN.docx",
+      "I. PLANEAR\\2.7.1 MATRIZ LEGAL\\SST-MTZ-006 MATRIZ DE REQUISITOS LEGALES.xlsx",
+      "II. HACER\\3.1.1 DESCRIPCIÓN SOCIODEMOGRÁFICA\\3. INFORME\\SST-FMT-039 INFORME DEL PERFIL SOCIODEMOGRÁFICO.docx",
+      "II. HACER\\3.1.2 ACTIVIDADES DE PROMOCIÓN Y PREVENCIÓN DE LA SALUD\\5. REGLAMENTO DE HIGIENE Y SEGURIDAD INDUSTRIAL\\SST-RGL-001 REGLAMENTO DE HIGIENE Y SEGURIDAD INDUSTRIAL.docx",
+      "II. HACER\\5.1.1 PPPRE\\2. PPPRE\\SST-PLN-004 PLAN DE PREVENCIÓN, PREPARACIÓN Y RESPUESTA ANTE EMERGENCIAS.docx"
+    ]
+  },
+  "Ley 1221 de 2008": {
+    "tipo": "Ley",
+    "numero": 1221,
+    "anio": 2008,
+    "citas": [
+      "Ley 1221 de 2008"
+    ],
+    "archivos": [
+      "I. PLANEAR\\2.7.1 MATRIZ LEGAL\\SST-MTZ-006 MATRIZ DE REQUISITOS LEGALES.xlsx"
+    ]
+  },
+  "Resolución 754 de 2021": {
+    "tipo": "Resolución",
+    "numero": 754,
+    "anio": 2021,
+    "citas": [
+      "Resolución 754 de 2021"
+    ],
+    "archivos": [
+      "I. PLANEAR\\2.7.1 MATRIZ LEGAL\\SST-MTZ-006 MATRIZ DE REQUISITOS LEGALES.xlsx"
+    ]
+  },
+  "Resolución 1151 de 2022": {
+    "tipo": "Resolución",
+    "numero": 1151,
+    "anio": 2022,
+    "citas": [
+      "Resolución 1151 de 2022"
+    ],
+    "archivos": [
+      "I. PLANEAR\\2.7.1 MATRIZ LEGAL\\SST-MTZ-006 MATRIZ DE REQUISITOS LEGALES.xlsx"
+    ]
+  },
+  "Resolución 4927 de 2016": {
+    "tipo": "Resolución",
+    "numero": 4927,
+    "anio": 2016,
+    "citas": [
+      "Resolución 4927 De 2016",
+      "Resolución 4927 de 2016",
+      "Resolución 4927 del 2016"
+    ],
+    "archivos": [
+      "I. PLANEAR\\2.7.1 MATRIZ LEGAL\\SST-MTZ-006 MATRIZ DE REQUISITOS LEGALES.xlsx"
+    ]
+  },
+  "Resolución 1111 de 2017": {
+    "tipo": "Resolución",
+    "numero": 1111,
+    "anio": 2017,
+    "citas": [
+      "Resolución 1111 de 2017"
+    ],
+    "archivos": [
+      "I. PLANEAR\\2.7.1 MATRIZ LEGAL\\SST-MTZ-006 MATRIZ DE REQUISITOS LEGALES.xlsx",
+      "PLAN ESTRATÉGICO DE SEGURIDAD VIAL\\FASE 2\\12. PLAN DE PREPARACIÓN Y RESPUESTA ANTE EMERGENCIAS VIALES\\PESV-PLN-003 PLAN DE PREPARACIÓN Y RESPUESTA ANTE EMERGENCIAS VIALES.docx"
+    ]
+  },
+  "Circular 93 de 2023": {
+    "tipo": "Circular",
+    "numero": 93,
+    "anio": 2023,
+    "citas": [
+      "Circular 0093 de 2023"
+    ],
+    "archivos": [
+      "I. PLANEAR\\2.7.1 MATRIZ LEGAL\\SST-MTZ-006 MATRIZ DE REQUISITOS LEGALES.xlsx"
+    ]
+  },
+  "Ley 962 de 2005": {
+    "tipo": "Ley",
+    "numero": 962,
+    "anio": 2005,
+    "citas": [
+      "Ley 962 de 2005"
+    ],
+    "archivos": [
+      "I. PLANEAR\\2.7.1 MATRIZ LEGAL\\SST-MTZ-006 MATRIZ DE REQUISITOS LEGALES.xlsx",
+      "II. HACER\\3.1.2 ACTIVIDADES DE PROMOCIÓN Y PREVENCIÓN DE LA SALUD\\5. REGLAMENTO DE HIGIENE Y SEGURIDAD INDUSTRIAL\\SST-RGL-001 REGLAMENTO DE HIGIENE Y SEGURIDAD INDUSTRIAL.docx"
+    ]
+  },
+  "Ley 55 de 1993": {
+    "tipo": "Ley",
+    "numero": 55,
+    "anio": 1993,
+    "citas": [
+      "Ley 55 de 1993"
+    ],
+    "archivos": [
+      "I. PLANEAR\\2.7.1 MATRIZ LEGAL\\SST-MTZ-006 MATRIZ DE REQUISITOS LEGALES.xlsx",
+      "II. HACER\\4.1.3 IDENTIFICACIÓN DE SUSTANCIAS\\SST-SGA-001 SISTEMA GLOBALMENTE ARMONIZADO.docx"
+    ]
+  },
+  "Decreto 1496 de 2018": {
+    "tipo": "Decreto",
+    "numero": 1496,
+    "anio": 2018,
+    "citas": [
+      "Decreto 1496 de 2018"
+    ],
+    "archivos": [
+      "I. PLANEAR\\2.7.1 MATRIZ LEGAL\\SST-MTZ-006 MATRIZ DE REQUISITOS LEGALES.xlsx",
+      "II. HACER\\4.1.3 IDENTIFICACIÓN DE SUSTANCIAS\\SST-SGA-001 SISTEMA GLOBALMENTE ARMONIZADO.docx"
+    ]
+  },
+  "Decreto 1079 de 2015": {
+    "tipo": "Decreto",
+    "numero": 1079,
+    "anio": 2015,
+    "citas": [
+      "Decreto 1079 de 2015"
+    ],
+    "archivos": [
+      "I. PLANEAR\\2.7.1 MATRIZ LEGAL\\SST-MTZ-006 MATRIZ DE REQUISITOS LEGALES.xlsx",
+      "PLAN ESTRATÉGICO DE SEGURIDAD VIAL\\FASE 1\\4. LIDERAZGO, COMPROMISO Y CORRESPONSABILIDAD\\4. ADQUISICIÓN\\PESV-POL-006 POLÍTICA DE ADQUISISIÓN.docx",
+      "PLAN ESTRATÉGICO DE SEGURIDAD VIAL\\FASE 1\\PESV-PLN-001 PLAN ESTRATÉGICO DE SEGURIDAD VIAL.docx",
+      "PLAN ESTRATÉGICO DE SEGURIDAD VIAL\\MANUAL PESV\\PESV-PLN-001 PLAN ESTRATÉGICO DE SEGURIDAD VIAL.docx"
+    ]
+  },
+  "Resolución 3032 de 2022": {
+    "tipo": "Resolución",
+    "numero": 3032,
+    "anio": 2022,
+    "citas": [
+      "Resolución\nNo. 3032 de 2022",
+      "Resolución 3032 de 2022"
+    ],
+    "archivos": [
+      "I. PLANEAR\\2.7.1 MATRIZ LEGAL\\SST-MTZ-006 MATRIZ DE REQUISITOS LEGALES.xlsx"
+    ]
+  },
+  "Resolución 90708 de 2013": {
+    "tipo": "Resolución",
+    "numero": 90708,
+    "anio": 2013,
+    "citas": [
+      "Resolución 90708 de 2013"
+    ],
+    "archivos": [
+      "I. PLANEAR\\2.7.1 MATRIZ LEGAL\\SST-MTZ-006 MATRIZ DE REQUISITOS LEGALES.xlsx"
+    ]
+  },
+  "Decreto 1074 de 2015": {
+    "tipo": "Decreto",
+    "numero": 1074,
+    "anio": 2015,
+    "citas": [
+      "Decreto 1074 de 2015"
+    ],
+    "archivos": [
+      "I. PLANEAR\\2.7.1 MATRIZ LEGAL\\SST-MTZ-006 MATRIZ DE REQUISITOS LEGALES.xlsx"
+    ]
+  },
+  "Decreto 1595 de 2015": {
+    "tipo": "Decreto",
+    "numero": 1595,
+    "anio": 2015,
+    "citas": [
+      "Decreto 1595 de 2015"
+    ],
+    "archivos": [
+      "I. PLANEAR\\2.7.1 MATRIZ LEGAL\\SST-MTZ-006 MATRIZ DE REQUISITOS LEGALES.xlsx"
+    ]
+  },
+  "Ley 842 de 2003": {
+    "tipo": "Ley",
+    "numero": 842,
+    "anio": 2003,
+    "citas": [
+      "Ley 842 de 2003"
+    ],
+    "archivos": [
+      "I. PLANEAR\\2.7.1 MATRIZ LEGAL\\SST-MTZ-006 MATRIZ DE REQUISITOS LEGALES.xlsx"
+    ]
+  },
+  "Ley 392 de 1997": {
+    "tipo": "Ley",
+    "numero": 392,
+    "anio": 1997,
+    "citas": [
+      "Ley\n392 de 1997"
+    ],
+    "archivos": [
+      "I. PLANEAR\\2.7.1 MATRIZ LEGAL\\SST-MTZ-006 MATRIZ DE REQUISITOS LEGALES.xlsx"
+    ]
+  },
+  "Resolución 5018 de 2019": {
+    "tipo": "Resolución",
+    "numero": 5018,
+    "anio": 2019,
+    "citas": [
+      "Resolución No. 5018 de 2019"
+    ],
+    "archivos": [
+      "I. PLANEAR\\2.7.1 MATRIZ LEGAL\\SST-MTZ-006 MATRIZ DE REQUISITOS LEGALES.xlsx"
+    ]
+  },
+  "Resolución 666 de 2020": {
+    "tipo": "Resolución",
+    "numero": 666,
+    "anio": 2020,
+    "citas": [
+      "Resolución 0666 de 2020",
+      "Resolución 666 de 2020"
+    ],
+    "archivos": [
+      "I. PLANEAR\\2.7.1 MATRIZ LEGAL\\SST-MTZ-006 MATRIZ DE REQUISITOS LEGALES.xlsx",
+      "II. HACER\\4.2.6 ENTREGA DE ELEMENTOS DE PROTECCIÓN PERSONAL\\2. FORMATO DE ENTREGA DE EPP\\1. FORMATO\\SST-FMT-073 ENTREGA DE ELEMENTOS DE PROTECCIÓN PERSONAL.docx",
+      "PLAN ESTRATÉGICO DE SEGURIDAD VIAL\\FASE 2\\12. PLAN DE PREPARACIÓN Y RESPUESTA ANTE EMERGENCIAS VIALES\\PESV-PLN-003 PLAN DE PREPARACIÓN Y RESPUESTA ANTE EMERGENCIAS VIALES.docx"
+    ]
+  },
+  "Circular 33 de 2020": {
+    "tipo": "Circular",
+    "numero": 33,
+    "anio": 2020,
+    "citas": [
+      "Circular 33 de 2020"
+    ],
+    "archivos": [
+      "I. PLANEAR\\2.7.1 MATRIZ LEGAL\\SST-MTZ-006 MATRIZ DE REQUISITOS LEGALES.xlsx"
+    ]
+  },
+  "Resolución 777 de 2021": {
+    "tipo": "Resolución",
+    "numero": 777,
+    "anio": 2021,
+    "citas": [
+      "Resolución 777 de 2021"
+    ],
+    "archivos": [
+      "I. PLANEAR\\2.7.1 MATRIZ LEGAL\\SST-MTZ-006 MATRIZ DE REQUISITOS LEGALES.xlsx"
+    ]
+  },
+  "Decreto 1615 de 2021": {
+    "tipo": "Decreto",
+    "numero": 1615,
+    "anio": 2021,
+    "citas": [
+      "Decreto 1615 de 2021"
+    ],
+    "archivos": [
+      "I. PLANEAR\\2.7.1 MATRIZ LEGAL\\SST-MTZ-006 MATRIZ DE REQUISITOS LEGALES.xlsx"
+    ]
+  },
+  "Circular 47 de 2021": {
+    "tipo": "Circular",
+    "numero": 47,
+    "anio": 2021,
+    "citas": [
+      "Circular No. 047 de 2021"
+    ],
+    "archivos": [
+      "I. PLANEAR\\2.7.1 MATRIZ LEGAL\\SST-MTZ-006 MATRIZ DE REQUISITOS LEGALES.xlsx"
+    ]
+  },
+  "Resolución 350 de 2022": {
+    "tipo": "Resolución",
+    "numero": 350,
+    "anio": 2022,
+    "citas": [
+      "Resolución 350 de 2022"
+    ],
+    "archivos": [
+      "I. PLANEAR\\2.7.1 MATRIZ LEGAL\\SST-MTZ-006 MATRIZ DE REQUISITOS LEGALES.xlsx",
+      "II. HACER\\5.1.1 PPPRE\\2. PPPRE\\SST-PLN-004 PLAN DE PREVENCIÓN, PREPARACIÓN Y RESPUESTA ANTE EMERGENCIAS.docx"
+    ]
+  },
+  "Circular 49 de 2019": {
+    "tipo": "Circular",
+    "numero": 49,
+    "anio": 2019,
+    "citas": [
+      "Circular 049 de 2019"
+    ],
+    "archivos": [
+      "I. PLANEAR\\2.7.1 MATRIZ LEGAL\\SST-MTZ-006 MATRIZ DE REQUISITOS LEGALES.xlsx"
+    ]
+  },
+  "Resolución 691 de 2025": {
+    "tipo": "Resolución",
+    "numero": 691,
+    "anio": 2025,
+    "citas": [
+      "resolución 691 de 2025"
+    ],
+    "archivos": [
+      "I. PLANEAR\\2.7.1 MATRIZ LEGAL\\SST-MTZ-006 MATRIZ DE REQUISITOS LEGALES.xlsx"
+    ]
+  },
+  "Decreto 19 de 2012": {
+    "tipo": "Decreto",
+    "numero": 19,
+    "anio": 2012,
+    "citas": [
+      "Decreto 19 de 2012"
+    ],
+    "archivos": [
+      "I. PLANEAR\\2.7.1 MATRIZ LEGAL\\SST-MTZ-006 MATRIZ DE REQUISITOS LEGALES.xlsx"
+    ]
+  },
+  "Resolución 217 de 2014": {
+    "tipo": "Resolución",
+    "numero": 217,
+    "anio": 2014,
+    "citas": [
+      "Resolución 217\nde 2014",
+      "Resolución 217 de 2014"
+    ],
+    "archivos": [
+      "I. PLANEAR\\2.7.1 MATRIZ LEGAL\\SST-MTZ-006 MATRIZ DE REQUISITOS LEGALES.xlsx"
+    ]
+  },
+  "Ley 2294 de 2023": {
+    "tipo": "Ley",
+    "numero": 2294,
+    "anio": 2023,
+    "citas": [
+      "ley 2294 de 2023"
+    ],
+    "archivos": [
+      "I. PLANEAR\\2.7.1 MATRIZ LEGAL\\SST-MTZ-006 MATRIZ DE REQUISITOS LEGALES.xlsx"
+    ]
+  },
+  "Ley 1503 de 2011": {
+    "tipo": "Ley",
+    "numero": 1503,
+    "anio": 2011,
+    "citas": [
+      "Ley 1503 de 2011",
+      "ley 1503 de 2011"
+    ],
+    "archivos": [
+      "I. PLANEAR\\2.7.1 MATRIZ LEGAL\\SST-MTZ-006 MATRIZ DE REQUISITOS LEGALES.xlsx",
+      "PLAN ESTRATÉGICO DE SEGURIDAD VIAL\\FASE 1\\8. PROGRAMA DE GESRTIÓN DEL RIESGO\\1. PROGRAMA DE VELOCIDAD SEGURA\\PESV-PRG-001 PROGRAMA DE GESTIÓN DE LA VELOCIDAD SEGURA.docx",
+      "PLAN ESTRATÉGICO DE SEGURIDAD VIAL\\FASE 1\\PESV-PLN-001 PLAN ESTRATÉGICO DE SEGURIDAD VIAL.docx",
+      "PLAN ESTRATÉGICO DE SEGURIDAD VIAL\\MANUAL PESV\\PESV-PLN-001 PLAN ESTRATÉGICO DE SEGURIDAD VIAL.docx"
+    ]
+  },
+  "Ley 336 de 1996": {
+    "tipo": "Ley",
+    "numero": 336,
+    "anio": 1996,
+    "citas": [
+      "Ley 336 de 1996"
+    ],
+    "archivos": [
+      "I. PLANEAR\\2.7.1 MATRIZ LEGAL\\SST-MTZ-006 MATRIZ DE REQUISITOS LEGALES.xlsx"
+    ]
+  },
+  "Decreto -Ley 2106 de 2019": {
+    "tipo": "Decreto -Ley",
+    "numero": 2106,
+    "anio": 2019,
+    "citas": [
+      "Decreto -Ley 2106 de 2019"
+    ],
+    "archivos": [
+      "I. PLANEAR\\2.7.1 MATRIZ LEGAL\\SST-MTZ-006 MATRIZ DE REQUISITOS LEGALES.xlsx"
+    ]
+  },
+  "Resolución 1231 de 2016": {
+    "tipo": "Resolución",
+    "numero": 1231,
+    "anio": 2016,
+    "citas": [
+      "Resolución 1231 de 2016"
+    ],
+    "archivos": [
+      "I. PLANEAR\\2.7.1 MATRIZ LEGAL\\SST-MTZ-006 MATRIZ DE REQUISITOS LEGALES.xlsx"
+    ]
+  },
+  "Decreto Ley 2106 de 2019": {
+    "tipo": "Decreto Ley",
+    "numero": 2106,
+    "anio": 2019,
+    "citas": [
+      "Decreto Ley 2106 de 2019",
+      "decreto ley 2106 de 2019"
+    ],
+    "archivos": [
+      "I. PLANEAR\\2.7.1 MATRIZ LEGAL\\SST-MTZ-006 MATRIZ DE REQUISITOS LEGALES.xlsx",
+      "PLAN ESTRATÉGICO DE SEGURIDAD VIAL\\FASE 1\\PESV-PLN-001 PLAN ESTRATÉGICO DE SEGURIDAD VIAL.docx",
+      "PLAN ESTRATÉGICO DE SEGURIDAD VIAL\\FASE 2\\13. INVESTIGACIÓN INTERNA DE SINIESTROS VIALES\\PESV-PRO-004 PROCEDIMIENTO DE INVESTIGACIÓN DE ACCIDENTES VIALES.docx",
+      "PLAN ESTRATÉGICO DE SEGURIDAD VIAL\\FASE 2\\14. VÍAS SEGURAS ADMINISTRADAS POR LA ORGANIZACIÓN\\PESV-PRO-005 PROCEDIMIENTO DE OPERACIÓN Y MANTENIMIENTO DE VÍAS PÚBLICAS O PRIVADAS A CARGO.docx",
+      "PLAN ESTRATÉGICO DE SEGURIDAD VIAL\\MANUAL PESV\\PESV-PLN-001 PLAN ESTRATÉGICO DE SEGURIDAD VIAL.docx"
+    ]
+  },
+  "Ley 2050 de 2020": {
+    "tipo": "Ley",
+    "numero": 2050,
+    "anio": 2020,
+    "citas": [
+      "Ley 2050 de 2020"
+    ],
+    "archivos": [
+      "I. PLANEAR\\2.7.1 MATRIZ LEGAL\\SST-MTZ-006 MATRIZ DE REQUISITOS LEGALES.xlsx"
+    ]
+  },
+  "Resolución 1565 de 2014": {
+    "tipo": "Resolución",
+    "numero": 1565,
+    "anio": 2014,
+    "citas": [
+      "Resolución 1565 de 2014"
+    ],
+    "archivos": [
+      "I. PLANEAR\\2.7.1 MATRIZ LEGAL\\SST-MTZ-006 MATRIZ DE REQUISITOS LEGALES.xlsx"
+    ]
+  },
+  "Resolución 4959 de 2006": {
+    "tipo": "Resolución",
+    "numero": 4959,
+    "anio": 2006,
+    "citas": [
+      "Resolución 4959 de 2006"
+    ],
+    "archivos": [
+      "I. PLANEAR\\2.7.1 MATRIZ LEGAL\\SST-MTZ-006 MATRIZ DE REQUISITOS LEGALES.xlsx"
+    ]
+  },
+  "Circular 52 de 2022": {
+    "tipo": "Circular",
+    "numero": 52,
+    "anio": 2022,
+    "citas": [
+      "Circular 052 de 2022"
+    ],
+    "archivos": [
+      "I. PLANEAR\\2.6.1 RENDICIÓN DE CUENTAS\\1. PROCEDIMIENTO\\SST-PRO-006 PROCEDIMIENTO DE RENDICIÓN DE CUENTAS.docx",
+      "I. PLANEAR\\2.7.1 MATRIZ LEGAL\\SST-PRO-007 PROCEDIMIENTO DE IDENTIFICACIÓN DE REQUISITOS LEGALES.docx"
+    ]
+  },
+  "Circular 15 de 2024": {
+    "tipo": "Circular",
+    "numero": 15,
+    "anio": 2024,
+    "citas": [
+      "Circular 015 de 2024"
+    ],
+    "archivos": [
+      "I. PLANEAR\\1.1.2 ASIGNACIÓN DE RESPONSABILIDADES\\1. RESPONSABILIDADES\\SST-FMT-002 RESPONSABILIDADES DEL RESPONSABLE DEL SG-SST.docx",
+      "I. PLANEAR\\1.1.2 ASIGNACIÓN DE RESPONSABILIDADES\\1. RESPONSABILIDADES\\SST-FMT-004 RESPONSABILIDADES DEL REPRESENTANTE LEGAL.docx",
+      "I. PLANEAR\\1.2.2 INDUCCIÓN Y REINDUCCIÓN\\1. PROCEDIMIENTO\\SST-PRO-005 PROCEDIMIENTO DE INDUCCIÓN Y REINDUCCIÓN.docx",
+      "II. HACER\\3.1.2 ACTIVIDADES DE PROMOCIÓN Y PREVENCIÓN DE LA SALUD\\5. REGLAMENTO DE HIGIENE Y SEGURIDAD INDUSTRIAL\\SST-RGL-001 REGLAMENTO DE HIGIENE Y SEGURIDAD INDUSTRIAL.docx",
+      "II. HACER\\3.1.3 INFORMACIÓN AL MÉDICO DE LOS PERFILES DE CARGO\\1. PROCEDIMIENTO\\SST-PRO-013 PROCEDIMIENTO PARA EL MANUAL DE FUNCIONES.docx",
+      "IV. ACTUAR\\7.1.1 DEFINICIÓN DE LAS ACCIONES PREVENTIVAS, CORRECTIVAS Y DE MEJORA\\1. PROCEDIMIENTO\\SST-PRO-029 PROCEDIMIENTO ACCIONES PREVENTIVAS, CORRECTIVAS Y DE MEJORA.docx"
+    ]
+  },
+  "Resolución 1401 de 2007": {
+    "tipo": "Resolución",
+    "numero": 1401,
+    "anio": 2007,
+    "citas": [
+      "Resolucion 1401 de 2007",
+      "Resolución 1401 de 2007"
+    ],
+    "archivos": [
+      "I. PLANEAR\\1.1.2 ASIGNACIÓN DE RESPONSABILIDADES\\2. MATRIZ DE ROLES Y RESPONSABILIDADES\\SST-MTZ-001 MATRIZ DE ROLES Y RESPONSABILIDADES.xlsx",
+      "II. HACER\\3.1.2 ACTIVIDADES DE PROMOCIÓN Y PREVENCIÓN DE LA SALUD\\5. REGLAMENTO DE HIGIENE Y SEGURIDAD INDUSTRIAL\\SST-RGL-001 REGLAMENTO DE HIGIENE Y SEGURIDAD INDUSTRIAL.docx",
+      "II. HACER\\3.1.6 RESTRICCIONES Y RECOMENDACIONES\\3. PROGRAMA DE REINTEGRO LABORAL\\SST-PRG-006 PROGRAMA DE REINTEGRO LABORAL.docx",
+      "II. HACER\\3.2.2 INVESTIGACIÓN DE IT-AT-EL\\SST-FTM-054 CONSTITUCIÓN COMITÉ NVESTIGADOR.docx",
+      "II. HACER\\3.2.3 REGISTRO ESTADISTICO DE IT-AT Y EL\\SST-MTZ-010 CARACTERIZACIÓN DE ACCIDENTALIDAD Y ENFERMEDAD LABORAL.xlsx"
+    ]
+  },
+  "Resolución 3461 de 2025": {
+    "tipo": "Resolución",
+    "numero": 3461,
+    "anio": 2025,
+    "citas": [
+      "Resolución 3461 de 2025"
+    ],
+    "archivos": [
+      "I. PLANEAR\\1.1.8 COMITÉ DE CONVIVENCIA LABORAL\\1. REGLAMENTO\\SST-RGL-001 REGLAMENTO DEL COMITÉ DE CONVIVENCIA LABORAL.docx",
+      "I. PLANEAR\\1.1.8 COMITÉ DE CONVIVENCIA LABORAL\\2. MANUAL\\SST-MNL-001 MANUAL COMITE DE CONVIVENCIA LABORAL.docx",
+      "I. PLANEAR\\1.1.8 COMITÉ DE CONVIVENCIA LABORAL\\3. PROCEDIMIENTOS\\SST-PRO-002 PROCEDIMIENTO PARA LA ELECCIÓN Y CONFORMACIÓN DEL CCL.docx",
+      "I. PLANEAR\\1.1.8 COMITÉ DE CONVIVENCIA LABORAL\\3. PROCEDIMIENTOS\\SST-PRO-003 PROCEDIMIENTO PARA LA ATENCIÓN DE QUEJAS.docx",
+      "I. PLANEAR\\1.1.8 COMITÉ DE CONVIVENCIA LABORAL\\6. INFORMES\\SST-FMT-025 INFORME TRIMESTRAL CCL.docx"
+    ]
+  },
+  "Ley 1257 de 2008": {
+    "tipo": "Ley",
+    "numero": 1257,
+    "anio": 2008,
+    "citas": [
+      "Ley 1257 de 2008"
+    ],
+    "archivos": [
+      "I. PLANEAR\\1.1.8 COMITÉ DE CONVIVENCIA LABORAL\\2. MANUAL\\SST-MNL-001 MANUAL COMITE DE CONVIVENCIA LABORAL.docx"
+    ]
+  },
+  "Resolución 2404 de 2019": {
+    "tipo": "Resolución",
+    "numero": 2404,
+    "anio": 2019,
+    "citas": [
+      "Resolución 2404 de 2019"
+    ],
+    "archivos": [
+      "I. PLANEAR\\1.1.8 COMITÉ DE CONVIVENCIA LABORAL\\2. MANUAL\\SST-MNL-001 MANUAL COMITE DE CONVIVENCIA LABORAL.docx"
+    ]
+  },
+  "Resolución 2669 de 2012": {
+    "tipo": "Resolución",
+    "numero": 2669,
+    "anio": 2012,
+    "citas": [
+      "Resolución 2669 de 2012"
+    ],
+    "archivos": [
+      "I. PLANEAR\\1.1.8 COMITÉ DE CONVIVENCIA LABORAL\\4. FORMATOS\\SST-FMT-021 CONFORMACIÓN DEL CCL.docx"
+    ]
+  },
+  "Resolución 2646 de 2008": {
+    "tipo": "Resolución",
+    "numero": 2646,
+    "anio": 2008,
+    "citas": [
+      "Resolución 2646 de 2008"
+    ],
+    "archivos": [
+      "I. PLANEAR\\1.1.8 COMITÉ DE CONVIVENCIA LABORAL\\4. FORMATOS\\SST-FMT-021 CONFORMACIÓN DEL CCL.docx",
+      "I. PLANEAR\\1.2.1 CAPACITACIÓN PYP\\2. PROGRAMA\\SST-PRG-001 PROGRAMA DE CAPACITACIÓN Y FORMACIÓN EN SST.docx",
+      "II. HACER\\3.1.1 DESCRIPCIÓN SOCIODEMOGRÁFICA\\3. INFORME\\SST-FMT-039 INFORME DEL PERFIL SOCIODEMOGRÁFICO.docx",
+      "II. HACER\\3.1.2 ACTIVIDADES DE PROMOCIÓN Y PREVENCIÓN DE LA SALUD\\5. REGLAMENTO DE HIGIENE Y SEGURIDAD INDUSTRIAL\\SST-RGL-001 REGLAMENTO DE HIGIENE Y SEGURIDAD INDUSTRIAL.docx"
+    ]
+  },
+  "Circular 45 de 2025": {
+    "tipo": "Circular",
+    "numero": 45,
+    "anio": 2025,
+    "citas": [
+      "Circular 045 de 2025"
+    ],
+    "archivos": [
+      "I. PLANEAR\\1.2.1 CAPACITACIÓN PYP\\1. PLAN\\SST-PLN-001 PLAN DE CAPACITACIÓN.xlsx"
+    ]
+  },
+  "Decreto 405 de 2025": {
+    "tipo": "Decreto",
+    "numero": 405,
+    "anio": 2025,
+    "citas": [
+      "Decreto 0405 de 2025"
+    ],
+    "archivos": [
+      "I. PLANEAR\\1.2.1 CAPACITACIÓN PYP\\1. PLAN\\SST-PLN-001 PLAN DE CAPACITACIÓN.xlsx"
+    ]
+  },
+  "Decreto 1477 de 2014": {
+    "tipo": "Decreto",
+    "numero": 1477,
+    "anio": 2014,
+    "citas": [
+      "Decreto 1477 de 2014"
+    ],
+    "archivos": [
+      "I. PLANEAR\\1.2.1 CAPACITACIÓN PYP\\2. PROGRAMA\\SST-PRG-001 PROGRAMA DE CAPACITACIÓN Y FORMACIÓN EN SST.docx",
+      "II. HACER\\3.1.2 ACTIVIDADES DE PROMOCIÓN Y PREVENCIÓN DE LA SALUD\\5. REGLAMENTO DE HIGIENE Y SEGURIDAD INDUSTRIAL\\SST-RGL-001 REGLAMENTO DE HIGIENE Y SEGURIDAD INDUSTRIAL.docx",
+      "II. HACER\\3.3.6 MEDICIÓN DEL AUSENTISMO\\4. INFORME\\SST-FMT-055 INFORME DE AUSENTISMO LABORAL.docx"
+    ]
+  },
+  "Decreto 1010 de 2006": {
+    "tipo": "Decreto",
+    "numero": 1010,
+    "anio": 2006,
+    "citas": [
+      "Decreto 1010 de 2006"
+    ],
+    "archivos": [
+      "I. PLANEAR\\1.2.1 CAPACITACIÓN PYP\\2. PROGRAMA\\SST-PRG-001 PROGRAMA DE CAPACITACIÓN Y FORMACIÓN EN SST.docx"
+    ]
+  },
+  "Resolución 1956 de 2008": {
+    "tipo": "Resolución",
+    "numero": 1956,
+    "anio": 2008,
+    "citas": [
+      "Resolución 1956 de 2008"
+    ],
+    "archivos": [
+      "I. PLANEAR\\1.2.1 CAPACITACIÓN PYP\\2. PROGRAMA\\SST-PRG-001 PROGRAMA DE CAPACITACIÓN Y FORMACIÓN EN SST.docx",
+      "II. HACER\\3.1.2 ACTIVIDADES DE PROMOCIÓN Y PREVENCIÓN DE LA SALUD\\5. REGLAMENTO DE HIGIENE Y SEGURIDAD INDUSTRIAL\\SST-RGL-001 REGLAMENTO DE HIGIENE Y SEGURIDAD INDUSTRIAL.docx"
+    ]
+  },
+  "Ley 50 de 1990": {
+    "tipo": "Ley",
+    "numero": 50,
+    "anio": 1990,
+    "citas": [
+      "Ley 50 de 1990"
+    ],
+    "archivos": [
+      "I. PLANEAR\\1.2.1 CAPACITACIÓN PYP\\3. PROCEDIMIENTO\\SST-PRO-004 PROCEDIMIENTO DE CAPACITACIÓN Y ENTRENAMIENTO.docx"
+    ]
+  },
+  "Ley 2101 de 2021": {
+    "tipo": "Ley",
+    "numero": 2101,
+    "anio": 2021,
+    "citas": [
+      "Ley 2101 de 2021"
+    ],
+    "archivos": [
+      "I. PLANEAR\\1.2.1 CAPACITACIÓN PYP\\3. PROCEDIMIENTO\\SST-PRO-004 PROCEDIMIENTO DE CAPACITACIÓN Y ENTRENAMIENTO.docx"
+    ]
+  },
+  "Decreto 1127 de 1991": {
+    "tipo": "Decreto",
+    "numero": 1127,
+    "anio": 1991,
+    "citas": [
+      "Decreto 1127 de 1991"
+    ],
+    "archivos": [
+      "I. PLANEAR\\1.2.1 CAPACITACIÓN PYP\\3. PROCEDIMIENTO\\SST-PRO-004 PROCEDIMIENTO DE CAPACITACIÓN Y ENTRENAMIENTO.docx"
+    ]
+  },
+  "Resolución 2013 de 2017": {
+    "tipo": "Resolución",
+    "numero": 2013,
+    "anio": 2017,
+    "citas": [
+      "Resolución 2013 de 2017"
+    ],
+    "archivos": [
+      "II. HACER\\3.1.7 ESTILOS DE VIDA Y ENTORNOS SALUDABLES\\SST-PRG-007 PROGRAMA ESTILOS DE VIDA Y ENTORNOS SALUDABLES.docx"
+    ]
+  },
+  "Resolución 773 de 2021": {
+    "tipo": "Resolución",
+    "numero": 773,
+    "anio": 2021,
+    "citas": [
+      "Resolución 0773 de 2021"
+    ],
+    "archivos": [
+      "II. HACER\\4.1.3 IDENTIFICACIÓN DE SUSTANCIAS\\SST-SGA-001 SISTEMA GLOBALMENTE ARMONIZADO.docx"
+    ]
+  },
+  "Decreto 1609 de 2002": {
+    "tipo": "Decreto",
+    "numero": 1609,
+    "anio": 2002,
+    "citas": [
+      "Decreto 1609 de 2002"
+    ],
+    "archivos": [
+      "II. HACER\\4.1.3 IDENTIFICACIÓN DE SUSTANCIAS\\SST-SGA-001 SISTEMA GLOBALMENTE ARMONIZADO.docx"
+    ]
+  },
+  "Resolución 2844 de 2007": {
+    "tipo": "Resolución",
+    "numero": 2844,
+    "anio": 2007,
+    "citas": [
+      "Resolución 2844 de 2007",
+      "Resolución 2844 del 2007"
+    ],
+    "archivos": [
+      "II. HACER\\4.1.4 REALIZACIÓN DE MEDICIONES AMBIENTALES\\ANEXO MATRIZ DE REGISTRO SONORO.xlsx",
+      "II. HACER\\4.1.4 REALIZACIÓN DE MEDICIONES AMBIENTALES\\INFORME DE MEDICIÓN SONOMETRICO.docx",
+      "II. HACER\\4.1.4 REALIZACIÓN DE MEDICIONES AMBIENTALES\\INFORME DE SONOMETRIA.docx"
+    ]
+  },
+  "Resolución 1792 de 1990": {
+    "tipo": "Resolución",
+    "numero": 1792,
+    "anio": 1990,
+    "citas": [
+      "Resolución 1792 de 1990"
+    ],
+    "archivos": [
+      "II. HACER\\4.1.4 REALIZACIÓN DE MEDICIONES AMBIENTALES\\INFORME DE MEDICIÓN SONOMETRICO.docx",
+      "II. HACER\\4.1.4 REALIZACIÓN DE MEDICIONES AMBIENTALES\\INFORME DE SONOMETRIA.docx"
+    ]
+  },
+  "Ley 9 de 1997": {
+    "tipo": "Ley",
+    "numero": 9,
+    "anio": 1997,
+    "citas": [
+      "Ley 9 de 1997"
+    ],
+    "archivos": [
+      "II. HACER\\4.1.4 REALIZACIÓN DE MEDICIONES AMBIENTALES\\INFORME DE MEDICIÓN SONOMETRICO.docx",
+      "II. HACER\\4.1.4 REALIZACIÓN DE MEDICIONES AMBIENTALES\\INFORME DE SONOMETRIA.docx"
+    ]
+  },
+  "Resolución 2400 de 1997": {
+    "tipo": "Resolución",
+    "numero": 2400,
+    "anio": 1997,
+    "citas": [
+      "Resolución 2400 de 1997"
+    ],
+    "archivos": [
+      "II. HACER\\4.1.4 REALIZACIÓN DE MEDICIONES AMBIENTALES\\INFORME DE MEDICIÓN SONOMETRICO.docx",
+      "II. HACER\\4.1.4 REALIZACIÓN DE MEDICIONES AMBIENTALES\\INFORME DE SONOMETRIA.docx"
+    ]
+  },
+  "Decreto 1972 de 1990": {
+    "tipo": "Decreto",
+    "numero": 1972,
+    "anio": 1990,
+    "citas": [
+      "decreto 1972 de 1990"
+    ],
+    "archivos": [
+      "II. HACER\\4.1.4 REALIZACIÓN DE MEDICIONES AMBIENTALES\\INFORME DE SONOMETRIA.docx"
+    ]
+  },
+  "Resolución 2764 de 2022": {
+    "tipo": "Resolución",
+    "numero": 2764,
+    "anio": 2022,
+    "citas": [
+      "Resolución 2764 de 2022"
+    ],
+    "archivos": [
+      "II. HACER\\4.2.1 IMPLEMENTACIÓN DE MEDIDAS DE PREVENCIÓN Y CONTROL\\SST-FMT-057 INFORME SOBRE LA ENCUESTA DE CLIMA LABORAL.docx"
+    ]
+  },
+  "Ley 1616 de 2013": {
+    "tipo": "Ley",
+    "numero": 1616,
+    "anio": 2013,
+    "citas": [
+      "Ley 1616 de 2013"
+    ],
+    "archivos": [
+      "II. HACER\\3.1.1 DESCRIPCIÓN SOCIODEMOGRÁFICA\\3. INFORME\\SST-FMT-039 INFORME DEL PERFIL SOCIODEMOGRÁFICO.docx"
+    ]
+  },
+  "Resolución 3673 de 2008": {
+    "tipo": "Resolución",
+    "numero": 3673,
+    "anio": 2008,
+    "citas": [
+      "Resolución 3673 de 2008"
+    ],
+    "archivos": [
+      "II. HACER\\3.1.2 ACTIVIDADES DE PROMOCIÓN Y PREVENCIÓN DE LA SALUD\\5. REGLAMENTO DE HIGIENE Y SEGURIDAD INDUSTRIAL\\SST-RGL-001 REGLAMENTO DE HIGIENE Y SEGURIDAD INDUSTRIAL.docx"
+    ]
+  },
+  "Resolución 2566 de 2009": {
+    "tipo": "Resolución",
+    "numero": 2566,
+    "anio": 2009,
+    "citas": [
+      "Resolución 2566 de 2009"
+    ],
+    "archivos": [
+      "II. HACER\\3.1.2 ACTIVIDADES DE PROMOCIÓN Y PREVENCIÓN DE LA SALUD\\5. REGLAMENTO DE HIGIENE Y SEGURIDAD INDUSTRIAL\\SST-RGL-001 REGLAMENTO DE HIGIENE Y SEGURIDAD INDUSTRIAL.docx"
+    ]
+  },
+  "Ley 1562 de 2013": {
+    "tipo": "Ley",
+    "numero": 1562,
+    "anio": 2013,
+    "citas": [
+      "Ley 1562 de 2013"
+    ],
+    "archivos": [
+      "II. HACER\\3.1.2 ACTIVIDADES DE PROMOCIÓN Y PREVENCIÓN DE LA SALUD\\5. REGLAMENTO DE HIGIENE Y SEGURIDAD INDUSTRIAL\\SST-RGL-001 REGLAMENTO DE HIGIENE Y SEGURIDAD INDUSTRIAL.docx"
+    ]
+  },
+  "Decreto 1443 de 2014": {
+    "tipo": "Decreto",
+    "numero": 1443,
+    "anio": 2014,
+    "citas": [
+      "Decreto 1443\ndel 2014",
+      "Decreto 1443 de 2014"
+    ],
+    "archivos": [
+      "II. HACER\\3.1.2 ACTIVIDADES DE PROMOCIÓN Y PREVENCIÓN DE LA SALUD\\5. REGLAMENTO DE HIGIENE Y SEGURIDAD INDUSTRIAL\\SST-RGL-001 REGLAMENTO DE HIGIENE Y SEGURIDAD INDUSTRIAL.docx",
+      "PLAN ESTRATÉGICO DE SEGURIDAD VIAL\\FASE 2\\12. PLAN DE PREPARACIÓN Y RESPUESTA ANTE EMERGENCIAS VIALES\\PESV-PLN-003 PLAN DE PREPARACIÓN Y RESPUESTA ANTE EMERGENCIAS VIALES.docx"
+    ]
+  },
+  "Ley 361 de 1997": {
+    "tipo": "Ley",
+    "numero": 361,
+    "anio": 1997,
+    "citas": [
+      "Ley 361 de 1997"
+    ],
+    "archivos": [
+      "II. HACER\\3.1.6 RESTRICCIONES Y RECOMENDACIONES\\3. PROGRAMA DE REINTEGRO LABORAL\\SST-PRG-006 PROGRAMA DE REINTEGRO LABORAL.docx"
+    ]
+  },
+  "Ley 9 de 1979": {
+    "tipo": "Ley",
+    "numero": 9,
+    "anio": 1979,
+    "citas": [
+      "LEY 9 DE 1979",
+      "Ley 9 de 1979"
+    ],
+    "archivos": [
+      "II. HACER\\3.1.9 ELIMINACIÓN ADECUADA DE RESIDUOS\\1. PLAN DE SANEAMIENTO BÁSICO\\SST-PLN-003 PLAN DE SANEAMIENTO BÁSICO_.docx",
+      "II. HACER\\4.2.6 ENTREGA DE ELEMENTOS DE PROTECCIÓN PERSONAL\\2. FORMATO DE ENTREGA DE EPP\\1. FORMATO\\SST-FMT-073 ENTREGA DE ELEMENTOS DE PROTECCIÓN PERSONAL.docx"
+    ]
+  },
+  "Resolución 132 de 2004": {
+    "tipo": "Resolución",
+    "numero": 132,
+    "anio": 2004,
+    "citas": [
+      "Resolución 132 de 2004"
+    ],
+    "archivos": [
+      "II. HACER\\3.1.9 ELIMINACIÓN ADECUADA DE RESIDUOS\\1. PLAN DE SANEAMIENTO BÁSICO\\SST-PLN-003 PLAN DE SANEAMIENTO BÁSICO_.docx"
+    ]
+  },
+  "Resolución 1045 de 2003": {
+    "tipo": "Resolución",
+    "numero": 1045,
+    "anio": 2003,
+    "citas": [
+      "Resolución 1045 de 2003"
+    ],
+    "archivos": [
+      "II. HACER\\3.1.9 ELIMINACIÓN ADECUADA DE RESIDUOS\\1. PLAN DE SANEAMIENTO BÁSICO\\SST-PLN-003 PLAN DE SANEAMIENTO BÁSICO_.docx"
+    ]
+  },
+  "Decreto 1076 de 2015": {
+    "tipo": "Decreto",
+    "numero": 1076,
+    "anio": 2015,
+    "citas": [
+      "Decreto 1076 de 2015"
+    ],
+    "archivos": [
+      "II. HACER\\3.1.9 ELIMINACIÓN ADECUADA DE RESIDUOS\\1. PLAN DE SANEAMIENTO BÁSICO\\SST-PLN-003 PLAN DE SANEAMIENTO BÁSICO_.docx"
+    ]
+  },
+  "Resolución 2184 de 2019": {
+    "tipo": "Resolución",
+    "numero": 2184,
+    "anio": 2019,
+    "citas": [
+      "Resolución 2184 de 2019"
+    ],
+    "archivos": [
+      "II. HACER\\3.1.9 ELIMINACIÓN ADECUADA DE RESIDUOS\\1. PLAN DE SANEAMIENTO BÁSICO\\SST-PLN-003 PLAN DE SANEAMIENTO BÁSICO_.docx"
+    ]
+  },
+  "Resolución 668 de 2016": {
+    "tipo": "Resolución",
+    "numero": 668,
+    "anio": 2016,
+    "citas": [
+      "resolución 668 de 2016"
+    ],
+    "archivos": [
+      "II. HACER\\3.1.9 ELIMINACIÓN ADECUADA DE RESIDUOS\\1. PLAN DE SANEAMIENTO BÁSICO\\SST-PLN-003 PLAN DE SANEAMIENTO BÁSICO_.docx"
+    ]
+  },
+  "Decreto 770 de 1975": {
+    "tipo": "Decreto",
+    "numero": 770,
+    "anio": 1975,
+    "citas": [
+      "Decreto 770 de 1975"
+    ],
+    "archivos": [
+      "II. HACER\\3.3.6 MEDICIÓN DEL AUSENTISMO\\3. INDICADOR\\SST-IND-001 INDICADOR AUSENTISMO LABORAL.xlsx"
+    ]
+  },
+  "Ley 1280 de 2009": {
+    "tipo": "Ley",
+    "numero": 1280,
+    "anio": 2009,
+    "citas": [
+      "Ley 1280 de 2009"
+    ],
+    "archivos": [
+      "II. HACER\\3.3.6 MEDICIÓN DEL AUSENTISMO\\4. INFORME\\SST-FMT-055 INFORME DE AUSENTISMO LABORAL.docx"
+    ]
+  },
+  "Ley 2114 de 2021": {
+    "tipo": "Ley",
+    "numero": 2114,
+    "anio": 2021,
+    "citas": [
+      "Ley 2114 de 2021"
+    ],
+    "archivos": [
+      "II. HACER\\3.3.6 MEDICIÓN DEL AUSENTISMO\\4. INFORME\\SST-FMT-055 INFORME DE AUSENTISMO LABORAL.docx"
+    ]
+  },
+  "Resolución 2400 de 1979": {
+    "tipo": "Resolución",
+    "numero": 2400,
+    "anio": 1979,
+    "citas": [
+      "Resolución 2400 de 1979"
+    ],
+    "archivos": [
+      "II. HACER\\4.2.6 ENTREGA DE ELEMENTOS DE PROTECCIÓN PERSONAL\\2. FORMATO DE ENTREGA DE EPP\\1. FORMATO\\SST-FMT-073 ENTREGA DE ELEMENTOS DE PROTECCIÓN PERSONAL.docx",
+      "PLAN ESTRATÉGICO DE SEGURIDAD VIAL\\FASE 2\\12. PLAN DE PREPARACIÓN Y RESPUESTA ANTE EMERGENCIAS VIALES\\PESV-PLN-003 PLAN DE PREPARACIÓN Y RESPUESTA ANTE EMERGENCIAS VIALES.docx"
+    ]
+  },
+  "Decreto 423 de 2006": {
+    "tipo": "Decreto",
+    "numero": 423,
+    "anio": 2006,
+    "citas": [
+      "decreto 423 del 2006"
+    ],
+    "archivos": [
+      "II. HACER\\5.1.1 PPPRE\\2. PPPRE\\SST-PLN-004 PLAN DE PREVENCIÓN, PREPARACIÓN Y RESPUESTA ANTE EMERGENCIAS.docx"
+    ]
+  },
+  "Resolución 40595 de 2022": {
+    "tipo": "Resolución",
+    "numero": 40595,
+    "anio": 2022,
+    "citas": [
+      "Resolución 40595 de 2022"
+    ],
+    "archivos": [
+      "PLAN ESTRATÉGICO DE SEGURIDAD VIAL\\FASE 1\\1. DESIGNACIÓN DEL RESPONSABLE DEL PESV\\PESV-FMT-001 DESIGNACIÓN DE RESPONSABLE DEL PESV.docx",
+      "PLAN ESTRATÉGICO DE SEGURIDAD VIAL\\FASE 1\\3. POLÍTICA\\PESV-POL-001 POLÍTICA DE SEGURIDAD VIAL.docx",
+      "PLAN ESTRATÉGICO DE SEGURIDAD VIAL\\FASE 1\\PESV-PLN-001 PLAN ESTRATÉGICO DE SEGURIDAD VIAL.docx",
+      "PLAN ESTRATÉGICO DE SEGURIDAD VIAL\\FASE 2\\17. MANTENIMIENTO Y CONTROL DE VEHICULOS SEGUROS Y EQUIPOS\\1. PROCEDIMIENTO\\PESV-PRO-006 PROCEDIMIENTO PARA EL MANTENIMIENTO DE VEHICULOS.docx",
+      "PLAN ESTRATÉGICO DE SEGURIDAD VIAL\\FASE 2\\18. GESTIÓN DEL CAMBIO Y GESTIÓN DE CONTRATISTAS\\PESV-PRO-009 PROCEDIMIENTO PARA LA GESTIÓN  DEL CAMBIO.docx",
+      "PLAN ESTRATÉGICO DE SEGURIDAD VIAL\\FASE 2\\18. GESTIÓN DEL CAMBIO Y GESTIÓN DE CONTRATISTAS\\PESV-PRT-002 PROTOCOLO PARA LA GESTIÓN DE CONTRATISTAS.docx",
+      "PLAN ESTRATÉGICO DE SEGURIDAD VIAL\\MANUAL PESV\\PESV-PLN-001 PLAN ESTRATÉGICO DE SEGURIDAD VIAL.docx"
+    ]
+  },
+  "Ley 80 de 1993": {
+    "tipo": "Ley",
+    "numero": 80,
+    "anio": 1993,
+    "citas": [
+      "Ley 80 de 1993"
+    ],
+    "archivos": [
+      "PLAN ESTRATÉGICO DE SEGURIDAD VIAL\\FASE 1\\4. LIDERAZGO, COMPROMISO Y CORRESPONSABILIDAD\\4. ADQUISICIÓN\\PESV-POL-006 POLÍTICA DE ADQUISISIÓN.docx"
+    ]
+  },
+  "Ley 1150 de 2007": {
+    "tipo": "Ley",
+    "numero": 1150,
+    "anio": 2007,
+    "citas": [
+      "Ley 1150 de 2007"
+    ],
+    "archivos": [
+      "PLAN ESTRATÉGICO DE SEGURIDAD VIAL\\FASE 1\\4. LIDERAZGO, COMPROMISO Y CORRESPONSABILIDAD\\4. ADQUISICIÓN\\PESV-POL-006 POLÍTICA DE ADQUISISIÓN.docx"
+    ]
+  },
+  "Resolución 3024 de 2013": {
+    "tipo": "Resolución",
+    "numero": 3024,
+    "anio": 2013,
+    "citas": [
+      "Resolución 3024 de 2013"
+    ],
+    "archivos": [
+      "PLAN ESTRATÉGICO DE SEGURIDAD VIAL\\FASE 1\\4. LIDERAZGO, COMPROMISO Y CORRESPONSABILIDAD\\4. ADQUISICIÓN\\PESV-POL-006 POLÍTICA DE ADQUISISIÓN.docx"
+    ]
+  },
+  "Ley 46 de 1988": {
+    "tipo": "Ley",
+    "numero": 46,
+    "anio": 1988,
+    "citas": [
+      "Ley 46 de 1988"
+    ],
+    "archivos": [
+      "PLAN ESTRATÉGICO DE SEGURIDAD VIAL\\FASE 2\\12. PLAN DE PREPARACIÓN Y RESPUESTA ANTE EMERGENCIAS VIALES\\PESV-PLN-003 PLAN DE PREPARACIÓN Y RESPUESTA ANTE EMERGENCIAS VIALES.docx"
+    ]
+  },
+  "Ley 322 de 1996": {
+    "tipo": "Ley",
+    "numero": 322,
+    "anio": 1996,
+    "citas": [
+      "Ley 322 de 1996"
+    ],
+    "archivos": [
+      "PLAN ESTRATÉGICO DE SEGURIDAD VIAL\\FASE 2\\12. PLAN DE PREPARACIÓN Y RESPUESTA ANTE EMERGENCIAS VIALES\\PESV-PLN-003 PLAN DE PREPARACIÓN Y RESPUESTA ANTE EMERGENCIAS VIALES.docx"
+    ]
+  },
+  "Resolución 1409 de 2012": {
+    "tipo": "Resolución",
+    "numero": 1409,
+    "anio": 2012,
+    "citas": [
+      "Resolución 1409 de 2012"
+    ],
+    "archivos": [
+      "PLAN ESTRATÉGICO DE SEGURIDAD VIAL\\FASE 2\\12. PLAN DE PREPARACIÓN Y RESPUESTA ANTE EMERGENCIAS VIALES\\PESV-PLN-003 PLAN DE PREPARACIÓN Y RESPUESTA ANTE EMERGENCIAS VIALES.docx"
+    ]
+  },
+  "Decreto Ley 1523 de 2012": {
+    "tipo": "Decreto Ley",
+    "numero": 1523,
+    "anio": 2012,
+    "citas": [
+      "Decreto ley 1523 de 2012"
+    ],
+    "archivos": [
+      "PLAN ESTRATÉGICO DE SEGURIDAD VIAL\\FASE 2\\12. PLAN DE PREPARACIÓN Y RESPUESTA ANTE EMERGENCIAS VIALES\\PESV-PLN-003 PLAN DE PREPARACIÓN Y RESPUESTA ANTE EMERGENCIAS VIALES.docx"
+    ]
+  },
+  "Ley 1575 de 2012": {
+    "tipo": "Ley",
+    "numero": 1575,
+    "anio": 2012,
+    "citas": [
+      "Ley 1575 de\n2012"
+    ],
+    "archivos": [
+      "PLAN ESTRATÉGICO DE SEGURIDAD VIAL\\FASE 2\\12. PLAN DE PREPARACIÓN Y RESPUESTA ANTE EMERGENCIAS VIALES\\PESV-PLN-003 PLAN DE PREPARACIÓN Y RESPUESTA ANTE EMERGENCIAS VIALES.docx"
+    ]
+  },
+  "Resolución 256 de 2014": {
+    "tipo": "Resolución",
+    "numero": 256,
+    "anio": 2014,
+    "citas": [
+      "Resolución 0256 de 2014"
+    ],
+    "archivos": [
+      "PLAN ESTRATÉGICO DE SEGURIDAD VIAL\\FASE 2\\12. PLAN DE PREPARACIÓN Y RESPUESTA ANTE EMERGENCIAS VIALES\\PESV-PLN-003 PLAN DE PREPARACIÓN Y RESPUESTA ANTE EMERGENCIAS VIALES.docx"
+    ]
+  },
+  "Ley 400 de 1997": {
+    "tipo": "Ley",
+    "numero": 400,
+    "anio": 1997,
+    "citas": [
+      "Ley 400 de 1997"
+    ],
+    "archivos": [
+      "PLAN ESTRATÉGICO DE SEGURIDAD VIAL\\FASE 2\\12. PLAN DE PREPARACIÓN Y RESPUESTA ANTE EMERGENCIAS VIALES\\PESV-PLN-003 PLAN DE PREPARACIÓN Y RESPUESTA ANTE EMERGENCIAS VIALES.docx"
+    ]
+  },
+  "Resolución 1428 de 2002": {
+    "tipo": "Resolución",
+    "numero": 1428,
+    "anio": 2002,
+    "citas": [
+      "Resolución 1428 De 2002"
+    ],
+    "archivos": [
+      "PLAN ESTRATÉGICO DE SEGURIDAD VIAL\\FASE 2\\12. PLAN DE PREPARACIÓN Y RESPUESTA ANTE EMERGENCIAS VIALES\\PESV-PLN-003 PLAN DE PREPARACIÓN Y RESPUESTA ANTE EMERGENCIAS VIALES.docx"
+    ]
+  },
+  "Acuerdo 30 de 2001": {
+    "tipo": "Acuerdo",
+    "numero": 30,
+    "anio": 2001,
+    "citas": [
+      "acuerdo No. 30 de 2001"
+    ],
+    "archivos": [
+      "PLAN ESTRATÉGICO DE SEGURIDAD VIAL\\FASE 2\\12. PLAN DE PREPARACIÓN Y RESPUESTA ANTE EMERGENCIAS VIALES\\PESV-PLN-003 PLAN DE PREPARACIÓN Y RESPUESTA ANTE EMERGENCIAS VIALES.docx"
+    ]
+  },
+  "Resolución 705 de 2007": {
+    "tipo": "Resolución",
+    "numero": 705,
+    "anio": 2007,
+    "citas": [
+      "Resolución 705\nde 2007"
+    ],
+    "archivos": [
+      "PLAN ESTRATÉGICO DE SEGURIDAD VIAL\\FASE 2\\12. PLAN DE PREPARACIÓN Y RESPUESTA ANTE EMERGENCIAS VIALES\\PESV-PLN-003 PLAN DE PREPARACIÓN Y RESPUESTA ANTE EMERGENCIAS VIALES.docx"
+    ]
+  },
+  "Resolución 927 de 2017": {
+    "tipo": "Resolución",
+    "numero": 927,
+    "anio": 2017,
+    "citas": [
+      "Resolución 927\nde 2017"
+    ],
+    "archivos": [
+      "PLAN ESTRATÉGICO DE SEGURIDAD VIAL\\FASE 2\\12. PLAN DE PREPARACIÓN Y RESPUESTA ANTE EMERGENCIAS VIALES\\PESV-PLN-003 PLAN DE PREPARACIÓN Y RESPUESTA ANTE EMERGENCIAS VIALES.docx"
+    ]
+  },
+  "Resolución 1796 de 2018": {
+    "tipo": "Resolución",
+    "numero": 1796,
+    "anio": 2018,
+    "citas": [
+      "Resolución 1796 de 2018"
+    ],
+    "archivos": [
+      "PLAN ESTRATÉGICO DE SEGURIDAD VIAL\\FASE 2\\12. PLAN DE PREPARACIÓN Y RESPUESTA ANTE EMERGENCIAS VIALES\\PESV-PLN-003 PLAN DE PREPARACIÓN Y RESPUESTA ANTE EMERGENCIAS VIALES.docx"
+    ]
+  },
+  "Decreto 2157 de 2017": {
+    "tipo": "Decreto",
+    "numero": 2157,
+    "anio": 2017,
+    "citas": [
+      "Decreto 2157 de\n2017"
+    ],
+    "archivos": [
+      "PLAN ESTRATÉGICO DE SEGURIDAD VIAL\\FASE 2\\12. PLAN DE PREPARACIÓN Y RESPUESTA ANTE EMERGENCIAS VIALES\\PESV-PLN-003 PLAN DE PREPARACIÓN Y RESPUESTA ANTE EMERGENCIAS VIALES.docx"
+    ]
+  },
+  "Circular 18 de 2020": {
+    "tipo": "Circular",
+    "numero": 18,
+    "anio": 2020,
+    "citas": [
+      "Circular 018 de\n2020"
+    ],
+    "archivos": [
+      "PLAN ESTRATÉGICO DE SEGURIDAD VIAL\\FASE 2\\12. PLAN DE PREPARACIÓN Y RESPUESTA ANTE EMERGENCIAS VIALES\\PESV-PLN-003 PLAN DE PREPARACIÓN Y RESPUESTA ANTE EMERGENCIAS VIALES.docx"
+    ]
+  },
+  "Decreto 488 de 2020": {
+    "tipo": "Decreto",
+    "numero": 488,
+    "anio": 2020,
+    "citas": [
+      "Decreto 488 de\n2020"
+    ],
+    "archivos": [
+      "PLAN ESTRATÉGICO DE SEGURIDAD VIAL\\FASE 2\\12. PLAN DE PREPARACIÓN Y RESPUESTA ANTE EMERGENCIAS VIALES\\PESV-PLN-003 PLAN DE PREPARACIÓN Y RESPUESTA ANTE EMERGENCIAS VIALES.docx"
+    ]
+  },
+  "Decreto 500 de 2020": {
+    "tipo": "Decreto",
+    "numero": 500,
+    "anio": 2020,
+    "citas": [
+      "Decreto 500 de\n2020"
+    ],
+    "archivos": [
+      "PLAN ESTRATÉGICO DE SEGURIDAD VIAL\\FASE 2\\12. PLAN DE PREPARACIÓN Y RESPUESTA ANTE EMERGENCIAS VIALES\\PESV-PLN-003 PLAN DE PREPARACIÓN Y RESPUESTA ANTE EMERGENCIAS VIALES.docx"
+    ]
+  },
+  "Decreto 434 de 2020": {
+    "tipo": "Decreto",
+    "numero": 434,
+    "anio": 2020,
+    "citas": [
+      "Decreto 434 de\n2020"
+    ],
+    "archivos": [
+      "PLAN ESTRATÉGICO DE SEGURIDAD VIAL\\FASE 2\\12. PLAN DE PREPARACIÓN Y RESPUESTA ANTE EMERGENCIAS VIALES\\PESV-PLN-003 PLAN DE PREPARACIÓN Y RESPUESTA ANTE EMERGENCIAS VIALES.docx"
+    ]
+  },
+  "Decreto 438 de 2020": {
+    "tipo": "Decreto",
+    "numero": 438,
+    "anio": 2020,
+    "citas": [
+      "Decreto 438 de\n2020"
+    ],
+    "archivos": [
+      "PLAN ESTRATÉGICO DE SEGURIDAD VIAL\\FASE 2\\12. PLAN DE PREPARACIÓN Y RESPUESTA ANTE EMERGENCIAS VIALES\\PESV-PLN-003 PLAN DE PREPARACIÓN Y RESPUESTA ANTE EMERGENCIAS VIALES.docx"
+    ]
+  },
+  "Decreto 531 de 2020": {
+    "tipo": "Decreto",
+    "numero": 531,
+    "anio": 2020,
+    "citas": [
+      "Decreto 531 de\n2020"
+    ],
+    "archivos": [
+      "PLAN ESTRATÉGICO DE SEGURIDAD VIAL\\FASE 2\\12. PLAN DE PREPARACIÓN Y RESPUESTA ANTE EMERGENCIAS VIALES\\PESV-PLN-003 PLAN DE PREPARACIÓN Y RESPUESTA ANTE EMERGENCIAS VIALES.docx"
+    ]
+  },
+  "Decreto 439 de 2020": {
+    "tipo": "Decreto",
+    "numero": 439,
+    "anio": 2020,
+    "citas": [
+      "Decreto 439 de\n2020"
+    ],
+    "archivos": [
+      "PLAN ESTRATÉGICO DE SEGURIDAD VIAL\\FASE 2\\12. PLAN DE PREPARACIÓN Y RESPUESTA ANTE EMERGENCIAS VIALES\\PESV-PLN-003 PLAN DE PREPARACIÓN Y RESPUESTA ANTE EMERGENCIAS VIALES.docx"
+    ]
+  }
+}

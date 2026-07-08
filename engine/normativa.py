@@ -57,6 +57,62 @@ CORRECCIONES = [
     # [7] Resolución 1356 de 2012 - derogada por 3461 de 2025
     ("RESOLUCIÓN 1356 DE 2012",         "Resolución 3461 de 2025"),
     ("RESOLUCIÓN\xa01356 DE 2012",      "Resolución 3461 de 2025"),
+
+    # [8] Auditoría normativa 2026-07-08 - errores de cita (número/año que no existe)
+    ("LEY 9 DE 1997",           "Ley 9 de 1979"),
+    ("RESOLUCIÓN 2400 DE 1997", "Resolución 2400 de 1979"),
+    ("DECRETO 1972 DE 1990",    "Resolución 1792 de 1990"),
+    ("LEY 1562 DE 2013",        "Ley 1562 de 2012"),
+    ("RESOLUCIÓN 2013 DE 2017", "Resolución 2013 de 1986"),
+
+    # [9] Auditoría normativa 2026-07-08 - compiladas/derogadas por el Decreto 1072 de 2015
+    ("DECRETO 1443 DE 2014", "Decreto 1072 de 2015"),
+    ("DECRETO 1530 DE 1996", "Decreto 1072 de 2015"),
+
+    # [10] Auditoría normativa 2026-07-08 - evaluaciones médicas ocupacionales,
+    # derogadas por la Resolución 1843 de 2025 (Mintrabajo, 29-abr-2025)
+    ("RESOLUCIÓN 2346 DE 2007", "Resolución 1843 de 2025"),
+    ("RESOLUCIÓN 1918 DE 2009", "Resolución 1843 de 2025"),
+    ("RESOLUCIÓN 1075 DE 1992", "Resolución 1843 de 2025"),
+
+    # [11] Auditoría normativa 2026-07-08 - trabajo seguro en alturas,
+    # derogadas por la Resolución 4272 de 2021
+    ("RESOLUCIÓN 3673 DE 2008", "Resolución 4272 de 2021"),
+    ("RESOLUCIÓN 1409 DE 2012", "Resolución 4272 de 2021"),
+
+    # [12] Auditoría normativa 2026-07-08 - licencias SST,
+    # derogadas por la Resolución 908 de 2025 (vigente desde 15-sep-2025)
+    ("RESOLUCIÓN 754 DE 2021",  "Resolución 908 de 2025"),
+    ("RESOLUCIÓN 1151 DE 2022", "Resolución 908 de 2025"),
+
+    # [13] Auditoría normativa 2026-07-08 - uso racional de bolsas plásticas,
+    # derogadas por la Resolución 803 de 2024 (Minambiente)
+    ("RESOLUCIÓN 2184 DE 2019", "Resolución 803 de 2024"),
+    ("RESOLUCIÓN 668 DE 2016",  "Resolución 803 de 2024"),
+
+    # [14] Auditoría normativa 2026-07-08 - gestión del riesgo de desastres,
+    # derogadas por la Ley 1523 de 2012
+    ("DECRETO 919 DE 1989", "Ley 1523 de 2012"),
+    ("LEY 46 DE 1988",      "Ley 1523 de 2012"),
+
+    # [15] Auditoría normativa 2026-07-08 - circulares COVID/despido con fuero,
+    # derogadas expresamente por la Circular Externa 0071 de 2022 (Mintrabajo)
+    ("CIRCULAR 33 DE 2020", "Circular Externa 0071 de 2022"),
+    ("CIRCULAR 49 DE 2019", "Circular Externa 0071 de 2022"),
+
+    # [16] Auditoría normativa 2026-07-08 - otras derogatorias puntuales confirmadas
+    ("DECRETO 1607 DE 2002",    "Decreto 768 de 2022"),
+    ("RESOLUCIÓN 1111 DE 2017", "Resolución 0312 de 2019"),
+    ("RESOLUCIÓN 881 DE 2021",  "Resolución 978 de 2023"),
+    ("RESOLUCIÓN 3032 DE 2022", "Resolución 2851 de 2023"),
+    ("RESOLUCIÓN 90708 DE 2013", "Resolución 40117 de 2024"),
+    ("LEY 392 DE 1997",         "Ley 842 de 2003"),
+    ("RESOLUCIÓN 2566 DE 2009", "Decreto 1477 de 2014"),
+    ("LEY 322 DE 1996",         "Ley 1575 de 2012"),
+    ("RESOLUCIÓN 1565 DE 2014", "Resolución 40595 de 2022"),
+    ("RESOLUCIÓN 2404 DE 2019", "Resolución 2764 de 2022"),
+    ("RESOLUCIÓN 1045 DE 2003", "Resolución 754 de 2014"),
+    ("DECRETO 423 DE 2006",     "Decreto 646 de 2025"),
 ]
 
 # Compilar patrones una sola vez (con word boundaries para evitar parciales)
