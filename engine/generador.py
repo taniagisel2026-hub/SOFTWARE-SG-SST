@@ -223,7 +223,10 @@ def generar_sgsst(
 
     # 6. Correcciones legales (siempre) + normograma con Claude (opcional)
     console.print("\n[yellow]5.[/yellow] Actualizando normas legales...")
-    normas_corregidas = _aplicar_correcciones_legales(output_base)
+    anio_cliente = _obtener_anio_cliente(cliente)
+    if anio_cliente is not None:
+        console.print(f"   [dim]SG-SST del año {anio_cliente}: se omiten correcciones posteriores a ese año[/dim]")
+    normas_corregidas = _aplicar_correcciones_legales(output_base, anio_cliente=anio_cliente)
     if normas_corregidas > 0:
         console.print(f"   [green]{normas_corregidas} correcciones legales aplicadas[/green]")
     else:
@@ -606,13 +609,19 @@ def _abrir_docx(archivo: Path):
         raise
 
 
-def _aplicar_correcciones_legales(output_base: Path) -> int:
+def _aplicar_correcciones_legales(output_base: Path, anio_cliente: int | None = None) -> int:
     """Aplica correcciones legales deterministas a TODOS los .docx generados.
 
     Reemplaza normas derogadas/modificadas usando el mapa de correcciones
     verificadas en normativa.py. Gratis, exacto, sin API.
 
     Muestra detalle de cada corrección: archivo, ubicación, qué se cambió.
+
+    Args:
+        anio_cliente: Año del SG-SST (campo "año" del cliente). Si se indica,
+            se omiten las correcciones que en ese año todavía no regían, para
+            que un SG-SST de un año anterior conserve la norma que sí era
+            vigente en ese momento. Ver engine/normativa.py.
 
     Returns:
         Total de correcciones aplicadas
@@ -622,7 +631,7 @@ def _aplicar_correcciones_legales(output_base: Path) -> int:
         if archivo.name.startswith("~$"):
             continue
         try:
-            reporte = aplicar_correcciones_docx(str(archivo), detallado=True)
+            reporte = aplicar_correcciones_docx(str(archivo), detallado=True, anio_cliente=anio_cliente)
             if reporte.total_cambios > 0:
                 total += reporte.total_cambios
                 console.print(f"   [cyan]{archivo.name}[/cyan]: {reporte.total_cambios} corrección(es)")
@@ -634,6 +643,25 @@ def _aplicar_correcciones_legales(output_base: Path) -> int:
         except Exception as e:
             console.print(f"   [red]Error corrigiendo normas en {archivo.name}: {e}[/red]")
     return total
+
+
+def _obtener_anio_cliente(cliente: dict) -> int | None:
+    """Obtiene el año del SG-SST del cliente (campo "año" del YAML).
+
+    Retorna None si no está definido o no es un año válido - en ese caso
+    aplicar_correcciones_docx aplica todas las correcciones sin filtrar
+    (comportamiento histórico, seguro para el caso normal de un SG-SST
+    del año en curso).
+    """
+    valor = cliente.get("año") or cliente.get("ano")
+    if not valor:
+        return None
+    try:
+        return int(str(valor).strip())
+    except ValueError:
+        import re as _re
+        match = _re.search(r"\d{4}", str(valor))
+        return int(match.group()) if match else None
 
 
 def _obtener_num_trabajadores(cliente: dict) -> int:

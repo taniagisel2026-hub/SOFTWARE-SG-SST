@@ -833,9 +833,11 @@ def normas(ctx: click.Context) -> None:
     table.add_column("#", style="dim", justify="right")
     table.add_column("Norma original (derogada/erronea)", style="red")
     table.add_column("Correccion aplicada", style="green")
+    table.add_column("Vigente desde", style="yellow", justify="right")
 
     for i, c in enumerate(correcciones, 1):
-        table.add_row(str(i), c["vieja"], c["nueva"])
+        vigente = str(c["vigente_desde"]) if c["vigente_desde"] else "siempre"
+        table.add_row(str(i), c["vieja"], c["nueva"], vigente)
 
     console.print(f"\n")
     console.print(table)
@@ -843,7 +845,10 @@ def normas(ctx: click.Context) -> None:
         f"\n   [bold]{len(correcciones)}[/bold] correcciones configuradas."
     )
     console.print(
-        "   Se aplican automaticamente a [bold]todos[/bold] los .docx generados.\n"
+        "   Se aplican automaticamente a [bold]todos[/bold] los .docx generados,\n"
+        "   segun el campo 'año' del cliente (una correccion 'vigente desde' un año\n"
+        "   posterior al del cliente NO se aplica, para no adelantar cambios legales\n"
+        "   que en ese momento aun no existian).\n"
     )
     console.print(
         "   [dim]Para agregar una correccion, edita CORRECCIONES en engine/normativa.py[/dim]\n"
