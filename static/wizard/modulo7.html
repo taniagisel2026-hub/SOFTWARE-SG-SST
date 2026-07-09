@@ -10,13 +10,82 @@
   <div class="card">
     <p class="progreso">Módulo 7 de 7 — Cargos (matriz de peligros)</p>
     <h1>Cargos de la empresa</h1>
-    <p>Este paso todavía no tiene formulario propio — por ahora se omite y la matriz de peligros (IPVR) simplemente no se genera. Si quieres, después le pasas los cargos directo al equipo de MEDINA.</p>
-    <button onclick="omitir()">Omitir por ahora y continuar</button>
+    <p>Esto se usa para generar la Matriz de Peligros (IPVR). Elige una opción, o si no aplica, puedes omitir este paso.</p>
+
+    <h2>Opción A — Subir manuales de funciones</h2>
+    <p>Sube uno o más manuales (.docx, .xlsx o .pdf) — el nombre del cargo se detecta automáticamente del contenido, no hace falta escribirlo.</p>
+    <input type="file" id="f_manuales" accept=".docx,.xlsx,.pdf" multiple>
+    <button onclick="subirManuales()">Subir manuales y continuar</button>
+
+    <h2>Opción B — Escribir los cargos a mano</h2>
+    <div id="cargos"></div>
+    <button type="button" class="secundario" onclick="agregarCargo()">+ Agregar cargo</button>
+    <button onclick="confirmarLista()">Guardar cargos y continuar</button>
+
+    <h2>Opción C</h2>
+    <button class="secundario" onclick="omitir()">Omitir por ahora y continuar</button>
+
     <p id="error" class="error"></p>
   </div>
   <script src="common.js"></script>
   <script>
     const bid = getBorradorId();
+
+    async function subirManuales() {
+      document.getElementById("error").textContent = "";
+      const archivos = document.getElementById("f_manuales").files;
+      if (!archivos.length) { document.getElementById("error").textContent = "Selecciona al menos un archivo."; return; }
+      const fd = new FormData();
+      for (const f of archivos) fd.append("archivos", f);
+      try {
+        await api(`/borradores/${bid}/modulo-7/manuales`, { method: "POST", body: fd });
+        irAFinalizar(bid);
+      } catch (e) { document.getElementById("error").textContent = e.message; }
+    }
+
+    function agregarCargo() {
+      const div = document.createElement("div");
+      div.className = "sede-row";
+      div.innerHTML = `
+        <label>Nombre del cargo <input class="c_nombre" required></label>
+        <label>Proceso <input class="c_proceso" value="ADMINISTRATIVO"></label>
+        <label>Zona <input class="c_zona"></label>
+        <label>Tipo
+          <select class="c_tipo">
+            <option value="administrativo">Administrativo</option>
+            <option value="operativo">Operativo</option>
+            <option value="conductor">Conductor</option>
+            <option value="servicios_generales">Servicios generales</option>
+          </select>
+        </label>
+        <label>N° de personas expuestas <input class="c_expuestos" type="number" value="1" min="1"></label>
+        <label>Actividades (opcional, la IA las genera si lo dejas vacío) <textarea class="c_actividades"></textarea></label>
+        <button type="button" class="secundario" onclick="this.parentElement.remove()">Quitar</button>
+      `;
+      document.getElementById("cargos").appendChild(div);
+    }
+
+    async function confirmarLista() {
+      document.getElementById("error").textContent = "";
+      const filas = document.querySelectorAll("#cargos .sede-row");
+      const cargos = Array.from(filas).map(f => ({
+        nombre: f.querySelector(".c_nombre").value,
+        proceso: f.querySelector(".c_proceso").value || "ADMINISTRATIVO",
+        zona: f.querySelector(".c_zona").value,
+        tipo: f.querySelector(".c_tipo").value,
+        num_expuestos: parseInt(f.querySelector(".c_expuestos").value || "1", 10),
+        actividades: f.querySelector(".c_actividades").value,
+      }));
+      if (!cargos.length || cargos.some(c => !c.nombre)) {
+        document.getElementById("error").textContent = "Agrega al menos un cargo con nombre.";
+        return;
+      }
+      try {
+        await api(`/borradores/${bid}/modulo-7/lista`, { method: "POST", body: { cargos } });
+        irAFinalizar(bid);
+      } catch (e) { document.getElementById("error").textContent = e.message; }
+    }
+
     async function omitir() {
       try {
         await api(`/borradores/${bid}/modulo-7/saltar`, { method: "POST" });

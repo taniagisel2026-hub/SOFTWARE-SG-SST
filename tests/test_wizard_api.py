@@ -159,6 +159,120 @@ def test_finalizar_sin_todos_los_modulos_da_409(client, headers):
     assert r.status_code == 409
 
 
+def _avanzar_hasta_modulo_7(client, headers) -> str:
+    """Crea un borrador y confirma los modulos 1-6 con datos minimos validos.
+    Retorna el borrador_id, listo para probar el modulo 7."""
+    bid = client.post("/wizard/borradores", headers=headers).json()["borrador_id"]
+    client.post(
+        f"/wizard/borradores/{bid}/modulo-1/confirmar", headers=headers,
+        json={"razon_social": "ACME CARGOS S.A.S", "nit": "900987654-3",
+              "direccion_empresa": "Calle 1", "ciudad_empresa": "Bogota"},
+    )
+    client.post(
+        f"/wizard/borradores/{bid}/modulo-2/confirmar", headers=headers,
+        json={"nivel_riesgo": "III", "arl": "SURA", "numero_trabajadores_empresa": "9", "color_corporativo": "azul"},
+    )
+    client.post(
+        f"/wizard/borradores/{bid}/modulo-3/confirmar", headers=headers,
+        json={"sedes": [{"nombre": "Principal", "direccion": "Calle 1", "ciudad": "Bogota", "telefono": "123"}]},
+    )
+    client.post(
+        f"/wizard/borradores/{bid}/modulo-4/confirmar", headers=headers,
+        json={"nombre_responsable_sst": "Juan Perez", "cedula_responsable_sst": "1234",
+              "cargo_sst": "Profesional SST", "ciudad_cedula_sst": "Bogota",
+              "licencia_sst": "1234 de 2020", "empresa_consultora_sst": "MEDINA SST EMPRESARIAL S.A.S",
+              "nit_consultora_sst": "900.988.068-5", "licencia_empresa_consultora": "25-996 de 2017"},
+    )
+    client.post(
+        f"/wizard/borradores/{bid}/modulo-5/confirmar", headers=headers,
+        json={"version": "1", "año": "2026", "ciudad": "Bogota", "generar_pesv": False,
+              "generar_normograma_actualizado": True},
+    )
+    client.post(
+        f"/wizard/borradores/{bid}/modulo-6/confirmar", headers=headers,
+        json={"descripcion_empresa": "Empresa de pruebas."},
+    )
+    return bid
+
+
+def test_modulo_7_lista_sin_cargos_da_400(client, headers):
+    bid = _avanzar_hasta_modulo_7(client, headers)
+    r = client.post(f"/wizard/borradores/{bid}/modulo-7/lista", headers=headers, json={"cargos": []})
+    assert r.status_code == 400
+
+
+def test_modulo_7_lista_de_cargos_llega_al_yaml_final(client, headers):
+    from pathlib import Path
+    from engine.cliente import cargar_cliente
+
+    bid = _avanzar_hasta_modulo_7(client, headers)
+    r = client.post(
+        f"/wizard/borradores/{bid}/modulo-7/lista", headers=headers,
+        json={"cargos": [
+            {"nombre": "Gerente General", "proceso": "ADMINISTRATIVO", "tipo": "administrativo", "num_expuestos": 1},
+            {"nombre": "Conductor", "proceso": "LOGISTICA", "tipo": "conductor", "num_expuestos": 2},
+        ]},
+    )
+    assert r.status_code == 200
+    assert r.json()["modulo_actual"] == 8  # avanza mas alla del ultimo modulo
+
+    r = client.post(f"/wizard/borradores/{bid}/finalizar", headers=headers)
+    assert r.status_code == 200
+    cliente = cargar_cliente(Path(r.json()["config_path"]))
+    assert len(cliente["cargos"]) == 2
+    assert cliente["cargos"][0]["nombre"] == "Gerente General"
+    assert cliente["cargos"][1]["tipo"] == "conductor"
+
+
+def test_modulo_7_subir_manuales_llega_al_yaml_final(client, headers):
+    from pathlib import Path
+    from engine.cliente import cargar_cliente
+
+    bid = _avanzar_hasta_modulo_7(client, headers)
+    r = client.post(
+        f"/wizard/borradores/{bid}/modulo-7/manuales", headers=headers,
+        files=[
+            ("archivos", ("gerente.docx", io.BytesIO(b"contenido docx de prueba"),
+                          "application/vnd.openxmlformats-officedocument.wordprocessingml.document")),
+        ],
+    )
+    assert r.status_code == 200
+    assert r.json()["datos"]["modulo_7"]["manuales_subidos"] == ["gerente.docx"]
+
+    r = client.post(f"/wizard/borradores/{bid}/finalizar", headers=headers)
+    assert r.status_code == 200
+    resultado = r.json()
+    cliente = cargar_cliente(Path(resultado["config_path"]))
+    assert cliente["manuales_cargos_dir"] == "ACME_CARGOS_SAS_assets/manuales_cargos"
+
+    carpeta_manuales = Path(resultado["config_path"]).parent / cliente["manuales_cargos_dir"]
+    assert (carpeta_manuales / "gerente.docx").exists()
+
+
+def test_modulo_7_archivo_no_soportado_da_400(client, headers):
+    bid = _avanzar_hasta_modulo_7(client, headers)
+    r = client.post(
+        f"/wizard/borradores/{bid}/modulo-7/manuales", headers=headers,
+        files=[("archivos", ("foto.png", io.BytesIO(b"no es un manual"), "image/png"))],
+    )
+    assert r.status_code == 400
+
+
+def test_modulo_7_saltar_no_agrega_cargos_al_yaml(client, headers):
+    from pathlib import Path
+    from engine.cliente import cargar_cliente
+
+    bid = _avanzar_hasta_modulo_7(client, headers)
+    r = client.post(f"/wizard/borradores/{bid}/modulo-7/saltar", headers=headers)
+    assert r.status_code == 200
+
+    r = client.post(f"/wizard/borradores/{bid}/finalizar", headers=headers)
+    assert r.status_code == 200
+    cliente = cargar_cliente(Path(r.json()["config_path"]))
+    assert "cargos" not in cliente
+    assert "manuales_cargos_dir" not in cliente
+
+
 def test_endpoints_protegidos_requieren_api_key(client):
     r = client.post("/wizard/borradores")
     assert r.status_code == 401

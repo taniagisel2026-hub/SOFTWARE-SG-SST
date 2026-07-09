@@ -280,18 +280,74 @@ def modulo6_confirmar(borrador_id: str, body: Modulo6Request) -> dict:
 
 
 # ---------------------------------------------------------------------------
-# Modulo 7 -- Cargos (opcional, esta version solo permite omitirlo)
+# Modulo 7 -- Cargos (opcional, para la matriz de peligros IPVR)
 # ---------------------------------------------------------------------------
+# Dos formas de completarlo (igual que ya soporta generar_sgsst() por CLI):
+#   1) Subir manuales de funciones (.docx/.xlsx/.pdf) -- el nombre del cargo
+#      se detecta automaticamente del contenido del manual, no hay que
+#      escribirlo. Termina siendo `manuales_cargos_dir` en el YAML final.
+#   2) Escribir la lista de cargos a mano. Termina siendo `cargos` en el YAML.
+# O simplemente omitirlo -- la matriz IPVR no se genera, sin error.
+
+class Cargo(BaseModel):
+    nombre: str
+    proceso: str = "ADMINISTRATIVO"
+    zona: str = ""
+    tipo: str = "administrativo"  # administrativo | operativo | conductor | servicios_generales
+    num_expuestos: int = 1
+    actividades: str = ""
+    tareas: str = ""
+
+
+class Modulo7ListaRequest(BaseModel):
+    cargos: list[Cargo]
+
+
+@wizard_router.post("/borradores/{borrador_id}/modulo-7/manuales", dependencies=protegido)
+async def modulo7_subir_manuales(borrador_id: str, archivos: list[UploadFile] = File(...)) -> dict:
+    """Sube uno o mas manuales de funciones. Cada archivo se guarda en
+    wizard_uploads/<borrador_id>/manuales/ -- esa carpeta se convierte en
+    manuales_cargos_dir al finalizar (ver _ensamblar_cliente)."""
+    borrador = _obtener_o_404(borrador_id)
+    _verificar_gate(borrador, "modulo_7")
+
+    carpeta = WIZARD_UPLOADS_DIR / borrador_id / "manuales"
+    carpeta.mkdir(parents=True, exist_ok=True)
+    extensiones_validas = {".docx", ".xlsx", ".pdf"}
+    guardados = []
+    for archivo in archivos:
+        ext = Path(archivo.filename or "").suffix.lower()
+        if ext not in extensiones_validas:
+            raise HTTPException(400, f"Formato no soportado: {archivo.filename} (usa .docx, .xlsx o .pdf)")
+        destino = carpeta / Path(archivo.filename).name
+        with open(destino, "wb") as f:
+            shutil.copyfileobj(archivo.file, f)
+        guardados.append(destino.name)
+
+    return wizard_store.guardar_modulo(
+        borrador_id, "modulo_7", {"modo": "manuales", "manuales_subidos": guardados}
+    )
+
+
+@wizard_router.post("/borradores/{borrador_id}/modulo-7/lista", dependencies=protegido)
+def modulo7_lista_cargos(borrador_id: str, body: Modulo7ListaRequest) -> dict:
+    """Alternativa a subir manuales: escribir los cargos a mano."""
+    borrador = _obtener_o_404(borrador_id)
+    _verificar_gate(borrador, "modulo_7")
+    if not body.cargos:
+        raise HTTPException(400, "Agrega al menos un cargo, o usa /modulo-7/saltar si no aplica.")
+    datos = {"modo": "lista", "cargos": [c.model_dump() for c in body.cargos]}
+    return wizard_store.guardar_modulo(borrador_id, "modulo_7", datos)
+
 
 @wizard_router.post("/borradores/{borrador_id}/modulo-7/saltar", dependencies=protegido)
 def modulo7_saltar(borrador_id: str) -> dict:
-    """El constructor completo de cargos (subir manuales o armar la lista a
-    mano) queda para una siguiente iteracion -- generar_sgsst() ya soporta
-    que ni 'cargos' ni 'manuales_cargos_dir' esten presentes, simplemente
-    omite la matriz de peligros IPVR."""
+    """generar_sgsst() ya soporta que ni 'cargos' ni 'manuales_cargos_dir'
+    esten presentes -- simplemente omite la matriz de peligros IPVR."""
     borrador = _obtener_o_404(borrador_id)
     _verificar_gate(borrador, "modulo_7")
-    return wizard_store.saltar_modulo(borrador_id, "modulo_7")
+    datos = {"modo": "omitido"}
+    return wizard_store.guardar_modulo(borrador_id, "modulo_7", datos)
 
 
 # ---------------------------------------------------------------------------
@@ -334,6 +390,11 @@ def _ensamblar_cliente(borrador: dict) -> dict:
     cliente.update(datos.get("modulo_4", {}))
     cliente.update(datos.get("modulo_5", {}))
     cliente.update(datos.get("modulo_6", {}))
+    # modulo_7 (cargos): modo "lista" -> cargos: [...] directo en el YAML.
+    # modo "manuales" se resuelve en finalizar() (necesita copiar archivos
+    # y conocer el slug del cliente primero). modo "omitido" no agrega nada.
+    if datos.get("modulo_7", {}).get("modo") == "lista":
+        cliente["cargos"] = datos["modulo_7"]["cargos"]
     return cliente
 
 
@@ -368,6 +429,20 @@ def finalizar(borrador_id: str) -> dict:
         destino = assets_dir / origen.name
         shutil.copyfile(origen, destino)
         cliente[rol] = f"{slug}_assets/{origen.name}"
+
+    # Modulo 7, modo "manuales": copiar la carpeta de manuales subida (desechable)
+    # a clientes_config/<slug>_assets/manuales_cargos/ (permanente) y apuntar
+    # manuales_cargos_dir ahi -- cargar_cargos_desde_manuales() la resuelve
+    # relativa al propio YAML (igual que las imagenes).
+    modulo_7 = borrador["datos"].get("modulo_7", {})
+    if modulo_7.get("modo") == "manuales":
+        origen_manuales = WIZARD_UPLOADS_DIR / borrador_id / "manuales"
+        if origen_manuales.exists():
+            destino_manuales = assets_dir / "manuales_cargos"
+            if destino_manuales.exists():
+                shutil.rmtree(destino_manuales)
+            shutil.copytree(origen_manuales, destino_manuales)
+            cliente["manuales_cargos_dir"] = f"{slug}_assets/manuales_cargos"
 
     config_path = CLIENTES_CONFIG_PATH / f"{slug}.yaml"
     with open(config_path, "w", encoding="utf-8") as f:
