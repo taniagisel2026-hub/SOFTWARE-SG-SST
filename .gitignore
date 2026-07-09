@@ -18,6 +18,10 @@ tokens/
 # Cache
 .cache/
 
+# API REST (Fase 4) - estado de trabajos en segundo plano
+jobs.db
+credentials_web.json
+
 # Output de clientes (cada cliente es independiente)
 clientes/
 

@@ -1,9 +1,20 @@
 """Configuración global del sistema."""
 import os
+import sys
 from pathlib import Path
 from dotenv import load_dotenv
 
 load_dotenv()
+
+# Fuerza UTF-8 en stdout/stderr sin importar como se lance el proceso.
+# os.environ["PYTHONIOENCODING"] (como hacia cli.py) no sirve: el interprete
+# ya arranco con su codificacion, esa variable solo aplica a subprocesos
+# nuevos. reconfigure() si cambia la codificacion del stream ya abierto.
+# Sin esto, corridas sin terminal interactiva (ej. bajo uvicorn) truenan
+# con UnicodeEncodeError en cualquier caracter fuera de cp1252 (ej. "→").
+for _stream in (sys.stdout, sys.stderr):
+    if hasattr(_stream, "reconfigure"):
+        _stream.reconfigure(encoding="utf-8", errors="replace")
 
 BASE_DIR = Path(__file__).parent.parent
 PLANTILLA_PATH = Path(os.getenv("PLANTILLA_PATH", BASE_DIR / "Plantilla SG-SST 2026"))
@@ -18,6 +29,11 @@ CLAUDE_MODEL = os.getenv("CLAUDE_MODEL", "claude-haiku-4-5-20251001")
 # https://docs.anthropic.com/en/docs/about-claude/pricing
 CLAUDE_PRECIO_INPUT_MTOK = float(os.getenv("CLAUDE_PRECIO_INPUT", "1"))    # $/MTok input (Haiku 4.5)
 CLAUDE_PRECIO_OUTPUT_MTOK = float(os.getenv("CLAUDE_PRECIO_OUTPUT", "5"))  # $/MTok output (Haiku 4.5)
+
+# API REST (Fase 4)
+API_AUTH_TOKEN = os.getenv("API_AUTH_TOKEN", "")
+API_BASE_URL = os.getenv("API_BASE_URL", "http://localhost:8000")
+JOBS_DB_PATH = Path(os.getenv("JOBS_DB_PATH", BASE_DIR / "jobs.db"))
 
 # Tipos de documento y su nivel de humanización con Claude
 DOC_TYPES = {

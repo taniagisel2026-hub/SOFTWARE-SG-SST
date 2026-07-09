@@ -12,6 +12,11 @@ Registro de cambios del SG-SST Generator. Formato basado en [Keep a Changelog](h
 - **Auditoría de normativa** (`auditar_normativa.py`): extrae todas las citas de leyes/decretos/resoluciones de la plantilla maestra y las cruza contra fuentes oficiales (Suin-Juriscol, Función Pública, Mintrabajo, Minsalud). Genera `inventario_normas.json` con las 150 normas encontradas. 32 correcciones verificadas agregadas a `CORRECCIONES` en `engine/normativa.py`; 13 normas quedaron marcadas para revisión legal manual (ver `auditoria_normativa_2026-07-08.html`).
 - **Correcciones legales filtradas por año del SG-SST**: `aplicar_correcciones_docx()` acepta `anio_cliente` (tomado del campo `año` del YAML), de modo que un SG-SST histórico solo recibe las correcciones vigentes para su año y no normas que aún no existían.
 - **Comando `python cli.py normas`**: lista las correcciones legales configuradas en el sistema.
+- **API REST (Fase 4)** (`api.py`, `api_auth.py`, `engine/jobs.py`): segunda puerta de entrada a `engine/` por HTTP, sin reemplazar el CLI. Endpoints para generar, subir a Drive, consultar estado de trabajos (persistido en SQLite, sobrevive reinicios) y listar normas. Autenticación mínima por API key (`API_AUTH_TOKEN`). Se extrajo `engine/validacion.py` y `engine/drive_upload.py` de `cli.py` para que ambas interfaces compartan la misma lógica sin duplicarla.
+- **Flujo OAuth "web" para Google Drive** (`engine/drive_service.py::iniciar_auth_web`/`completar_auth_web`): permite autorizar el acceso a Drive de un cliente desde un navegador remoto (no en la máquina donde corre el servidor), necesario para que la API funcione fuera de una PC local. No modifica el flujo de escritorio existente (`autenticar_drive`), que sigue usando el CLI sin cambios.
+
+### Corregido
+- **Crash de codificación UTF-8 en salida sin terminal interactiva**: `rich.Console` truena con `UnicodeEncodeError` al imprimir caracteres fuera de cp1252 (ej. "→") cuando el proceso no corre en una terminal real — bloqueaba por completo la generación vía API REST. El `os.environ["PYTHONIOENCODING"]` que tenía `cli.py` no tenía ningún efecto real (esa variable no reconfigura un intérprete ya arrancado). Corregido con `sys.stdout.reconfigure(encoding="utf-8")` en `engine/config.py`, compartido por CLI y API.
 
 ---
 

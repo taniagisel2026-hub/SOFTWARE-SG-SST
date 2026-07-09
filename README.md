@@ -1,6 +1,6 @@
 # SG-SST Generator
 
-**Herramienta CLI** para generar Sistemas de Gestión de Seguridad y Salud en el Trabajo (SG-SST) personalizados a partir de una plantilla base, datos del cliente y manuales de funciones. Cumple Decreto 1072/2015 y Resolución 0312/2019 (Colombia).
+**Herramienta CLI** (y, desde la Fase 4, también **API REST**) para generar Sistemas de Gestión de Seguridad y Salud en el Trabajo (SG-SST) personalizados a partir de una plantilla base, datos del cliente y manuales de funciones. Cumple Decreto 1072/2015 y Resolución 0312/2019 (Colombia).
 
 Diseñada para uso interno de **MEDINA SST EMPRESARIAL S.A.S** y consultores asociados.
 
@@ -130,27 +130,65 @@ python cli.py <comando> --help
 
 ---
 
+## API REST (Fase 4)
+
+Segunda puerta de entrada a las mismas funciones del CLI, expuesta por HTTP — pensada como paso previo al portal de clientes (Fase 5). No reemplaza al CLI: ambos llaman a las mismas funciones de `engine/`.
+
+```cmd
+uvicorn api:app --reload --port 8000
+```
+
+Documentación interactiva (Swagger) en `http://localhost:8000/docs`.
+
+Todas las rutas salvo `/health` y `/auth/drive/callback` requieren el header `Authorization: Bearer <API_AUTH_TOKEN>` (configurado en `.env`, ver `.env.example`).
+
+| Método | Ruta | Para qué |
+|---|---|---|
+| `GET` | `/health` | Chequeo de vida, sin autenticación |
+| `GET` | `/normas` | Lista las correcciones legales configuradas |
+| `POST` | `/clientes/validar` | Valida un YAML de cliente |
+| `POST` | `/clientes/verificar` | Equivalente a `cli.py verificar`, responde JSON |
+| `POST` | `/clientes/{id}/generar` | Genera el SG-SST en segundo plano, responde `202` con un `job_id` |
+| `POST` | `/clientes/{id}/subir-drive` | Sube a Drive en segundo plano, responde `202` con un `job_id` |
+| `GET` | `/jobs/{job_id}` | Consulta el estado de un trabajo (`queued`/`running`/`done`/`failed`) |
+| `GET` | `/clientes/{id}/jobs` | Lista los trabajos de un cliente |
+| `GET` | `/auth/drive/{id}/start` | Inicia el login de Drive por navegador (flujo web) |
+| `GET` | `/auth/drive/callback` | Google redirige aquí tras el consentimiento |
+
+Las generaciones (2-40 min) y subidas a Drive corren en segundo plano; su estado se guarda en `jobs.db` (SQLite) y sobrevive un reinicio del servidor — un trabajo interrumpido a medias queda marcado `failed` con un mensaje claro en vez de perderse.
+
+**Login de Drive por navegador**: requiere crear un Client ID de tipo **"Web application"** en Google Cloud Console (distinto del `credentials.json` de escritorio que usa el CLI) con el redirect URI `http://localhost:8000/auth/drive/callback` registrado, y descargarlo como `credentials_web.json` en la raíz del proyecto. Sin ese archivo, `/auth/drive/{id}/start` falla con un mensaje explicando el paso pendiente. El login del CLI (`auth-drive`, `subir-drive`) no depende de esto y sigue funcionando igual que siempre.
+
+---
+
 ## Estructura del proyecto
 
 ```
 SOFTWARE SG-SST/
 ├── cli.py                          # Punto de entrada CLI
+├── api.py                          # Punto de entrada API REST (Fase 4)
+├── api_auth.py                     # Autenticación por API key de la API REST
 ├── verificar_links_listado.py      # Verificador de links del listado maestro
 ├── limpiar_cache.py                # Limpieza de caché de Claude
 ├── auditar_normativa.py            # Extrae y audita las normas citadas en la plantilla maestra
 ├── inventario_normas.json          # Inventario de normas generado por auditar_normativa.py
 ├── requirements.txt
-├── credentials.json                # OAuth Google (no subir a git)
-├── .env                            # API key Claude (no subir a git)
+├── credentials.json                # OAuth Google, flujo de escritorio/CLI (no subir a git)
+├── credentials_web.json            # OAuth Google, flujo web/API (no subir a git, paso manual)
+├── jobs.db                         # Estado de trabajos en segundo plano de la API (no subir a git)
+├── .env                            # API keys y tokens (no subir a git)
 │
 ├── engine/                         # Motor principal
 │   ├── generador.py                # Orquestador del pipeline
 │   ├── cliente.py                  # Carga YAML y arma contexto
 │   ├── config.py                   # Configuración y tipos de documento
+│   ├── validacion.py               # Validación/verificación de cliente, compartida por CLI y API
 │   ├── docx_engine.py              # Procesa archivos Word
 │   ├── xlsx_engine.py              # Procesa archivos Excel
 │   ├── claude_service.py           # Integración Claude API
-│   ├── drive_service.py            # Subida a Google Drive
+│   ├── drive_service.py            # Autenticación y subida a Google Drive (flujo escritorio + web)
+│   ├── drive_upload.py             # Logica de subida a Drive, compartida por CLI y API
+│   ├── jobs.py                     # Persistencia SQLite de trabajos en segundo plano (API)
 │   ├── listado_maestro.py          # Llena SST-MTZ-005 con links
 │   ├── matriz_documental.py        # Matriz documental del SG-SST
 │   ├── matriz_peligros.py          # Genera Matriz IPVR (SST-MTZ-012)

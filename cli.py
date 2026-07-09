@@ -11,7 +11,6 @@ from pathlib import Path
 import click
 from rich.console import Console
 from rich.table import Table
-from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn
 
 __version__ = "8.5.0"
 
@@ -42,10 +41,11 @@ try:
         obtener_uso_sesion,
     )
     from engine.generador import generar_sgsst
-    from engine.listado_maestro import actualizar_matriz_gestion_documental
+    from engine.drive_upload import ejecutar_subida_drive
     from engine.normativa import listar_correcciones, CORRECCIONES
     from engine.colores import listar_paletas, PALETAS
     from engine.utils import encontrar_ruta_logo
+    from engine.validacion import validar_cliente_dict, construir_reporte_verificacion
 except ImportError as _import_err:
     print(f"[ERROR] No se pudo importar el motor del SG-SST: {_import_err}")
     print("Verifica que estas ejecutando desde la carpeta del proyecto")
@@ -58,9 +58,6 @@ console = Console(highlight=False)
 
 logger = logging.getLogger("sgsst")
 logger.propagate = False  # evitar logs duplicados si otro modulo configura logging
-
-# Claves minimas que debe tener un YAML de cliente para no reventar
-_YAML_CLAVES_REQUERIDAS = ("razon_social", "nit")
 
 
 # ---------------------------------------------------------------------------
@@ -123,19 +120,9 @@ def _validar_yaml(config_path: Path) -> dict:
         click.BadParameter: si faltan claves obligatorias o el formato es invalido.
     """
     cliente = cargar_cliente(config_path)
-
-    if not isinstance(cliente, dict):
-        raise click.BadParameter(
-            f"El archivo {config_path.name} no contiene un YAML valido (se esperaba un diccionario)."
-        )
-
-    faltantes = [k for k in _YAML_CLAVES_REQUERIDAS if not cliente.get(k)]
-    if faltantes:
-        raise click.BadParameter(
-            f"Faltan claves obligatorias en {config_path.name}: {', '.join(faltantes)}. "
-            f"Revisa el archivo de configuracion."
-        )
-
+    problemas = validar_cliente_dict(cliente, config_path.name)
+    if problemas:
+        raise click.BadParameter(problemas[0])
     return cliente
 
 
@@ -284,46 +271,37 @@ def verificar(ctx: click.Context, config: str) -> None:
     """
     config_path = Path(config)
     cliente = _validar_yaml(config_path)
-    contexto = generar_contexto(cliente)
-    imagenes = obtener_imagenes(cliente, config_path.parent)
+    reporte = construir_reporte_verificacion(cliente, config_path)
 
     # Tabla de marcadores base (sin variantes duplicadas)
-    table = Table(title=f"Marcadores para: {cliente.get('razon_social', 'N/A')}")
+    table = Table(title=f"Marcadores para: {reporte['razon_social']}")
     table.add_column("Marcador", style="cyan")
     table.add_column("Valor", style="green")
     table.add_column("Estado", style="bold")
 
-    vistos: set[str] = set()
-    for marcador in sorted(contexto.keys()):
-        upper_key = marcador.upper()
-        if upper_key in vistos:
-            continue
-        vistos.add(upper_key)
-        valor = contexto[marcador]
-        estado = "[green]OK[/green]" if valor and str(valor).strip() else "[red]VACIO[/red]"
-        display = str(valor)[:60] + ("..." if len(str(valor)) > 60 else "")
-        table.add_row(marcador, display, estado)
+    for campo in reporte["campos"]:
+        estado = "[green]OK[/green]" if campo["estado"] == "ok" else "[red]VACIO[/red]"
+        display = campo["valor"][:60] + ("..." if len(campo["valor"]) > 60 else "")
+        table.add_row(campo["marcador"], display, estado)
 
     console.print(table)
 
     # Imagenes
-    console.print(f"\n[bold]Imagenes encontradas:[/bold] {len(imagenes)}")
-    for key, path in imagenes.items():
+    console.print(f"\n[bold]Imagenes encontradas:[/bold] {len(reporte['imagenes'])}")
+    for key, path in reporte["imagenes"].items():
         console.print(f"  {key}: {path}")
 
     # Marcadores vacios
-    marcadores_vacios = [m for m, v in contexto.items() if not v or not str(v).strip()]
-    marcadores_vacios_unicos = sorted(set(m.upper() for m in marcadores_vacios))
-    if marcadores_vacios_unicos:
-        console.print(f"\n[yellow]Advertencia: {len(marcadores_vacios_unicos)} marcadores vacios[/yellow]")
-        for m in marcadores_vacios_unicos:
+    if reporte["marcadores_vacios"]:
+        console.print(f"\n[yellow]Advertencia: {len(reporte['marcadores_vacios'])} marcadores vacios[/yellow]")
+        for m in reporte["marcadores_vacios"]:
             console.print(f"  {m}")
 
     # Opciones de generacion
     console.print(f"\n[bold]Opciones:[/bold]")
-    console.print(f"  PESV: {'Si' if cliente.get('generar_pesv') else 'No'}")
-    console.print(f"  Normograma actualizado: {'Si' if cliente.get('generar_normograma_actualizado') else 'No'}")
-    console.print(f"  Sedes: {len(cliente.get('sedes', []))}")
+    console.print(f"  PESV: {'Si' if reporte['opciones']['pesv'] else 'No'}")
+    console.print(f"  Normograma actualizado: {'Si' if reporte['opciones']['normograma_actualizado'] else 'No'}")
+    console.print(f"  Sedes: {reporte['opciones']['sedes']}")
 
 
 # ---------------------------------------------------------------------------
@@ -594,126 +572,8 @@ def preview(ctx: click.Context, documento: str, config: str) -> None:
 
 
 # ---------------------------------------------------------------------------
-# subir-drive  (logica pesada en _ejecutar_subida_drive)
+# subir-drive  (logica pesada en engine.drive_upload.ejecutar_subida_drive)
 # ---------------------------------------------------------------------------
-
-def _ejecutar_subida_drive(
-    cliente: dict,
-    output_dir: Path,
-    cliente_id: str,
-    actualizar_listado: bool,
-) -> dict:
-    """Logica de negocio para subir a Drive, separada del CLI.
-
-    Returns:
-        dict con claves: exitosos, errores, total, link
-    """
-    try:
-        from engine.drive_service import (
-            autenticar_drive, subir_sgsst_completo,
-            obtener_link_carpeta, subir_archivo,
-        )
-    except ImportError as e:
-        raise RuntimeError(
-            "No se pudo cargar el modulo de Google Drive. "
-            "Verifica que estan instaladas las dependencias: "
-            "pip install google-auth google-auth-oauthlib google-api-python-client"
-        ) from e
-
-    razon_social = cliente.get("razon_social", "CLIENTE")
-
-    # Autenticar
-    console.print("\n[yellow]Autenticando con Google Drive...[/yellow]")
-    service = autenticar_drive(cliente_id)
-    console.print("[green]Autenticacion exitosa[/green]")
-
-    # Subir con barra de progreso
-    console.print("\n[yellow]Subiendo documentos a Drive...[/yellow]")
-
-    with Progress(
-        SpinnerColumn(),
-        TextColumn("[progress.description]{task.description}"),
-        BarColumn(),
-        TextColumn("[progress.percentage]{task.percentage:>3.0f}%"),
-        console=console,
-    ) as progress:
-        task = progress.add_task("Subiendo...", total=1.0)
-
-        def progreso_cb(nombre: str, pct: float) -> None:
-            progress.update(
-                task, completed=min(pct, 1.0),
-                description=f"[dim]{nombre[:45]}[/dim]",
-            )
-
-        resultado = subir_sgsst_completo(
-            service=service,
-            output_dir=output_dir,
-            razon_social=razon_social,
-            año=cliente.get("año"),
-            progreso_callback=progreso_cb,
-        )
-
-    # Resultados
-    console.print(f"\n[bold green]=== SUBIDA COMPLETADA ===[/bold green]")
-    console.print(f"   Archivos subidos: [green]{resultado['exitosos']}[/green] / {resultado['total']}")
-
-    if resultado["errores"]:
-        console.print(f"   Errores: [red]{len(resultado['errores'])}[/red]")
-        for nombre, error in resultado["errores"][:3]:
-            console.print(f"     [red]X[/red] {nombre}: {error}")
-
-    # Link a carpeta raiz
-    link = obtener_link_carpeta(service, resultado["raiz_id"])
-    console.print(f"\n   [bold]Carpeta en Drive:[/bold] {link}")
-
-    # Actualizar la matriz SST-MTZ-005 con los links de Drive y re-subirla
-    if actualizar_listado:
-        console.print(
-            "\n[yellow]Actualizando matriz SST-MTZ-005 con links de Drive...[/yellow]"
-        )
-        from engine.listado_maestro import RUTA_MATRIZ_GESTION  # ruta relativa
-        ruta_matriz = actualizar_matriz_gestion_documental(
-            output_dir,
-            drive_links=resultado["archivos_subidos"],
-            generar_pesv=cliente.get("generar_pesv", False),
-        )
-        if ruta_matriz is None:
-            console.print(
-                "[yellow]No se encontro la matriz SST-MTZ-005 en el output; "
-                "se omite la actualizacion del listado maestro.[/yellow]"
-            )
-        else:
-            console.print(f"[green]Matriz actualizada localmente:[/green] {ruta_matriz}")
-            # Re-subir la matriz a Drive sobre el mismo archivo ya existente
-            try:
-                matriz_rel = str(RUTA_MATRIZ_GESTION)
-                info_drive = resultado["archivos_subidos"].get(matriz_rel)
-                if info_drive and info_drive.get("id"):
-                    from googleapiclient.http import MediaFileUpload
-                    media = MediaFileUpload(
-                        str(ruta_matriz),
-                        mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                        resumable=True,
-                    )
-                    service.files().update(
-                        fileId=info_drive["id"], media_body=media
-                    ).execute()
-                    console.print("[green]Matriz re-subida a Drive con los links actualizados.[/green]")
-                else:
-                    # Fallback: subir como archivo nuevo
-                    subir_archivo(service, ruta_matriz, resultado["raiz_id"])
-                    console.print("[green]Matriz subida a Drive (fallback).[/green]")
-            except Exception as e:
-                console.print(f"[red]Error re-subiendo la matriz: {e}[/red]")
-
-    console.print()
-    return {
-        "exitosos": resultado["exitosos"],
-        "errores": resultado["errores"],
-        "total": resultado["total"],
-        "link": link,
-    }
-
 
 @cli.command(name="subir-drive")
 @click.argument("config", type=click.Path(exists=True))
@@ -772,7 +632,7 @@ def subir_drive(
     console.print(f"[bold]Origen:[/bold] {output_dir}")
     console.print(f"[bold]Cliente ID:[/bold] {cliente_id}")
 
-    resumen = _ejecutar_subida_drive(cliente, output_dir, cliente_id, actualizar_listado)
+    resumen = ejecutar_subida_drive(cliente, output_dir, cliente_id, actualizar_listado)
 
     # Usar el retorno para resumen final
     if resumen["errores"]:

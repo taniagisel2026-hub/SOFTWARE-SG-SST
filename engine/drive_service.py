@@ -5,7 +5,7 @@ from pathlib import Path
 
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
-from google_auth_oauthlib.flow import InstalledAppFlow
+from google_auth_oauthlib.flow import Flow, InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
 
@@ -14,8 +14,11 @@ from .config import BASE_DIR
 # Permisos necesarios
 SCOPES = ["https://www.googleapis.com/auth/drive"]
 
-# Ruta a las credenciales OAuth
+# Ruta a las credenciales OAuth (flujo de escritorio, usado por el CLI)
 CREDENTIALS_PATH = BASE_DIR / "credentials.json"
+# Ruta a las credenciales OAuth "Web application" (flujo web, usado por la API).
+# Se crea aparte en Google Cloud Console -- ver iniciar_auth_web().
+CREDENTIALS_WEB_PATH = BASE_DIR / "credentials_web.json"
 TOKENS_DIR = BASE_DIR / "tokens"
 
 # MIME types para carpetas y archivos de Google
@@ -84,6 +87,53 @@ def autenticar_drive(cliente_id: str) -> object:
             f.write(creds.to_json())
 
     return build("drive", "v3", credentials=creds)
+
+
+def iniciar_auth_web(cliente_id: str, redirect_uri: str) -> str:
+    """Genera la URL de consentimiento de Google para el flujo OAuth "web" (API REST).
+
+    A diferencia de autenticar_drive() (flujo de escritorio, abre un navegador
+    EN LA MISMA MAQUINA donde corre el proceso), este flujo esta pensado para
+    correr en un servidor: quien se autentica abre esta URL en SU PROPIO
+    navegador, y Google redirige a completar_auth_web() con el codigo.
+
+    Requiere credentials_web.json (Client ID tipo "Web application" en
+    Google Cloud Console, con `redirect_uri` registrado como Authorized
+    redirect URI) -- ver docs/ARQUITECTURA.md.
+    """
+    if not CREDENTIALS_WEB_PATH.exists():
+        raise FileNotFoundError(
+            f"No se encontro {CREDENTIALS_WEB_PATH}. "
+            "Crea un Client ID tipo 'Web application' en Google Cloud Console "
+            "(distinto del credentials.json de escritorio) y descargalo con ese nombre."
+        )
+    flow = Flow.from_client_secrets_file(
+        str(CREDENTIALS_WEB_PATH), SCOPES, redirect_uri=redirect_uri
+    )
+    auth_url, _ = flow.authorization_url(
+        access_type="offline",  # necesario para recibir refresh_token
+        prompt="consent",       # fuerza a que Google lo reenvie incluso en re-autorizaciones
+        state=cliente_id,
+    )
+    return auth_url
+
+
+def completar_auth_web(cliente_id: str, code: str, redirect_uri: str) -> None:
+    """Intercambia el codigo de autorizacion por un token y lo guarda.
+
+    Escribe en el MISMO formato/ruta que autenticar_drive() (tokens/token_<id>.json),
+    asi que una vez guardado, autenticar_drive() lo usa sin ningun cambio --
+    no le importa si el token se creo por el flujo de escritorio o el web.
+    """
+    flow = Flow.from_client_secrets_file(
+        str(CREDENTIALS_WEB_PATH), SCOPES, redirect_uri=redirect_uri
+    )
+    flow.fetch_token(code=code)
+    creds = flow.credentials
+
+    token_file = _token_path(cliente_id)
+    with open(token_file, "w") as f:
+        f.write(creds.to_json())
 
 
 def crear_carpeta(service, nombre: str, parent_id: str = None) -> str:

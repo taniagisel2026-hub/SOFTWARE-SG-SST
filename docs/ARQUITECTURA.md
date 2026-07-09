@@ -10,18 +10,20 @@ Documento para desarrolladores que necesiten **mantener, depurar o extender** el
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│  USUARIO (Consultor SST)                                         │
-│  • Edita: clientes_config/MI_CLIENTE.yaml                        │
-│  • Ejecuta: python cli.py generar / subir-drive                  │
+│  USUARIO (Consultor SST)          │  CLIENTE HTTP (Fase 4)        │
+│  • Edita: clientes_config/X.yaml  │  • POST /clientes/{id}/generar│
+│  • Ejecuta: python cli.py ...     │  • GET /jobs/{id}             │
 └─────────────────────────────────────────────────────────────────┘
-                              │
-                              ▼
-┌─────────────────────────────────────────────────────────────────┐
-│  cli.py (Click)                                                  │
-│  Define comandos: generar, subir-drive, verificar, etc.          │
-└─────────────────────────────────────────────────────────────────┘
-                              │
-                              ▼
+                │                                  │
+                ▼                                  ▼
+┌───────────────────────────────┐  ┌────────────────────────────────┐
+│  cli.py (Click)                │  │  api.py (FastAPI)               │
+│  Comandos: generar, subir-...  │  │  Endpoints REST + jobs en        │
+│                                 │  │  segundo plano (engine/jobs.py) │
+└───────────────────────────────┘  └────────────────────────────────┘
+                              │                  │
+                              └────────┬─────────┘
+                                       ▼
 ┌─────────────────────────────────────────────────────────────────┐
 │  engine/generador.py                                             │
 │  Orquesta el pipeline completo (12 pasos)                        │
@@ -90,6 +92,55 @@ Cuando se ejecuta `python cli.py subir-drive clientes_config/X.yaml`:
 | 7 | Inyectar `=HYPERLINK("url","texto")` en cada fila de la matriz `SST-MTZ-005` | `listado_maestro.py` |
 | 8 | Generar pestañas por tipo (PROGRAMA, FORMATO, ...) | `listado_maestro.py` |
 | 9 | Re-subir `SST-MTZ-005` actualizado a Drive | `drive_service.py` |
+
+---
+
+## API REST (`api.py`, Fase 4)
+
+Segunda puerta de entrada a `engine/`, pensada para eventualmente correr en un servidor (de ahí el flujo OAuth "web" más abajo), aunque por ahora se corre y prueba localmente:
+
+```cmd
+uvicorn api:app --reload --port 8000
+```
+
+Todas las rutas salvo `/health` y `/auth/drive/callback` requieren `Authorization: Bearer <API_AUTH_TOKEN>`, verificado por `api_auth.py::verify_api_key` (dependency de FastAPI, no es login de usuario).
+
+### Endpoints y a qué llaman
+
+| Endpoint | Llama a |
+|---|---|
+| `GET /health` | — (chequeo de vida) |
+| `GET /normas` | `engine/normativa.py::listar_correcciones()` (sin cambios) |
+| `POST /clientes/validar` | `engine/validacion.py::validar_cliente_dict()` |
+| `POST /clientes/verificar` | `engine/validacion.py::construir_reporte_verificacion()` |
+| `POST /clientes/{id}/generar` | `engine/generador.py::generar_sgsst()`, en segundo plano vía `engine/jobs.py` |
+| `POST /clientes/{id}/subir-drive` | `engine/drive_upload.py::ejecutar_subida_drive()`, en segundo plano |
+| `GET /jobs/{job_id}`, `GET /clientes/{id}/jobs` | `engine/jobs.py` (lectura de `jobs.db`) |
+| `GET /auth/drive/{id}/start`, `GET /auth/drive/callback` | `engine/drive_service.py::iniciar_auth_web()` / `completar_auth_web()` |
+
+### Lógica compartida entre CLI y API
+
+Para no duplicar comportamiento, se extrajo de `cli.py` a `engine/`:
+
+- **`engine/validacion.py`** — `validar_cliente_dict()` (antes `cli.py::_validar_yaml`, lanzaba `click.BadParameter`, específico de Click) y `construir_reporte_verificacion()` (antes la lógica inline del comando `verificar`, imprimía una tabla Rich directamente). Ahora ambas retornan datos estructurados; `cli.py` los envuelve para su propia UI (tabla Rich / excepción Click) y `api.py` los serializa a JSON.
+- **`engine/drive_upload.py`** — `ejecutar_subida_drive()` (antes `cli.py::_ejecutar_subida_drive`, ya estaba separada del comando Click). Se movió para que `api.py` no dependa de `cli.py`.
+
+### Trabajos en segundo plano (`engine/jobs.py`)
+
+`generar_sgsst()` tarda 2-40 min — nunca corre dentro del ciclo request/response. `POST /clientes/{id}/generar` valida sincrónicamente (falla rápido con `400` si el YAML es inválido), crea un registro de job y lo agenda con `BackgroundTasks` de FastAPI; responde `202` de inmediato con un `job_id`.
+
+Estado persistido en **SQLite** (`jobs.db`, tabla `jobs`) — mismo patrón que ya usa `diskcache` (también SQLite) para el caché de Claude. Estados: `queued` → `running` → `done`/`failed`. Al arrancar la API (`@app.on_event("startup")`), cualquier job que quedó en `queued`/`running` de una corrida anterior se marca `failed` con `"Interrumpido por reinicio del servidor"` — el trabajo en sí no se puede reanudar, pero el estado no se pierde silenciosamente.
+
+### Login de Drive por navegador (flujo OAuth "web")
+
+`autenticar_drive()` (usada por el CLI) abre un navegador **en la misma máquina donde corre el proceso** (`InstalledAppFlow.run_local_server()`) — funciona en una PC, es imposible en un servidor remoto. Para la API se agregó un segundo flujo en `engine/drive_service.py`, sin tocar `autenticar_drive()`:
+
+- `iniciar_auth_web(cliente_id, redirect_uri)` — genera la URL de consentimiento de Google (`google_auth_oauthlib.flow.Flow`, no `InstalledAppFlow`).
+- `completar_auth_web(cliente_id, code, redirect_uri)` — intercambia el código por un token y lo guarda en **la misma ruta/formato** que ya usa `autenticar_drive()` (`tokens/token_<id>.json`) — por eso `autenticar_drive()` no necesitó ningún cambio: no le importa si el token se creó por el flujo de escritorio o el web.
+
+**Prerrequisito manual** (no se puede hacer por código): crear un Client ID de tipo **"Web application"** en Google Cloud Console (el `credentials.json` actual es tipo "Desktop", se deja intacto), con el redirect URI `<API_BASE_URL>/auth/drive/callback` registrado, y descargarlo como `credentials_web.json` en la raíz. Sin ese archivo, `/auth/drive/{id}/start` falla con `FileNotFoundError` (mensaje explícito, no crashea el servidor).
+
+`/auth/drive/callback` es la única ruta protegida distinta de `/health`: no requiere `API_AUTH_TOKEN` porque la llama Google directamente (su seguridad es el `code` de un solo uso que emite Google, práctica estándar de OAuth).
 
 ---
 
@@ -359,14 +410,19 @@ Ver `tests/`. Se ejecutan con `python -m pytest`.
 | `OUTPUT_BASE_PATH` | `clientes` | Carpeta donde se generan los SG-SST |
 | `CACHE_DIR` | `.cache` | Carpeta del caché de Claude |
 | `CACHE_EXPIRY_DAYS` | `30` | TTL del caché |
+| `API_AUTH_TOKEN` | _(vacío)_ | Token que deben enviar los clientes de la API REST (`Authorization: Bearer <token>`) |
+| `API_BASE_URL` | `http://localhost:8000` | URL base de la API, usada para armar el redirect URI de OAuth |
+| `JOBS_DB_PATH` | `jobs.db` | Ruta al SQLite de estado de trabajos en segundo plano |
 
 ---
 
 ## Archivos sensibles (no commitear)
 
 ```
-credentials.json           # OAuth Google Cloud
-.env                       # API keys
+credentials.json           # OAuth Google Cloud (flujo de escritorio/CLI)
+credentials_web.json       # OAuth Google Cloud (flujo web/API, Fase 4)
+jobs.db                    # Estado de trabajos en segundo plano de la API
+.env                       # API keys y tokens
 tokens/                    # Tokens de Drive de cada cliente
 clientes/                  # SG-SST generados (datos sensibles de clientes)
 .cache/                    # Respuestas cacheadas de Claude
@@ -376,6 +432,8 @@ Sugerencia para `.gitignore`:
 
 ```
 credentials.json
+credentials_web.json
+jobs.db
 .env
 tokens/
 clientes/
@@ -393,7 +451,7 @@ _demo_*.py
 
 - **Python 3.12+** (probado en 3.12.10)
 - Ver `requirements.txt` para versiones exactas
-- Principales: `python-docx`, `docxtpl`, `openpyxl`, `anthropic`, `click`, `rich`, `pyyaml`, `diskcache`, `google-api-python-client`
+- Principales: `python-docx`, `docxtpl`, `openpyxl`, `anthropic`, `click`, `rich`, `pyyaml`, `diskcache`, `google-api-python-client`, `fastapi`, `uvicorn` (Fase 4)
 
 ---
 
@@ -405,7 +463,7 @@ _demo_*.py
 
 3. **Manuales con formato muy distinto al esperado**: si el manual no tiene tabla con DENOMINACIÓN/DEPENDENCIA, el sistema usa el nombre del archivo como denominación. Funciona pero pierde precisión en la inferencia de actor vial.
 
-4. **Tildes en nombres de archivo Windows**: archivos como `INSTALACIÓN.docx` pueden dar problemas si la consola usa codificación cp1252. El sistema usa rutas largas (`\\?\C:\...`) en `engine/utils.py::get_long_path()` para mitigar, pero algunos prints en consola pueden salir con caracteres raros (solo cosmético).
+4. **Tildes en nombres de archivo Windows**: archivos como `INSTALACIÓN.docx` pueden dar problemas si la consola usa codificación cp1252. El sistema usa rutas largas (`\\?\C:\...`) en `engine/utils.py::get_long_path()` para mitigar eso. Aparte, hasta el 2026-07-09 la salida por consola (`rich.Console`) podía **crashear** con `UnicodeEncodeError` al imprimir un carácter fuera de cp1252 (ej. "→") cuando el proceso no corre en una terminal interactiva — no era solo cosmético, tumbaba la generación completa. Se corrigió forzando UTF-8 en `sys.stdout`/`sys.stderr` al inicio de `engine/config.py` (`reconfigure(encoding="utf-8")`); el `os.environ["PYTHONIOENCODING"]` que tenía `cli.py` no servía porque esa variable solo afecta subprocesos nuevos, no el intérprete ya arrancado. Esto era invisible usando el CLI en una terminal normal, pero bloqueaba por completo a la API REST (Fase 4), que siempre corre así.
 
 ---
 
@@ -414,6 +472,6 @@ _demo_*.py
 - [ ] Tests adicionales: `docx_engine`, `xlsx_engine`, `cliente`, `drive_service` (mock)
 - [ ] Modo `--dry-run` para `subir-drive` (simular sin tocar Drive)
 - [ ] Migrar la subida a Drive a async para acelerar
-- [ ] Endpoint REST (Fase 4 del plan original)
+- [x] API REST (Fase 4) — `api.py`, ver sección dedicada arriba
 - [ ] Frontend web (Fase 5)
 - [ ] OCR de RUT y Cámara de Comercio (Fase 6)
