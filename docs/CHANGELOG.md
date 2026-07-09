@@ -6,9 +6,12 @@ Registro de cambios del SG-SST Generator. Formato basado en [Keep a Changelog](h
 
 ### Agregado
 - Documentación inicial: `README.md`, `docs/GUIA_CONSULTOR.md`, `docs/ARQUITECTURA.md`, `docs/CHANGELOG.md`
-- Suite de tests automatizados (80 tests) en `tests/`
+- Suite de tests automatizados (93 tests) en `tests/`
 - Archivo `.env.example` para facilitar setup inicial
 - Configuración de pytest (`pytest.ini`)
+- **Auditoría de normativa** (`auditar_normativa.py`): extrae todas las citas de leyes/decretos/resoluciones de la plantilla maestra y las cruza contra fuentes oficiales (Suin-Juriscol, Función Pública, Mintrabajo, Minsalud). Genera `inventario_normas.json` con las 150 normas encontradas. 32 correcciones verificadas agregadas a `CORRECCIONES` en `engine/normativa.py`; 13 normas quedaron marcadas para revisión legal manual (ver `auditoria_normativa_2026-07-08.html`).
+- **Correcciones legales filtradas por año del SG-SST**: `aplicar_correcciones_docx()` acepta `anio_cliente` (tomado del campo `año` del YAML), de modo que un SG-SST histórico solo recibe las correcciones vigentes para su año y no normas que aún no existían.
+- **Comando `python cli.py normas`**: lista las correcciones legales configuradas en el sistema.
 
 ---
 

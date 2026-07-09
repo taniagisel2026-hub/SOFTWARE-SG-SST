@@ -136,6 +136,8 @@ Abrir `clientes/<RAZON_SOCIAL>/I. PLANEAR/2.5.1 ARCHIVO Y RETENCIÓN DOCUMENTAL/
 - [ ] Abrir `clientes/<RAZON_SOCIAL>/NORMAS/` y revisar 2-3 archivos
 - [ ] Normas derogadas reemplazadas o eliminadas
 - [ ] Texto coherente y profesional
+- [ ] El campo `año` del YAML es el año real del SG-SST (no el año actual por defecto) — las correcciones legales se filtran por ese campo
+- [ ] Si el SG-SST es de un año anterior al actual: correr `python cli.py normas` y confirmar que las normas con `vigente_desde` posterior al `año` del cliente NO se aplicaron
 
 ### L. Backup y entrega
 

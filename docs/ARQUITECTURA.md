@@ -56,7 +56,7 @@ Cuando se ejecuta `python cli.py generar clientes_config/X.yaml`, ocurre lo sigu
 | 2 | Generar contexto de marcadores `{{KEY}}` con variantes | `engine/cliente.py` |
 | 3 | Crear carpeta de salida `clientes/<RAZON_SOCIAL>/` | shutil |
 | 4 | Recorrer plantilla y procesar cada archivo: <br>• `.docx` → reemplazar marcadores + humanizar con Claude <br>• `.xlsx` → reemplazar marcadores + insertar logo | `docx_engine.py`, `xlsx_engine.py` |
-| 5 | Aplicar correcciones legales al normograma | `normativa.py` |
+| 5 | Aplicar correcciones legales al normograma, filtradas por el año del SG-SST (`anio_cliente`, tomado del campo `año` del YAML) | `normativa.py` |
 | 5b | Adaptar COPASST ↔ Vigía según N° trabajadores | `generador.py` |
 | 5c | Aplicar colores corporativos del cliente | `colores.py` |
 | 6 | Si `generar_pesv: false` → eliminar carpeta PESV + limpiar hojas PESV de matrices | `pesv_cleanup.py` |
@@ -66,6 +66,12 @@ Cuando se ejecuta `python cli.py generar clientes_config/X.yaml`, ocurre lo sigu
 | 8 | Limpiar temporales | shutil |
 
 Al terminar, en `clientes/<RAZON_SOCIAL>/` queda la estructura PHVA completa más el `REPORTE_AUDITORIA_SST.txt`.
+
+### Correcciones legales (`engine/normativa.py`)
+
+`CORRECCIONES` es una lista de reglas `(texto derogado, texto vigente, vigente_desde)`. Cada regla con `vigente_desde` solo se aplica si `anio_cliente >= vigente_desde`; las reglas sin `vigente_desde` (errores de cita, nunca fueron correctas) se aplican siempre. Si no se pasa `anio_cliente` (comportamiento previo a 2026-07-08), se aplican todas las reglas sin filtrar.
+
+El comando `python cli.py normas` lista las reglas configuradas. El script `auditar_normativa.py` (independiente del pipeline de generación) escanea toda la plantilla maestra, extrae cada cita legal y produce `inventario_normas.json` para verificar manualmente contra fuentes oficiales cuáles siguen vigentes.
 
 ---
 

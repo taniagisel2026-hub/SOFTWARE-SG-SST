@@ -142,6 +142,8 @@ año: "2026"
 ciudad: "Bogotá D.C"
 ```
 
+> **Importante**: el campo `año` no es solo decorativo. El sistema lo usa para decidir **qué correcciones legales aplicar** en el normograma (`engine/normativa.py`). Si el SG-SST es de un año anterior (por ejemplo, para reconstruir el sistema histórico de un cliente), solo se aplican las correcciones de normas que ya estaban vigentes en ese año — no se le inyectan normas que salieron después. Usa siempre el año real del SG-SST que estás generando, no el año actual.
+
 #### Opciones de generación
 
 ```yaml

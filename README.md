@@ -114,7 +114,13 @@ python verificar_links_listado.py "clientes/<RAZON_SOCIAL>"
 | `python cli.py preview <documento.docx> <yaml>` | Muestra cómo quedaría un documento sin generarlo |
 | `python cli.py auth-drive --cliente-id <NIT>` | Re-autoriza acceso a Drive del cliente |
 | `python cli.py limpiar-cache` | Limpia el caché de Claude |
+| `python cli.py normas` | Lista las correcciones legales configuradas (norma derogada → norma vigente, y desde qué año aplica cada una) |
+| `python cli.py cache` | Muestra estadísticas de la caché de respuestas de Claude |
+| `python cli.py colores` | Muestra las paletas de colores disponibles o prueba una paleta |
+| `python cli.py escanear <yaml>` | Escanea la plantilla y muestra todos los marcadores `{{...}}` encontrados |
+| `python cli.py info` | Muestra información del sistema y configuración actual |
 | `python verificar_links_listado.py <ruta_cliente>` | Verifica que cada link de la matriz apunte al documento correcto |
+| `python auditar_normativa.py [--json <archivo>]` | Extrae y audita todas las normas citadas en la plantilla maestra |
 
 Para ver todas las opciones de un comando:
 
@@ -131,6 +137,8 @@ SOFTWARE SG-SST/
 ├── cli.py                          # Punto de entrada CLI
 ├── verificar_links_listado.py      # Verificador de links del listado maestro
 ├── limpiar_cache.py                # Limpieza de caché de Claude
+├── auditar_normativa.py            # Extrae y audita las normas citadas en la plantilla maestra
+├── inventario_normas.json          # Inventario de normas generado por auditar_normativa.py
 ├── requirements.txt
 ├── credentials.json                # OAuth Google (no subir a git)
 ├── .env                            # API key Claude (no subir a git)
@@ -138,15 +146,17 @@ SOFTWARE SG-SST/
 ├── engine/                         # Motor principal
 │   ├── generador.py                # Orquestador del pipeline
 │   ├── cliente.py                  # Carga YAML y arma contexto
+│   ├── config.py                   # Configuración y tipos de documento
 │   ├── docx_engine.py              # Procesa archivos Word
 │   ├── xlsx_engine.py              # Procesa archivos Excel
 │   ├── claude_service.py           # Integración Claude API
 │   ├── drive_service.py            # Subida a Google Drive
 │   ├── listado_maestro.py          # Llena SST-MTZ-005 con links
+│   ├── matriz_documental.py        # Matriz documental del SG-SST
 │   ├── matriz_peligros.py          # Genera Matriz IPVR (SST-MTZ-012)
 │   ├── matriz_peligros_viales.py   # Genera Matriz Vial (PESV-MTZ-002)
 │   ├── pesv_cleanup.py             # Limpia hojas PESV si no aplica
-│   ├── normativa.py                # Correcciones de normograma
+│   ├── normativa.py                # Correcciones de normograma, filtradas por el año del SG-SST del cliente
 │   ├── colores.py                  # Aplica colores corporativos
 │   ├── auditoria.py                # Reporte final
 │   └── utils.py
@@ -175,7 +185,7 @@ SOFTWARE SG-SST/
 python -m pytest tests/
 ```
 
-80 tests automatizados que validan los puntos críticos del sistema. Ver `tests/` para detalle.
+93 tests automatizados que validan los puntos críticos del sistema. Ver `tests/` para detalle.
 
 ---
 
