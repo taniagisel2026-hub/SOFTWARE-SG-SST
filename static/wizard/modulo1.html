@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Módulo 1 — Documentos legales</title>
+  <link rel="stylesheet" href="wizard.css">
+</head>
+<body>
+  <div class="card">
+    <p class="progreso">Módulo 1 de 7 — Documentos legales</p>
+    <h1>Sube tus documentos</h1>
+    <p>RUT, Cámara de Comercio y Cédula del representante legal (PDF), más el logo y la firma (imagen).</p>
+
+    <div class="upload-grid">
+      <label>RUT (PDF)
+        <input type="file" id="f_rut" accept="application/pdf">
+      </label>
+      <label>Certificado de Cámara de Comercio (PDF)
+        <input type="file" id="f_camara" accept="application/pdf">
+      </label>
+      <label>Cédula del representante legal (PDF)
+        <input type="file" id="f_cedula" accept="application/pdf">
+      </label>
+      <label>Logo (imagen)
+        <input type="file" id="f_logo" accept="image/*">
+      </label>
+      <label>Firma del representante legal (imagen)
+        <input type="file" id="f_firma" accept="image/*">
+      </label>
+    </div>
+    <button onclick="subir()">Extraer datos</button>
+    <p id="error" class="error"></p>
+
+    <div id="conflictos"></div>
+
+    <form id="form-confirmar" class="hidden" onsubmit="return confirmar(event)">
+      <h2>Revisa y confirma la información</h2>
+      <label>Razón social <input name="razon_social" required></label>
+      <label>NIT <input name="nit" required></label>
+      <label>Dirección <input name="direccion_empresa"></label>
+      <label>Ciudad <input name="ciudad_empresa"></label>
+      <label>Departamento <input name="departamento_empresa"></label>
+      <label>Barrio <input name="barrio_empresa"></label>
+      <label>Actividad económica <input name="actividad_economica"></label>
+      <label>Representante legal <input name="representante_legal"></label>
+      <label>Cédula del representante legal <input name="cedula_rl"></label>
+      <label>Cargo del representante legal <input name="cargo_rl"></label>
+      <label>Ciudad de expedición de la cédula <input name="ciudad_cedula_rl"></label>
+      <label>Correo de la empresa <input name="email_empresa"></label>
+      <label>Sitio web <input name="sitio_web"></label>
+      <label>Teléfono de la empresa <input name="telefono_empresa"></label>
+      <button type="submit">Confirmar y continuar</button>
+    </form>
+  </div>
+  <script src="common.js"></script>
+  <script>
+    const bid = getBorradorId();
+
+    async function subir() {
+      document.getElementById("error").textContent = "";
+      const fd = new FormData();
+      const campos = { rut: "f_rut", camara_comercio: "f_camara", cedula_rl: "f_cedula", logo: "f_logo", firma_rl: "f_firma" };
+      let algo = false;
+      for (const [campo, id] of Object.entries(campos)) {
+        const el = document.getElementById(id);
+        if (el.files[0]) { fd.append(campo, el.files[0]); algo = true; }
+      }
+      if (!algo) { document.getElementById("error").textContent = "Selecciona al menos un archivo."; return; }
+
+      try {
+        const data = await api(`/borradores/${bid}/modulo-1/archivos`, { method: "POST", body: fd });
+        mostrarExtraccion(data);
+      } catch (e) {
+        document.getElementById("error").textContent = e.message;
+      }
+    }
+
+    function mostrarExtraccion(data) {
+      const form = document.getElementById("form-confirmar");
+      form.classList.remove("hidden");
+
+      // Sugerido: preferir el valor del RUT; si no vino, usar el de Camara de Comercio.
+      const rut = data.extraccion.rut || {};
+      const cc = data.extraccion.camara_comercio || {};
+      const sugerido = { ...cc, ...rut };
+      for (const k in sugerido) if (!sugerido[k]) delete sugerido[k];
+      rellenarFormulario(form, { ...cc, ...sugerido });
+
+      const div = document.getElementById("conflictos");
+      if (data.conflictos && data.conflictos.length) {
+        div.innerHTML = "<h2>⚠ El RUT y la Cámara de Comercio no coinciden en estos campos</h2>" +
+          data.conflictos.map(c => `
+            <div class="conflicto">
+              <b>${c.campo}</b><br>
+              ${Object.entries(c.valores).map(([doc, val]) => `
+                <label style="font-weight:normal">
+                  <input type="radio" name="conf_${c.campo}"
+                         onclick="document.querySelector('[name=${c.campo}]').value = this.dataset.val">
+                  <span data-val-holder>${doc}: ${val}</span>
+                </label>
+              `).join("<br>")}
+            </div>
+          `).join("");
+        // Asignar data-val por separado para evitar problemas de escape de comillas
+        div.querySelectorAll("input[type=radio]").forEach((input, i) => {
+          const todosValores = data.conflictos.flatMap(c => Object.values(c.valores));
+          input.dataset.val = todosValores[i];
+        });
+      } else {
+        div.innerHTML = "";
+      }
+    }
+
+    async function confirmar(ev) {
+      ev.preventDefault();
+      document.getElementById("error").textContent = "";
+      const datos = Object.fromEntries(new FormData(ev.target).entries());
+      try {
+        await api(`/borradores/${bid}/modulo-1/confirmar`, { method: "POST", body: datos });
+        irAModulo(2, bid);
+      } catch (e) {
+        document.getElementById("error").textContent = e.message;
+      }
+      return false;
+    }
+  </script>
+</body>
+</html>

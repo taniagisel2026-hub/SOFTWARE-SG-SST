@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Módulo 6 — Descripción de la empresa</title>
+  <link rel="stylesheet" href="wizard.css">
+</head>
+<body>
+  <div class="card">
+    <p class="progreso">Módulo 6 de 7 — Descripción de la empresa</p>
+    <h1>Cuéntanos de tu empresa</h1>
+    <p>Este texto se usa para que la IA adapte el tono de los documentos a tu actividad. Entre más detalle, mejor.</p>
+    <form onsubmit="return confirmar(event)">
+      <label>Descripción
+        <textarea name="descripcion_empresa" required placeholder="Ej: Empresa dedicada al transporte de carga por carretera a nivel nacional, con más de 10 años de experiencia..."></textarea>
+      </label>
+      <button type="submit">Continuar</button>
+    </form>
+    <p id="error" class="error"></p>
+  </div>
+  <script src="common.js"></script>
+  <script>
+    const bid = getBorradorId();
+    async function confirmar(ev) {
+      ev.preventDefault();
+      const datos = Object.fromEntries(new FormData(ev.target).entries());
+      try {
+        await api(`/borradores/${bid}/modulo-6/confirmar`, { method: "POST", body: datos });
+        irAModulo(7, bid);
+      } catch (e) { document.getElementById("error").textContent = e.message; }
+      return false;
+    }
+  </script>
+</body>
+</html>

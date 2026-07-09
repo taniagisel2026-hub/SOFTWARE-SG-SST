@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Módulo 5 — Fechas y opciones</title>
+  <link rel="stylesheet" href="wizard.css">
+</head>
+<body>
+  <div class="card">
+    <p class="progreso">Módulo 5 de 7 — Fechas, versión y opciones</p>
+    <h1>Revisa las fechas sugeridas</h1>
+    <form id="form" onsubmit="return confirmar(event)">
+      <label>Versión <input name="version" required></label>
+      <label>Fecha de emisión <input name="fecha_emision"></label>
+      <label>Fecha <input name="fecha"></label>
+      <label>Año <input name="año"></label>
+      <label>Ciudad <input name="ciudad"></label>
+      <label>Mes y año <input name="mes_año"></label>
+      <label><input type="checkbox" name="generar_pesv" style="width:auto"> ¿Genera Plan Estratégico de Seguridad Vial (PESV)?</label>
+      <label><input type="checkbox" name="generar_normograma_actualizado" style="width:auto" checked> ¿Actualizar el normograma con Claude?</label>
+      <button type="submit">Continuar</button>
+    </form>
+    <p id="error" class="error"></p>
+  </div>
+  <script src="common.js"></script>
+  <script>
+    const bid = getBorradorId();
+
+    (async () => {
+      try {
+        const defaults = await api(`/borradores/${bid}/defaults/modulo-5`);
+        rellenarFormulario(document.getElementById("form"), defaults);
+      } catch (e) { document.getElementById("error").textContent = e.message; }
+    })();
+
+    async function confirmar(ev) {
+      ev.preventDefault();
+      document.getElementById("error").textContent = "";
+      const form = ev.target;
+      const datos = Object.fromEntries(new FormData(form).entries());
+      datos.generar_pesv = form.generar_pesv.checked;
+      datos.generar_normograma_actualizado = form.generar_normograma_actualizado.checked;
+      try {
+        await api(`/borradores/${bid}/modulo-5/confirmar`, { method: "POST", body: datos });
+        irAModulo(6, bid);
+      } catch (e) { document.getElementById("error").textContent = e.message; }
+      return false;
+    }
+  </script>
+</body>
+</html>

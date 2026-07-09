@@ -35,6 +35,10 @@ API_AUTH_TOKEN = os.getenv("API_AUTH_TOKEN", "")
 API_BASE_URL = os.getenv("API_BASE_URL", "http://localhost:8000")
 JOBS_DB_PATH = Path(os.getenv("JOBS_DB_PATH", BASE_DIR / "jobs.db"))
 
+# Asistente de onboarding por modulos (Fase 5)
+WIZARD_DB_PATH = Path(os.getenv("WIZARD_DB_PATH", BASE_DIR / "wizard_drafts.db"))
+WIZARD_UPLOADS_DIR = Path(os.getenv("WIZARD_UPLOADS_DIR", BASE_DIR / "wizard_uploads"))
+
 # Tipos de documento y su nivel de humanización con Claude
 DOC_TYPES = {
     "POL": {"nombre": "Política", "humanizar": "completa", "prefijo": "SST-POL-"},

@@ -1,0 +1,55 @@
+body {
+  font-family: -apple-system, "Segoe UI", Arial, sans-serif;
+  background: #f4f5f7;
+  margin: 0;
+  padding: 2rem 1rem;
+  color: #1c2321;
+}
+.card {
+  max-width: 640px;
+  margin: 0 auto;
+  background: #fff;
+  border-radius: 10px;
+  padding: 2rem;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+h1 { font-size: 1.4rem; margin-top: 0; }
+h2 { font-size: 1.05rem; margin-top: 1.5rem; }
+.upload-grid, form { display: flex; flex-direction: column; gap: 0.9rem; }
+label { display: flex; flex-direction: column; gap: 0.3rem; font-size: 0.9rem; font-weight: 600; }
+input[type="text"], input:not([type]), input[type="file"], select, textarea {
+  font: inherit;
+  padding: 0.5rem 0.6rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+textarea { min-height: 100px; }
+button {
+  margin-top: 1.2rem;
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 6px;
+  background: #1f5c56;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  align-self: flex-start;
+}
+button:hover { background: #17453f; }
+button.secundario { background: #626b62; }
+.hidden { display: none; }
+.conflicto {
+  background: #f6e6e2;
+  border-left: 4px solid #a6362b;
+  padding: 0.7rem 1rem;
+  margin: 0.6rem 0;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+.progreso {
+  font-size: 0.8rem;
+  color: #626b62;
+  margin-bottom: 1rem;
+}
+.sede-row { border: 1px solid #ddd; border-radius: 6px; padding: 0.8rem; }
+.error { color: #a6362b; font-size: 0.85rem; }

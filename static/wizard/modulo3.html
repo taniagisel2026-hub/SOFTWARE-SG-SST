@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Módulo 3 — Sedes</title>
+  <link rel="stylesheet" href="wizard.css">
+</head>
+<body>
+  <div class="card">
+    <p class="progreso">Módulo 3 de 7 — Sedes</p>
+    <h1>Sedes de la empresa</h1>
+    <div id="sedes"></div>
+    <button type="button" class="secundario" onclick="agregarSede()">+ Agregar otra sede</button>
+    <button onclick="confirmar()">Continuar</button>
+    <p id="error" class="error"></p>
+  </div>
+  <script src="common.js"></script>
+  <script>
+    const bid = getBorradorId();
+
+    function agregarSede(valores = {}) {
+      const div = document.createElement("div");
+      div.className = "sede-row";
+      div.innerHTML = `
+        <label>Nombre <input class="s_nombre" value="${valores.nombre || ""}" required></label>
+        <label>Dirección <input class="s_direccion" value="${valores.direccion || ""}"></label>
+        <label>Ciudad <input class="s_ciudad" value="${valores.ciudad || ""}"></label>
+        <label>Teléfono <input class="s_telefono" value="${valores.telefono || ""}"></label>
+        <button type="button" class="secundario" onclick="this.parentElement.remove()">Quitar</button>
+      `;
+      document.getElementById("sedes").appendChild(div);
+    }
+
+    agregarSede({ nombre: "Sede Principal" });
+
+    async function confirmar() {
+      document.getElementById("error").textContent = "";
+      const filas = document.querySelectorAll(".sede-row");
+      const sedes = Array.from(filas).map(f => ({
+        nombre: f.querySelector(".s_nombre").value,
+        direccion: f.querySelector(".s_direccion").value,
+        ciudad: f.querySelector(".s_ciudad").value,
+        telefono: f.querySelector(".s_telefono").value,
+      }));
+      if (!sedes.length || sedes.some(s => !s.nombre)) {
+        document.getElementById("error").textContent = "Cada sede necesita al menos un nombre.";
+        return;
+      }
+      try {
+        await api(`/borradores/${bid}/modulo-3/confirmar`, { method: "POST", body: { sedes } });
+        irAModulo(4, bid);
+      } catch (e) { document.getElementById("error").textContent = e.message; }
+    }
+  </script>
+</body>
+</html>

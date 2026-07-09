@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Módulo 7 — Cargos</title>
+  <link rel="stylesheet" href="wizard.css">
+</head>
+<body>
+  <div class="card">
+    <p class="progreso">Módulo 7 de 7 — Cargos (matriz de peligros)</p>
+    <h1>Cargos de la empresa</h1>
+    <p>Este paso todavía no tiene formulario propio — por ahora se omite y la matriz de peligros (IPVR) simplemente no se genera. Si quieres, después le pasas los cargos directo al equipo de MEDINA.</p>
+    <button onclick="omitir()">Omitir por ahora y continuar</button>
+    <p id="error" class="error"></p>
+  </div>
+  <script src="common.js"></script>
+  <script>
+    const bid = getBorradorId();
+    async function omitir() {
+      try {
+        await api(`/borradores/${bid}/modulo-7/saltar`, { method: "POST" });
+        irAFinalizar(bid);
+      } catch (e) { document.getElementById("error").textContent = e.message; }
+    }
+  </script>
+</body>
+</html>

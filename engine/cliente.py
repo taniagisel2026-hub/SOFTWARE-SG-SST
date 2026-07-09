@@ -95,19 +95,35 @@ def _parsear_numero_trabajadores(valor) -> int:
         return int(match.group()) if match else 0
 
 
-def generar_contexto(cliente: dict) -> dict:
-    """Convierte los datos del cliente YAML al contexto expandido para docxtpl.
+def formatear_fecha_hoy() -> dict:
+    """Calcula fecha/mes/año de hoy con el mismo criterio que generar_contexto()
+    usa como fallback cuando el cliente no especifica esos campos.
 
-    Genera el mismo formato que leer_marcadores_excel pero desde YAML.
-    Incluye todas las variantes de cada clave.
+    Reutilizada por el modulo 5 del asistente de onboarding para sugerir
+    valores por defecto sin duplicar la tabla de meses.
     """
     now = datetime.now()
     meses = [
         "", "enero", "febrero", "marzo", "abril", "mayo", "junio",
         "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"
     ]
-    mes_actual = meses[now.month].capitalize()
-    año = str(cliente.get("año", now.year))
+    return {
+        "fecha": now.strftime("%d de %B de %Y"),
+        "fecha_emision": now.strftime("%d de %B de %Y"),
+        "mes_actual": meses[now.month].capitalize(),
+        "año": str(now.year),
+    }
+
+
+def generar_contexto(cliente: dict) -> dict:
+    """Convierte los datos del cliente YAML al contexto expandido para docxtpl.
+
+    Genera el mismo formato que leer_marcadores_excel pero desde YAML.
+    Incluye todas las variantes de cada clave.
+    """
+    hoy = formatear_fecha_hoy()
+    mes_actual = hoy["mes_actual"]
+    año = str(cliente.get("año", hoy["año"]))
 
     # Determinar COPASST o Vigía según número de trabajadores
     # Decreto 1072 de 2015, Art. 2.2.4.6.12:
@@ -128,8 +144,8 @@ def generar_contexto(cliente: dict) -> dict:
     # Mapeo base de marcadores
     base = {
         "VERSION": str(cliente.get("version", "1")),
-        "FECHA_EMISION": cliente.get("fecha_emision", now.strftime("%d de %B de %Y")),
-        "FECHA": cliente.get("fecha", now.strftime("%d de %B de %Y")),
+        "FECHA_EMISION": cliente.get("fecha_emision", hoy["fecha_emision"]),
+        "FECHA": cliente.get("fecha", hoy["fecha"]),
         "CIUDAD_CEDULA_SST": cliente.get("ciudad_cedula_sst", ""),
         "CIUDAD_CEDULA_RL": cliente.get("ciudad_cedula_rl", ""),
         "CIUDAD": cliente.get("ciudad", ""),

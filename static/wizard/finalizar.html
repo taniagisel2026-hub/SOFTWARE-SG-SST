@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Finalizar — Generar SG-SST</title>
+  <link rel="stylesheet" href="wizard.css">
+</head>
+<body>
+  <div class="card">
+    <h1>Todo listo</h1>
+    <p>Vamos a armar el archivo de configuración con todo lo que confirmaste. Después de esto puedes generar el SG-SST.</p>
+    <button onclick="finalizarBorrador()">Generar archivo de configuración</button>
+    <p id="error" class="error"></p>
+
+    <div id="resultado" class="hidden">
+      <h2>Configuración lista</h2>
+      <p id="ruta"></p>
+      <button onclick="generarSGSST()">Generar SG-SST ahora</button>
+      <p id="estado-job"></p>
+    </div>
+  </div>
+  <script src="common.js"></script>
+  <script>
+    const bid = getBorradorId();
+    let clienteId = null;
+
+    async function finalizarBorrador() {
+      document.getElementById("error").textContent = "";
+      try {
+        const r = await api(`/borradores/${bid}/finalizar`, { method: "POST" });
+        clienteId = r.cliente_id;
+        document.getElementById("ruta").textContent = `Archivo: ${r.config_path}`;
+        document.getElementById("resultado").classList.remove("hidden");
+        window._configPath = r.config_path;
+      } catch (e) { document.getElementById("error").textContent = e.message; }
+    }
+
+    async function generarSGSST() {
+      const estadoEl = document.getElementById("estado-job");
+      estadoEl.textContent = "Generando... esto puede tardar varios minutos.";
+      try {
+        // Nota: /clientes/{id}/generar es el mismo endpoint de la Fase 4,
+        // el asistente no duplica la logica de generacion.
+        const r = await fetch(`/clientes/${clienteId}/generar`, {
+          method: "POST",
+          headers: { Authorization: `Bearer ${getToken()}`, "Content-Type": "application/json" },
+          body: JSON.stringify({ config_path: window._configPath, humanizar: true }),
+        }).then(r => r.json());
+        estadoEl.textContent = `Trabajo iniciado (job_id: ${r.job_id}). Consultando estado...`;
+        consultarEstado(r.job_id);
+      } catch (e) {
+        estadoEl.textContent = "";
+        document.getElementById("error").textContent = e.message;
+      }
+    }
+
+    async function consultarEstado(jobId) {
+      const estadoEl = document.getElementById("estado-job");
+      const r = await fetch(`/jobs/${jobId}`, {
+        headers: { Authorization: `Bearer ${getToken()}` },
+      }).then(r => r.json());
+      if (r.status === "done") {
+        estadoEl.textContent = `¡Listo! SG-SST generado en: ${r.resultado.output_dir}`;
+      } else if (r.status === "failed") {
+        estadoEl.textContent = `Error generando: ${r.error}`;
+      } else {
+        estadoEl.textContent = `Estado: ${r.status}...`;
+        setTimeout(() => consultarEstado(jobId), 5000);
+      }
+    }
+  </script>
+</body>
+</html>

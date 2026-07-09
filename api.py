@@ -16,6 +16,7 @@ from pathlib import Path
 
 from fastapi import BackgroundTasks, Depends, FastAPI, HTTPException
 from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
 from api_auth import verify_api_key
@@ -24,6 +25,7 @@ from engine.cliente import cargar_cliente
 from engine.config import API_BASE_URL, OUTPUT_BASE_PATH
 from engine.normativa import listar_correcciones
 from engine.validacion import validar_cliente_dict, construir_reporte_verificacion
+from wizard_api import wizard_router
 
 __version__ = "8.5.0"
 
@@ -31,6 +33,12 @@ app = FastAPI(
     title="SG-SST Generator API",
     version=__version__,
     description="API REST para generar SG-SST, subirlos a Drive y consultar su estado.",
+)
+app.include_router(wizard_router)
+app.mount(
+    "/portal",
+    StaticFiles(directory=Path(__file__).parent / "static" / "wizard", html=True),
+    name="wizard-ui",
 )
 
 protegido = [Depends(verify_api_key)]

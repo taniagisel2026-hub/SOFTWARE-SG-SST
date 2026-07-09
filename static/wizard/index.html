@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Asistente SG-SST — Nuevo cliente</title>
+  <link rel="stylesheet" href="wizard.css">
+</head>
+<body>
+  <div class="card">
+    <h1>Asistente de creación de SG-SST</h1>
+    <p>Vamos a pedirte los datos de tu empresa en 7 pasos cortos. Puedes tomarte tu tiempo — el borrador queda guardado en cada paso.</p>
+    <button onclick="empezar()">Empezar</button>
+    <p id="error" class="error"></p>
+  </div>
+  <script src="common.js"></script>
+  <script>
+    async function empezar() {
+      try {
+        const borrador = await api("/borradores", { method: "POST" });
+        irAModulo(1, borrador.borrador_id);
+      } catch (e) {
+        document.getElementById("error").textContent = e.message;
+      }
+    }
+  </script>
+</body>
+</html>

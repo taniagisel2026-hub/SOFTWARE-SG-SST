@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Módulo 2 — Riesgo y ARL</title>
+  <link rel="stylesheet" href="wizard.css">
+</head>
+<body>
+  <div class="card">
+    <p class="progreso">Módulo 2 de 7 — Riesgo y ARL</p>
+    <h1>Datos de riesgo laboral</h1>
+    <form onsubmit="return confirmar(event)">
+      <label>Nivel de riesgo
+        <select name="nivel_riesgo" required>
+          <option value="">Selecciona...</option>
+          <option value="I">I</option><option value="II">II</option>
+          <option value="III">III</option><option value="IV">IV</option><option value="V">V</option>
+        </select>
+      </label>
+      <label>ARL <input name="arl" required></label>
+      <label>Número de trabajadores <input name="numero_trabajadores_empresa" required></label>
+      <label>Color corporativo <input name="color_corporativo" placeholder="azul, verde, #RRGGBB..." required></label>
+      <button type="submit">Continuar</button>
+    </form>
+    <p id="error" class="error"></p>
+  </div>
+  <script src="common.js"></script>
+  <script>
+    const bid = getBorradorId();
+    async function confirmar(ev) {
+      ev.preventDefault();
+      const datos = Object.fromEntries(new FormData(ev.target).entries());
+      try {
+        await api(`/borradores/${bid}/modulo-2/confirmar`, { method: "POST", body: datos });
+        irAModulo(3, bid);
+      } catch (e) { document.getElementById("error").textContent = e.message; }
+      return false;
+    }
+  </script>
+</body>
+</html>

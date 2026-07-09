@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Módulo 4 — Responsable SST</title>
+  <link rel="stylesheet" href="wizard.css">
+</head>
+<body>
+  <div class="card">
+    <p class="progreso">Módulo 4 de 7 — Responsable SST y consultora</p>
+    <h1>Datos precargados — confirma o corrige</h1>
+    <form id="form" onsubmit="return confirmar(event)">
+      <label>Nombre del responsable SST <input name="nombre_responsable_sst" required></label>
+      <label>Cédula del responsable SST <input name="cedula_responsable_sst" required></label>
+      <label>Cargo <input name="cargo_sst" required></label>
+      <label>Ciudad de expedición de la cédula <input name="ciudad_cedula_sst"></label>
+      <label>Licencia SST <input name="licencia_sst"></label>
+      <label>Empresa consultora <input name="empresa_consultora_sst" required></label>
+      <label>NIT de la consultora <input name="nit_consultora_sst" required></label>
+      <label>Licencia de la consultora <input name="licencia_empresa_consultora"></label>
+      <label>Firma del responsable SST (imagen)
+        <input type="file" id="f_firma_sst" accept="image/*">
+      </label>
+      <button type="submit">Continuar</button>
+    </form>
+    <p id="error" class="error"></p>
+  </div>
+  <script src="common.js"></script>
+  <script>
+    const bid = getBorradorId();
+
+    (async () => {
+      try {
+        const defaults = await api(`/borradores/${bid}/defaults/modulo-4`);
+        rellenarFormulario(document.getElementById("form"), defaults);
+      } catch (e) { document.getElementById("error").textContent = e.message; }
+    })();
+
+    async function confirmar(ev) {
+      ev.preventDefault();
+      document.getElementById("error").textContent = "";
+      const form = ev.target;
+      const datos = Object.fromEntries(new FormData(form).entries());
+      delete datos.firma_sst_archivo;
+      try {
+        const firmaFile = document.getElementById("f_firma_sst").files[0];
+        if (firmaFile) {
+          const fd = new FormData();
+          fd.append("firma_sst", firmaFile);
+          await api(`/borradores/${bid}/modulo-4/archivos`, { method: "POST", body: fd });
+        }
+        await api(`/borradores/${bid}/modulo-4/confirmar`, { method: "POST", body: datos });
+        irAModulo(5, bid);
+      } catch (e) { document.getElementById("error").textContent = e.message; }
+      return false;
+    }
+  </script>
+</body>
+</html>

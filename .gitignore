@@ -22,6 +22,10 @@ tokens/
 jobs.db
 credentials_web.json
 
+# Asistente de onboarding (Fase 5) - borradores y archivos subidos por clientes
+wizard_drafts.db
+wizard_uploads/
+
 # Output de clientes (cada cliente es independiente)
 clientes/
 
