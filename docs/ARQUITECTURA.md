@@ -142,6 +142,10 @@ Estado persistido en **SQLite** (`jobs.db`, tabla `jobs`) — mismo patrón que 
 
 `/auth/drive/callback` es la única ruta protegida distinta de `/health`: no requiere `API_AUTH_TOKEN` porque la llama Google directamente (su seguridad es el `code` de un solo uso que emite Google, práctica estándar de OAuth).
 
+**Detalle importante — PKCE**: ambas funciones pasan `autogenerate_code_verifier=False` al crear el `Flow`. Por defecto `google-auth-oauthlib` activa PKCE, generando un `code_verifier` que solo vive en el objeto `Flow` de esa petición. Como `iniciar_auth_web()` y `completar_auth_web()` corren en dos peticiones HTTP separadas (dos objetos `Flow` distintos), ese `code_verifier` nunca le llega al segundo paso y Google rechazaba el intercambio con `invalid_grant: Missing code verifier`. No hace falta PKCE aquí porque `credentials_web.json` es un cliente confidencial (tiene `client_secret`) — PKCE existe para proteger clientes públicos (SPA/apps móviles) que no pueden guardar un secreto.
+
+Verificado en vivo (2026-07-09): login completo por navegador con un `credentials_web.json` real, token guardado en `tokens/token_<id>.json` con `refresh_token` incluido.
+
 ---
 
 ## Módulos principales

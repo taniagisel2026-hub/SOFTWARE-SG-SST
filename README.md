@@ -157,7 +157,7 @@ Todas las rutas salvo `/health` y `/auth/drive/callback` requieren el header `Au
 
 Las generaciones (2-40 min) y subidas a Drive corren en segundo plano; su estado se guarda en `jobs.db` (SQLite) y sobrevive un reinicio del servidor — un trabajo interrumpido a medias queda marcado `failed` con un mensaje claro en vez de perderse.
 
-**Login de Drive por navegador**: requiere crear un Client ID de tipo **"Web application"** en Google Cloud Console (distinto del `credentials.json` de escritorio que usa el CLI) con el redirect URI `http://localhost:8000/auth/drive/callback` registrado, y descargarlo como `credentials_web.json` en la raíz del proyecto. Sin ese archivo, `/auth/drive/{id}/start` falla con un mensaje explicando el paso pendiente. El login del CLI (`auth-drive`, `subir-drive`) no depende de esto y sigue funcionando igual que siempre.
+**Login de Drive por navegador**: requiere crear un Client ID de tipo **"Web application"** en Google Cloud Console (distinto del `credentials.json` de escritorio que usa el CLI) con el redirect URI `http://localhost:8000/auth/drive/callback` registrado, y descargarlo como `credentials_web.json` en la raíz del proyecto. Sin ese archivo, `/auth/drive/{id}/start` falla con un mensaje explicando el paso pendiente. El login del CLI (`auth-drive`, `subir-drive`) no depende de esto y sigue funcionando igual que siempre. Verificado en vivo (2026-07-09): flujo completo de principio a fin, token guardado con `refresh_token`.
 
 ---
 
