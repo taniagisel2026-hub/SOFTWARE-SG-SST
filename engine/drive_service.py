@@ -107,8 +107,17 @@ def iniciar_auth_web(cliente_id: str, redirect_uri: str) -> str:
             "Crea un Client ID tipo 'Web application' en Google Cloud Console "
             "(distinto del credentials.json de escritorio) y descargalo con ese nombre."
         )
+    # autogenerate_code_verifier=False: por defecto la libreria activa PKCE,
+    # generando un code_verifier que solo vive en este objeto Flow (se pierde
+    # al terminar el request). Como iniciar_auth_web() y completar_auth_web()
+    # son dos requests HTTP separados con dos objetos Flow distintos, ese
+    # code_verifier nunca le llega al segundo -- Google responde "invalid_grant:
+    # Missing code verifier". No hace falta PKCE aqui: este es un cliente
+    # confidencial (tiene client_secret), a diferencia de una app publica
+    # (SPA/movil) que es para lo que PKCE existe.
     flow = Flow.from_client_secrets_file(
-        str(CREDENTIALS_WEB_PATH), SCOPES, redirect_uri=redirect_uri
+        str(CREDENTIALS_WEB_PATH), SCOPES, redirect_uri=redirect_uri,
+        autogenerate_code_verifier=False,
     )
     auth_url, _ = flow.authorization_url(
         access_type="offline",  # necesario para recibir refresh_token
@@ -126,7 +135,8 @@ def completar_auth_web(cliente_id: str, code: str, redirect_uri: str) -> None:
     no le importa si el token se creo por el flujo de escritorio o el web.
     """
     flow = Flow.from_client_secrets_file(
-        str(CREDENTIALS_WEB_PATH), SCOPES, redirect_uri=redirect_uri
+        str(CREDENTIALS_WEB_PATH), SCOPES, redirect_uri=redirect_uri,
+        autogenerate_code_verifier=False,
     )
     flow.fetch_token(code=code)
     creds = flow.credentials
