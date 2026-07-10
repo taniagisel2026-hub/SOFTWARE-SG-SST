@@ -10,7 +10,7 @@
   <div class="card">
     <p class="progreso">Módulo 7 de 7 — Cargos (matriz de peligros)</p>
     <h1>Cargos de la empresa</h1>
-    <p>Esto se usa para generar la Matriz de Peligros (IPVR). Elige una opción, o si no aplica, puedes omitir este paso.</p>
+    <p>Con esto se genera la Matriz de Peligros (IPVR) — es <b>obligatoria para todas las empresas</b> (a diferencia del PESV, esta no depende de si tienen vehículos). Sube los manuales o escribe los cargos a mano.</p>
 
     <h2>Opción A — Subir manuales de funciones</h2>
     <p>Sube uno o más manuales (.docx, .xlsx o .pdf) — el nombre del cargo se detecta automáticamente del contenido, no hace falta escribirlo.</p>
@@ -22,7 +22,8 @@
     <button type="button" class="secundario" onclick="agregarCargo()">+ Agregar cargo</button>
     <button onclick="confirmarLista()">Guardar cargos y continuar</button>
 
-    <h2>Opción C</h2>
+    <h2>Opción C — Todavía no tengo esta información</h2>
+    <p>La matriz de peligros quedará pendiente — podrás completarla más adelante regenerando el SG-SST con los cargos.</p>
     <button class="secundario" onclick="omitir()">Omitir por ahora y continuar</button>
 
     <p id="error" class="error"></p>
