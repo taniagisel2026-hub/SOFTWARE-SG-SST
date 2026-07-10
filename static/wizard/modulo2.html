@@ -20,7 +20,18 @@
       </label>
       <label>ARL <input name="arl" required></label>
       <label>Número de trabajadores <input name="numero_trabajadores_empresa" required></label>
-      <label>Color corporativo <input name="color_corporativo" placeholder="azul, verde, #RRGGBB..." required></label>
+
+      <label>Color corporativo
+        <div class="swatches" id="swatches"></div>
+      </label>
+      <label>¿No encuentras el color? Ingresa el código hex
+        <div class="hex-row">
+          <div class="swatch-hex-preview" id="hex-preview"></div>
+          <input type="text" id="color_hex" placeholder="#RRGGBB" maxlength="7">
+        </div>
+      </label>
+      <input type="hidden" name="color_corporativo" id="color_corporativo">
+
       <button type="submit">Continuar</button>
     </form>
     <p id="error" class="error"></p>
@@ -28,8 +39,61 @@
   <script src="common.js"></script>
   <script>
     const bid = getBorradorId();
+
+    // Mismas 5 paletas predefinidas de engine/colores.py::PALETAS (tono "medio").
+    // Cualquier otro color se manda como hex y el backend genera la paleta sola.
+    const PALETAS = [
+      { key: "azul",    label: "Azul",    hex: "#2E75B6" },
+      { key: "verde",   label: "Verde",   hex: "#2E8B57" },
+      { key: "morado",  label: "Morado",  hex: "#7B4FB6" },
+      { key: "naranja", label: "Naranja", hex: "#E67E22" },
+      { key: "gris",    label: "Gris",    hex: "#5B5B5B" },
+    ];
+
+    const hidden = document.getElementById("color_corporativo");
+    const hexInput = document.getElementById("color_hex");
+    const hexPreview = document.getElementById("hex-preview");
+
+    const cont = document.getElementById("swatches");
+    for (const p of PALETAS) {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "swatch";
+      btn.title = p.label;
+      btn.style.background = p.hex;
+      btn.onclick = () => seleccionarPaleta(p.key, btn);
+      cont.appendChild(btn);
+    }
+
+    function seleccionarPaleta(key, btn) {
+      hidden.value = key;
+      hexInput.value = "";
+      hexPreview.style.background = "";
+      cont.querySelectorAll(".swatch").forEach(s => s.classList.remove("selected"));
+      btn.classList.add("selected");
+    }
+
+    hexInput.addEventListener("input", () => {
+      const val = hexInput.value.trim();
+      const m = /^#?([0-9A-Fa-f]{6})$/.exec(val);
+      if (m) {
+        const hex = `#${m[1].toUpperCase()}`;
+        hidden.value = hex;
+        hexPreview.style.background = hex;
+        cont.querySelectorAll(".swatch").forEach(s => s.classList.remove("selected"));
+      } else {
+        hexPreview.style.background = "";
+        if (hidden.value.startsWith("#")) hidden.value = "";
+      }
+    });
+
     async function confirmar(ev) {
       ev.preventDefault();
+      document.getElementById("error").textContent = "";
+      if (!hidden.value) {
+        document.getElementById("error").textContent = "Elige un color corporativo (un círculo de la lista o un código hex).";
+        return false;
+      }
       const datos = Object.fromEntries(new FormData(ev.target).entries());
       try {
         await api(`/borradores/${bid}/modulo-2/confirmar`, { method: "POST", body: datos });

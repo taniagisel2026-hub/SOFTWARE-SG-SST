@@ -53,3 +53,19 @@ button.secundario { background: #626b62; }
 }
 .sede-row { border: 1px solid #ddd; border-radius: 6px; padding: 0.8rem; }
 .error { color: #a6362b; font-size: 0.85rem; }
+
+.swatches { display: flex; gap: 0.7rem; flex-wrap: wrap; }
+.swatch {
+  width: 38px; height: 38px; border-radius: 50%;
+  border: 2px solid transparent; cursor: pointer; padding: 0;
+  box-shadow: 0 0 0 1px #ddd;
+}
+.swatch:hover { box-shadow: 0 0 0 1px #999; }
+.swatch.selected { border-color: #1c2321; box-shadow: 0 0 0 1px #1c2321; }
+.swatch-hex-preview {
+  width: 38px; height: 38px; border-radius: 50%;
+  border: 2px solid transparent; box-shadow: 0 0 0 1px #ddd;
+  flex-shrink: 0;
+}
+.hex-row { display: flex; align-items: center; gap: 0.6rem; }
+.hex-row input { flex: 1; }

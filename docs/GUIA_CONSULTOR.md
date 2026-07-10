@@ -51,7 +51,7 @@ Necesitas tener en mano del cliente:
 - ✅ **ARL** del cliente y **nivel de riesgo** (I, II, III, IV o V)
 - ✅ **Logo de la empresa** en PNG o JPG (preferible fondo transparente)
 - ✅ **Firma del Representante Legal** y **firma del Profesional SST** (PNG con fondo transparente)
-- ✅ **Color corporativo** preferido (azul, verde, rojo, naranja, morado, etc.)
+- ✅ **Color corporativo** preferido (azul, verde, morado, naranja, gris, o cualquier otro en código hex)
 - ✅ **Manuales de funciones** de cada cargo en `.docx` (opcional pero acelera mucho el proceso)
 - ✅ Saber si el cliente **necesita PESV** (Plan Estratégico de Seguridad Vial — aplica si tiene 10+ vehículos o usa transporte como actividad principal)
 
@@ -104,7 +104,7 @@ actividad_economica: >
 nivel_riesgo: "I"                              # I, II, III, IV o V según ARL
 arl: "AXA COLPATRIA"
 numero_trabajadores_empresa: "75"
-color_corporativo: "azul"                      # azul, verde, rojo, naranja, morado, amarillo, gris
+color_corporativo: "azul"                      # azul, verde, morado, naranja, gris -- o un hex "#2E75B6"
 ```
 
 #### Sedes
@@ -452,8 +452,10 @@ Esto afecta:
 ### Color corporativo
 
 ```yaml
-color_corporativo: "azul"   # azul, verde, rojo, naranja, morado, amarillo, gris
+color_corporativo: "azul"   # azul, verde, morado, naranja, gris -- o un hex "#2E75B6"
 ```
+
+Las **5 paletas predefinidas** son azul, verde, morado, naranja y gris (`engine/colores.py::PALETAS`). Si el color del cliente no es ninguna de esas, escribe su código **hex** directamente (ej. `"#C0392B"` para un rojo específico) — el sistema genera automáticamente las variantes claras/oscuras a partir de ese color. En el portal (Fase 5), el módulo 2 ya muestra estas 5 opciones como círculos de color para elegir con un clic, más un campo de hex para cualquier otro color.
 
 El sistema cambia los colores de:
 - Tablas y bordes en Word
