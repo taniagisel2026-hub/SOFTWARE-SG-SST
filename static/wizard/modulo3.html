@@ -10,6 +10,7 @@
   <div class="card">
     <p class="progreso">Módulo 3 de 7 — Sedes</p>
     <h1>Sedes de la empresa</h1>
+    <p class="ayuda">Este módulo aplica para empresas con <b>más de una sede</b> (ej. oficina administrativa y planta de producción en direcciones distintas). Si tu empresa opera desde un solo lugar, ya precargamos la dirección, ciudad y teléfono del módulo 1 — solo revisa que esté bien y dale a "Continuar", no necesitas agregar nada más.</p>
     <div id="sedes"></div>
     <button type="button" class="secundario" onclick="agregarSede()">+ Agregar otra sede</button>
     <button onclick="confirmar()">Continuar</button>
@@ -32,7 +33,21 @@
       document.getElementById("sedes").appendChild(div);
     }
 
-    agregarSede({ nombre: "Sede Principal" });
+    async function precargarSedePrincipal() {
+      try {
+        const borrador = await api(`/borradores/${bid}`);
+        const m1 = (borrador.datos && borrador.datos.modulo_1) || {};
+        agregarSede({
+          nombre: "Sede Principal",
+          direccion: m1.direccion_empresa || "",
+          ciudad: m1.ciudad_empresa || "",
+          telefono: m1.telefono_empresa || "",
+        });
+      } catch (e) {
+        agregarSede({ nombre: "Sede Principal" });
+      }
+    }
+    precargarSedePrincipal();
 
     async function confirmar() {
       document.getElementById("error").textContent = "";
