@@ -18,7 +18,6 @@
       <label>Ciudad <input name="ciudad"></label>
       <label>Mes y año <input name="mes_año"></label>
       <label><input type="checkbox" name="generar_pesv" style="width:auto"> ¿Genera Plan Estratégico de Seguridad Vial (PESV)?</label>
-      <label><input type="checkbox" name="generar_normograma_actualizado" style="width:auto" checked> ¿Actualizar el normograma con Claude?</label>
       <button type="submit">Continuar</button>
     </form>
     <p id="error" class="error"></p>
@@ -40,7 +39,6 @@
       const form = ev.target;
       const datos = Object.fromEntries(new FormData(form).entries());
       datos.generar_pesv = form.generar_pesv.checked;
-      datos.generar_normograma_actualizado = form.generar_normograma_actualizado.checked;
       try {
         await api(`/borradores/${bid}/modulo-5/confirmar`, { method: "POST", body: datos });
         irAModulo(6, bid);

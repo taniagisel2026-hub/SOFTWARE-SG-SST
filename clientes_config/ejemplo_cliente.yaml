@@ -73,7 +73,6 @@ mes_año: "enero,2025"
 
 # --- OPCIONES DE GENERACIÓN ---
 generar_pesv: false                  # (true) si aplica Plan Estratégico de Seguridad Vial, si no aplica (false)
-generar_normograma_actualizado: true # Actualizar normograma eliminando normas derogadas
 
 # =============================================================================
 # MATRIZ DE PELIGROS IPVR (SST-MTZ-012)

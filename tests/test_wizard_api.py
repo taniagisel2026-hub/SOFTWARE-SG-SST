@@ -117,8 +117,7 @@ def test_flujo_completo_hasta_finalizar_produce_yaml_valido(client, headers):
 
     r = client.post(
         f"/wizard/borradores/{bid}/modulo-5/confirmar", headers=headers,
-        json={"version": "1", "año": "2026", "ciudad": "Bogota", "generar_pesv": False,
-              "generar_normograma_actualizado": True},
+        json={"version": "1", "año": "2026", "ciudad": "Bogota", "generar_pesv": False},
     )
     assert r.status_code == 200
 
@@ -185,8 +184,7 @@ def _avanzar_hasta_modulo_7(client, headers) -> str:
     )
     client.post(
         f"/wizard/borradores/{bid}/modulo-5/confirmar", headers=headers,
-        json={"version": "1", "año": "2026", "ciudad": "Bogota", "generar_pesv": False,
-              "generar_normograma_actualizado": True},
+        json={"version": "1", "año": "2026", "ciudad": "Bogota", "generar_pesv": False},
     )
     client.post(
         f"/wizard/borradores/{bid}/modulo-6/confirmar", headers=headers,

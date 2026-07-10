@@ -107,9 +107,10 @@ def formatear_fecha_hoy() -> dict:
         "", "enero", "febrero", "marzo", "abril", "mayo", "junio",
         "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"
     ]
+    fecha_es = f"{now:%d} de {meses[now.month]} de {now.year}"
     return {
-        "fecha": now.strftime("%d de %B de %Y"),
-        "fecha_emision": now.strftime("%d de %B de %Y"),
+        "fecha": fecha_es,
+        "fecha_emision": fecha_es,
         "mes_actual": meses[now.month].capitalize(),
         "año": str(now.year),
     }

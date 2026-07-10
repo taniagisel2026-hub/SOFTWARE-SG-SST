@@ -254,7 +254,6 @@ class Modulo5Request(BaseModel):
     ciudad: str = ""
     mes_año: str = ""
     generar_pesv: bool = False
-    generar_normograma_actualizado: bool = True
 
 
 @wizard_router.post("/borradores/{borrador_id}/modulo-5/confirmar", dependencies=protegido)
@@ -372,7 +371,6 @@ def defaults_modulo5(borrador_id: str) -> dict:
         "ciudad": "Bogotá D.C.",
         "mes_año": f"{hoy['mes_actual']}, {hoy['año']}",
         "generar_pesv": False,
-        "generar_normograma_actualizado": True,
     }
 
 

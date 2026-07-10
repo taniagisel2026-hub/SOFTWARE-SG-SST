@@ -172,8 +172,9 @@ ciudad: "Bogotá D.C"
 
 ```yaml
 generar_pesv: false                            # true si aplica PESV
-generar_normograma_actualizado: true           # actualizar normograma con Claude
 ```
+
+> Existe también `generar_normograma_actualizado` (revisa el normograma con Claude y sugiere normas adicionales según la actividad económica), pero el asistente y la plantilla `ejemplo_cliente.yaml` ya no lo usan por defecto — las correcciones legales de `engine/normativa.py` se mantienen actualizadas aparte y se aplican siempre, sin necesitar saldo de la API. Si quieres esa capa extra de todos modos, puedes agregar `generar_normograma_actualizado: true` al YAML a mano.
 
 #### Descripción para humanización con IA
 
