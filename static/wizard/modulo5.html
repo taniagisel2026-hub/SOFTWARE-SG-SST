@@ -14,14 +14,14 @@
       <label>Versión <input name="version" required placeholder="001"></label>
       <p class="ayuda">Formato 001, 002, 003... Sube el número cada vez que regeneres este SG-SST para el mismo cliente.</p>
 
-      <label>Fecha de emisión <input name="fecha_emision" placeholder="dd/mm/aaaa"></label>
+      <label>Fecha de emisión <input name="fecha_emision" placeholder="dd/mm/aaaa" required></label>
       <p class="ayuda">Formato dd/mm/aaaa (ej. 10/07/2026) — se usa en los encabezados de los documentos.</p>
 
-      <label>Fecha <input name="fecha"></label>
+      <label>Fecha <input name="fecha" required></label>
       <p class="ayuda">Fecha completa en letras (ej. 10 de julio de 2026) — se usa al inicio de los documentos que la llevan escrita así.</p>
-      <label>Año <input name="año"></label>
-      <label>Ciudad <input name="ciudad"></label>
-      <label>Mes y año <input name="mes_año"></label>
+      <label>Año <input name="año" required></label>
+      <label>Ciudad <input name="ciudad" required></label>
+      <label>Mes y año <input name="mes_año" required></label>
       <label><input type="checkbox" name="generar_pesv" style="width:auto"> ¿Genera Plan Estratégico de Seguridad Vial (PESV)?</label>
       <button type="submit">Continuar</button>
     </form>

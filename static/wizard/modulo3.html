@@ -25,9 +25,9 @@
       div.className = "sede-row";
       div.innerHTML = `
         <label>Nombre <input class="s_nombre" value="${valores.nombre || ""}" required></label>
-        <label>Dirección <input class="s_direccion" value="${valores.direccion || ""}"></label>
-        <label>Ciudad <input class="s_ciudad" value="${valores.ciudad || ""}"></label>
-        <label>Teléfono <input class="s_telefono" value="${valores.telefono || ""}"></label>
+        <label>Dirección <input class="s_direccion" value="${valores.direccion || ""}" required></label>
+        <label>Ciudad <input class="s_ciudad" value="${valores.ciudad || ""}" required></label>
+        <label>Teléfono <input class="s_telefono" value="${valores.telefono || ""}" required></label>
         <button type="button" class="secundario" onclick="this.parentElement.remove()">Quitar</button>
       `;
       document.getElementById("sedes").appendChild(div);
@@ -58,8 +58,8 @@
         ciudad: f.querySelector(".s_ciudad").value,
         telefono: f.querySelector(".s_telefono").value,
       }));
-      if (!sedes.length || sedes.some(s => !s.nombre)) {
-        document.getElementById("error").textContent = "Cada sede necesita al menos un nombre.";
+      if (!sedes.length || sedes.some(s => !s.nombre || !s.direccion || !s.ciudad || !s.telefono)) {
+        document.getElementById("error").textContent = "Completa nombre, dirección, ciudad y teléfono de cada sede.";
         return;
       }
       try {

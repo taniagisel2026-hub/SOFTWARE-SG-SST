@@ -14,11 +14,11 @@
       <label>Nombre del responsable SST <input name="nombre_responsable_sst" required></label>
       <label>Cédula del responsable SST <input name="cedula_responsable_sst" required></label>
       <label>Cargo <input name="cargo_sst" required></label>
-      <label>Ciudad de expedición de la cédula <input name="ciudad_cedula_sst"></label>
-      <label>Licencia SST <input name="licencia_sst"></label>
+      <label>Ciudad de expedición de la cédula <input name="ciudad_cedula_sst" required></label>
+      <label>Licencia SST <input name="licencia_sst" required></label>
       <label>Empresa consultora <input name="empresa_consultora_sst" required></label>
       <label>NIT de la consultora <input name="nit_consultora_sst" required></label>
-      <label>Licencia de la consultora <input name="licencia_empresa_consultora"></label>
+      <label>Licencia de la consultora <input name="licencia_empresa_consultora" required></label>
       <label>Firma del responsable SST (imagen)
         <input type="file" id="f_firma_sst" accept="image/*">
       </label>
@@ -41,15 +41,17 @@
       ev.preventDefault();
       document.getElementById("error").textContent = "";
       const form = ev.target;
+      const firmaFile = document.getElementById("f_firma_sst").files[0];
+      if (!firmaFile) {
+        document.getElementById("error").textContent = "Sube la firma del responsable SST.";
+        return false;
+      }
       const datos = Object.fromEntries(new FormData(form).entries());
       delete datos.firma_sst_archivo;
       try {
-        const firmaFile = document.getElementById("f_firma_sst").files[0];
-        if (firmaFile) {
-          const fd = new FormData();
-          fd.append("firma_sst", firmaFile);
-          await api(`/borradores/${bid}/modulo-4/archivos`, { method: "POST", body: fd });
-        }
+        const fd = new FormData();
+        fd.append("firma_sst", firmaFile);
+        await api(`/borradores/${bid}/modulo-4/archivos`, { method: "POST", body: fd });
         await api(`/borradores/${bid}/modulo-4/confirmar`, { method: "POST", body: datos });
         irAModulo(5, bid);
       } catch (e) { document.getElementById("error").textContent = e.message; }

@@ -29,6 +29,7 @@
         <input type="file" id="f_firma" accept="image/*">
       </label>
     </div>
+    <p class="ayuda">RUT, Cámara de Comercio, logo y firma son obligatorios. La cédula es opcional si ya tienes los datos del representante legal.</p>
     <button onclick="subir()">Extraer datos</button>
     <p id="error" class="error"></p>
 
@@ -38,18 +39,18 @@
       <h2>Revisa y confirma la información</h2>
       <label>Razón social <input name="razon_social" required></label>
       <label>NIT <input name="nit" required></label>
-      <label>Dirección <input name="direccion_empresa"></label>
-      <label>Ciudad <input name="ciudad_empresa"></label>
-      <label>Departamento <input name="departamento_empresa"></label>
+      <label>Dirección <input name="direccion_empresa" required></label>
+      <label>Ciudad <input name="ciudad_empresa" required></label>
+      <label>Departamento <input name="departamento_empresa" required></label>
       <label>Barrio <input name="barrio_empresa"></label>
-      <label>Actividad económica <input name="actividad_economica"></label>
-      <label>Representante legal <input name="representante_legal"></label>
-      <label>Cédula del representante legal <input name="cedula_rl"></label>
-      <label>Cargo del representante legal <input name="cargo_rl"></label>
-      <label>Ciudad de expedición de la cédula <input name="ciudad_cedula_rl"></label>
-      <label>Correo de la empresa <input name="email_empresa"></label>
+      <label>Actividad económica <input name="actividad_economica" required></label>
+      <label>Representante legal <input name="representante_legal" required></label>
+      <label>Cédula del representante legal <input name="cedula_rl" required></label>
+      <label>Cargo del representante legal <input name="cargo_rl" required></label>
+      <label>Ciudad de expedición de la cédula <input name="ciudad_cedula_rl" required></label>
+      <label>Correo de la empresa <input name="email_empresa" type="email" required></label>
       <label>Sitio web <input name="sitio_web"></label>
-      <label>Teléfono de la empresa <input name="telefono_empresa"></label>
+      <label>Teléfono de la empresa <input name="telefono_empresa" required></label>
       <button type="submit">Confirmar y continuar</button>
     </form>
   </div>
@@ -59,14 +60,22 @@
 
     async function subir() {
       document.getElementById("error").textContent = "";
+      const obligatorios = { rut: "f_rut", camara_comercio: "f_camara", logo: "f_logo", firma_rl: "f_firma" };
+      const faltantes = Object.entries(obligatorios)
+        .filter(([, id]) => !document.getElementById(id).files[0])
+        .map(([campo]) => campo);
+      if (faltantes.length) {
+        document.getElementById("error").textContent =
+          "Faltan archivos obligatorios: " + faltantes.join(", ") + " (la cédula es opcional).";
+        return;
+      }
+
       const fd = new FormData();
       const campos = { rut: "f_rut", camara_comercio: "f_camara", cedula_rl: "f_cedula", logo: "f_logo", firma_rl: "f_firma" };
-      let algo = false;
       for (const [campo, id] of Object.entries(campos)) {
         const el = document.getElementById(id);
-        if (el.files[0]) { fd.append(campo, el.files[0]); algo = true; }
+        if (el.files[0]) fd.append(campo, el.files[0]);
       }
-      if (!algo) { document.getElementById("error").textContent = "Selecciona al menos un archivo."; return; }
 
       try {
         const data = await api(`/borradores/${bid}/modulo-1/archivos`, { method: "POST", body: fd });
