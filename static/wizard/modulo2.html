@@ -21,15 +21,28 @@
       <label>ARL <input name="arl" required></label>
       <label>Número de trabajadores <input name="numero_trabajadores_empresa" required></label>
 
-      <label>Color corporativo
-        <div class="swatches" id="swatches"></div>
-      </label>
-      <label>¿No encuentras el color? Ingresa el código hex
-        <div class="hex-row">
-          <div class="swatch-hex-preview" id="hex-preview"></div>
-          <input type="text" id="color_hex" placeholder="#RRGGBB" maxlength="7">
+      <div class="campo-color">
+        <span>Color corporativo</span>
+        <p class="ayuda">Se usa para las tablas y encabezados de todos los documentos Word y Excel del SG-SST, y para los elementos de marca — elige el color con el que la empresa quiere verse en sus documentos.</p>
+        <div class="color-picker">
+          <div class="color-section-label">Colores del tema</div>
+          <div class="swatches-grid" id="swatches-tema"></div>
+
+          <div class="color-section-label">Colores estándar</div>
+          <div class="swatches-grid" id="swatches-estandar"></div>
+
+          <button type="button" class="mas-colores-btn" onclick="toggleMasColores()">Más colores...</button>
+          <div class="color-native-row hidden" id="mas-colores">
+            <input type="color" id="color_native" value="#2E75B6" title="Elegir color personalizado" aria-label="Elegir color personalizado">
+            <input type="text" id="color_hex" placeholder="#RRGGBB" maxlength="7">
+          </div>
         </div>
-      </label>
+        <div class="color-seleccionado">
+          <span>Seleccionado:</span>
+          <div class="swatch-hex-preview" id="hex-preview"></div>
+          <span id="color-label-text">ninguno</span>
+        </div>
+      </div>
       <input type="hidden" name="color_corporativo" id="color_corporativo">
 
       <button type="submit">Continuar</button>
@@ -41,37 +54,76 @@
     const bid = getBorradorId();
 
     // Mismas 5 paletas predefinidas de engine/colores.py::PALETAS (tono "medio").
-    // Cualquier otro color se manda como hex y el backend genera la paleta sola.
-    const PALETAS = [
+    const TEMA = [
       { key: "azul",    label: "Azul",    hex: "#2E75B6" },
       { key: "verde",   label: "Verde",   hex: "#2E8B57" },
       { key: "morado",  label: "Morado",  hex: "#7B4FB6" },
       { key: "naranja", label: "Naranja", hex: "#E67E22" },
       { key: "gris",    label: "Gris",    hex: "#5B5B5B" },
     ];
+    // Fila de "colores estandar" (paleta clasica de Office). Van como hex:
+    // engine/colores.py genera la paleta completa sola a partir de un hex.
+    const ESTANDAR = [
+      { label: "Rojo oscuro",  hex: "#C00000" },
+      { label: "Rojo",         hex: "#FF0000" },
+      { label: "Naranja",      hex: "#FFC000" },
+      { label: "Amarillo",     hex: "#FFFF00" },
+      { label: "Verde claro",  hex: "#92D050" },
+      { label: "Verde",        hex: "#00B050" },
+      { label: "Azul claro",   hex: "#00B0F0" },
+      { label: "Azul",         hex: "#0070C0" },
+      { label: "Azul oscuro",  hex: "#002060" },
+      { label: "Morado",       hex: "#7030A0" },
+    ];
 
     const hidden = document.getElementById("color_corporativo");
     const hexInput = document.getElementById("color_hex");
+    const nativeInput = document.getElementById("color_native");
     const hexPreview = document.getElementById("hex-preview");
+    const labelText = document.getElementById("color-label-text");
 
-    const cont = document.getElementById("swatches");
-    for (const p of PALETAS) {
+    const contTema = document.getElementById("swatches-tema");
+    for (const p of TEMA) {
       const btn = document.createElement("button");
       btn.type = "button";
       btn.className = "swatch";
       btn.title = p.label;
       btn.style.background = p.hex;
-      btn.onclick = () => seleccionarPaleta(p.key, btn);
-      cont.appendChild(btn);
+      btn.onclick = () => seleccionar(p.key, p.hex, p.label, btn);
+      contTema.appendChild(btn);
     }
 
-    function seleccionarPaleta(key, btn) {
-      hidden.value = key;
-      hexInput.value = "";
-      hexPreview.style.background = "";
-      cont.querySelectorAll(".swatch").forEach(s => s.classList.remove("selected"));
-      btn.classList.add("selected");
+    const contEstandar = document.getElementById("swatches-estandar");
+    for (const c of ESTANDAR) {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "swatch";
+      btn.title = c.label;
+      btn.style.background = c.hex;
+      btn.onclick = () => seleccionar(c.hex, c.hex, c.label, btn);
+      contEstandar.appendChild(btn);
     }
+
+    function todosLosSwatches() {
+      return document.querySelectorAll("#swatches-tema .swatch, #swatches-estandar .swatch");
+    }
+
+    function seleccionar(valor, hexParaVista, etiqueta, btn) {
+      hidden.value = valor;
+      hexPreview.style.background = hexParaVista;
+      labelText.textContent = etiqueta;
+      todosLosSwatches().forEach(s => s.classList.remove("selected"));
+      if (btn) btn.classList.add("selected");
+      hexInput.value = "";
+    }
+
+    function toggleMasColores() {
+      document.getElementById("mas-colores").classList.toggle("hidden");
+    }
+
+    nativeInput.addEventListener("input", () => {
+      seleccionar(nativeInput.value.toUpperCase(), nativeInput.value, `Personalizado ${nativeInput.value.toUpperCase()}`, null);
+    });
 
     hexInput.addEventListener("input", () => {
       const val = hexInput.value.trim();
@@ -80,10 +132,9 @@
         const hex = `#${m[1].toUpperCase()}`;
         hidden.value = hex;
         hexPreview.style.background = hex;
-        cont.querySelectorAll(".swatch").forEach(s => s.classList.remove("selected"));
-      } else {
-        hexPreview.style.background = "";
-        if (hidden.value.startsWith("#")) hidden.value = "";
+        labelText.textContent = `Personalizado ${hex}`;
+        nativeInput.value = hex;
+        todosLosSwatches().forEach(s => s.classList.remove("selected"));
       }
     });
 
