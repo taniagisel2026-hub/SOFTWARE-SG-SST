@@ -21,7 +21,9 @@ Imprime o copia este checklist por cada cliente y ve marcando.
 
 ### B. YAML del cliente
 
-- [ ] Creé `clientes_config/MI_CLIENTE.yaml` copiando `ejemplo_cliente.yaml`
+> Si armaste el YAML con el **portal** (Fase 5) en vez de editarlo a mano, `finalizar()` ya lo generó y validó automáticamente en `clientes_config/<cliente>.yaml`. Igual repasa esta lista contra ese archivo — el portal valida formato y campos obligatorios, pero no detecta errores de contenido (ej. una dirección mal escrita que quedó igual en el RUT y en la Cámara de Comercio).
+
+- [ ] Creé `clientes_config/MI_CLIENTE.yaml` copiando `ejemplo_cliente.yaml` (o lo generé con el portal)
 - [ ] `razon_social` coincide EXACTAMENTE con el RUT
 - [ ] `nit` con guion del dígito de verificación (ej: `900123456-7`)
 - [ ] `actividad_economica` tiene código(s) CIIU del RUT
