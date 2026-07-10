@@ -25,7 +25,7 @@
 html, body { height: 100%; }
 
 body {
-  font-family: "Inter", -apple-system, "Segoe UI", Arial, sans-serif;
+  font-family: "Geist", "Inter", -apple-system, "Segoe UI", Arial, sans-serif;
   background: #eef1f4;
   min-height: 100vh;
   margin: 0;
@@ -109,7 +109,7 @@ body {
   .main { padding: 1.6rem 1rem 3rem; }
 }
 
-h1 { font-size: 1.55rem; font-weight: 700; margin: 0 0 0.35rem; color: var(--ink); letter-spacing: -0.015em; }
+h1 { font-family: "Inter", sans-serif; font-size: 1.55rem; font-weight: 700; margin: 0 0 0.35rem; color: var(--ink); letter-spacing: -0.015em; }
 h2 { font-size: 1.02rem; font-weight: 700; margin-top: 1.8rem; color: var(--primary-dark); }
 p { line-height: 1.5; }
 
@@ -284,7 +284,7 @@ button.secundario:hover { filter: none; background: #f4f6f6; border-color: #c9d0
   margin-bottom: 1.7rem;
 }
 .hero h1 {
-  font-family: "Geist", sans-serif;
+  font-family: "Inter", sans-serif;
   font-size: clamp(2.1rem, 5vw, 3.3rem);
   font-weight: 800; line-height: 1.1; letter-spacing: -0.02em;
   color: #fff; margin: 0 0 1.1rem; max-width: 720px;
