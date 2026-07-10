@@ -409,10 +409,10 @@ button.secundario:hover { filter: none; background: #f4f6f6; border-color: #c9d0
 
 .cta-band {
   background: linear-gradient(160deg, #0a2038 0%, var(--primary-dark) 100%);
-  padding: 4.5rem 2rem; text-align: center; color: #fff;
+  padding: 7rem 2rem; text-align: center; color: #fff;
 }
-.cta-band h2 { font-family: "Geist", sans-serif; font-size: clamp(1.6rem, 3.5vw, 2.1rem); font-weight: 800; margin: 0 0 0.8rem; }
-.cta-band p { color: rgba(255,255,255,0.72); max-width: 480px; margin: 0 auto 1.8rem; line-height: 1.6; }
+.cta-band h2 { font-family: "Geist", sans-serif; font-size: clamp(2.2rem, 4.5vw, 3rem); font-weight: 800; margin: 0 0 1.1rem; }
+.cta-band p { font-size: 1.2rem; color: rgba(255,255,255,0.72); max-width: 620px; margin: 0 auto 2.2rem; line-height: 1.65; }
 
 @media (max-width: 640px) {
   .mockup-side { display: none; }
