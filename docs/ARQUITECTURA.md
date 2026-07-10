@@ -9,20 +9,32 @@ Documento para desarrolladores que necesiten **mantener, depurar o extender** el
 ## Diagrama general
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│  USUARIO (Consultor SST)          │  CLIENTE HTTP (Fase 4)        │
-│  • Edita: clientes_config/X.yaml  │  • POST /clientes/{id}/generar│
-│  • Ejecuta: python cli.py ...     │  • GET /jobs/{id}             │
-└─────────────────────────────────────────────────────────────────┘
-                │                                  │
-                ▼                                  ▼
-┌───────────────────────────────┐  ┌────────────────────────────────┐
-│  cli.py (Click)                │  │  api.py (FastAPI)               │
-│  Comandos: generar, subir-...  │  │  Endpoints REST + jobs en        │
-│                                 │  │  segundo plano (engine/jobs.py) │
-└───────────────────────────────┘  └────────────────────────────────┘
-                              │                  │
-                              └────────┬─────────┘
+┌───────────────────────────┐  ┌────────────────────────┐  ┌──────────────────────────┐
+│ USUARIO (Consultor SST)   │  │ CLIENTE HTTP (Fase 4)   │  │ CLIENTE FINAL (Fase 5)    │
+│ • Edita clientes_config/  │  │ • POST /clientes/{id}/  │  │ • Navega /portal/         │
+│   X.yaml                  │  │   generar                │  │ • Sube RUT/Cámara/Cédula  │
+│ • Ejecuta python cli.py.. │  │ • GET /jobs/{id}         │  │   y confirma cada módulo  │
+└───────────────────────────┘  └────────────────────────┘  └──────────────────────────┘
+                │                          │                            │
+                ▼                          ▼                            ▼
+┌───────────────────────────┐  ┌──────────────────────────────────────────────────────┐
+│  cli.py (Click)            │  │  api.py (FastAPI)                                     │
+│  Comandos: generar, subir- │  │  Endpoints REST + jobs en segundo plano (engine/jobs.py)│
+│  ...                        │  │  + wizard_router (wizard_api.py, Fase 5) montado en /wizard│
+│                             │  │  + StaticFiles del portal montado en /portal          │
+└───────────────────────────┘  └──────────────────────────────────────────────────────┘
+                              │                  │                    │
+                              │                  │                    ▼
+                              │                  │      ┌───────────────────────────┐
+                              │                  │      │ wizard_store (SQLite) +    │
+                              │                  │      │ engine/extraccion.py       │
+                              │                  │      │ (Claude, texto de PDF)     │
+                              │                  │      └───────────────────────────┘
+                              │                  │                    │
+                              │                  │   POST /wizard/borradores/{id}/finalizar
+                              │                  │   escribe un YAML nuevo en clientes_config/
+                              │                  │                    │
+                              └────────┬─────────┴────────────────────┘
                                        ▼
 ┌─────────────────────────────────────────────────────────────────┐
 │  engine/generador.py                                             │
@@ -45,6 +57,8 @@ Documento para desarrolladores que necesiten **mantener, depurar o extender** el
               │ • normativa, colores, auditoria   │
               └──────────────────────────────────┘
 ```
+
+El asistente por módulos (Fase 5) **no genera nada por sí mismo** — solo produce un YAML de cliente. La generación real sigue siendo el mismo `POST /clientes/{id}/generar` de la Fase 4, que a su vez llama al mismo `engine/generador.py` de siempre. Ver la sección dedicada más abajo.
 
 ---
 
@@ -145,6 +159,101 @@ Estado persistido en **SQLite** (`jobs.db`, tabla `jobs`) — mismo patrón que 
 **Detalle importante — PKCE**: ambas funciones pasan `autogenerate_code_verifier=False` al crear el `Flow`. Por defecto `google-auth-oauthlib` activa PKCE, generando un `code_verifier` que solo vive en el objeto `Flow` de esa petición. Como `iniciar_auth_web()` y `completar_auth_web()` corren en dos peticiones HTTP separadas (dos objetos `Flow` distintos), ese `code_verifier` nunca le llega al segundo paso y Google rechazaba el intercambio con `invalid_grant: Missing code verifier`. No hace falta PKCE aquí porque `credentials_web.json` es un cliente confidencial (tiene `client_secret`) — PKCE existe para proteger clientes públicos (SPA/apps móviles) que no pueden guardar un secreto.
 
 Verificado en vivo (2026-07-09): login completo por navegador con un `credentials_web.json` real, token guardado en `tokens/token_<id>.json` con `refresh_token` incluido.
+
+---
+
+## Asistente de onboarding por módulos (`wizard_api.py`, Fase 5)
+
+Portal de autoservicio para que el cliente final llene sus propios datos, en vez de que un consultor escriba el YAML a mano. Router separado de `api.py` (montado con `app.include_router(wizard_router)`, prefijo `/wizard`) para no arriesgar regresión en las rutas de la Fase 4 al crecer el número de endpoints. Reusa la misma `Depends(verify_api_key)` de siempre — **no** es un sistema de login por cliente, sigue siendo el mismo token estático; login real por cliente queda fuera de alcance (tema aparte, más grande).
+
+El frontend (`static/wizard/*.html`) se sirve como archivos planos con `StaticFiles(directory=..., html=True)` montado en `/portal` — **HTML/JS sin build toolchain**, deliberadamente sin React: el proyecto vive en una carpeta sincronizada con OneDrive, y `node_modules` es justo el tipo de conflicto que ya documenta la sección de Limitaciones conocidas más abajo.
+
+### Modelo de datos: el "borrador" (`engine/wizard_store.py`)
+
+Cada sesión del asistente es un **borrador**, persistido en `wizard_drafts.db` (SQLite puro, mismo patrón que `engine/jobs.py`: un `_conexion()` con context manager, columnas JSON serializadas). Tabla `wizard_drafts`:
+
+| Columna | Contenido |
+|---|---|
+| `borrador_id` | UUID, clave primaria |
+| `modulo_actual` | Puntero entero — el módulo que falta confirmar |
+| `modulos_confirmados` | Lista JSON de módulos ya confirmados (`["modulo_1", "modulo_2", ...]`) |
+| `datos_json` | Los datos confirmados de cada módulo, por clave (`{"modulo_1": {...}, ...}`) |
+| `archivos_json` | Rutas de los archivos subidos (`{"rut": "wizard_uploads/<id>/rut.pdf", ...}`) |
+| `extraccion_json` | Lo que Claude extrajo de cada documento del módulo 1, **sin combinar** (`{"rut": {...}, "camara_comercio": {...}}`) |
+| `estado` | `en_progreso` / `finalizado` |
+| `config_path_final` | Ruta del YAML una vez que se llama a `/finalizar` |
+
+`MODULOS_ORDEN = ["modulo_1", ..., "modulo_7"]` define el orden. `guardar_modulo(borrador_id, modulo_key, datos)` agrega `modulo_key` a `modulos_confirmados` y avanza `modulo_actual` — nunca lo retrocede (`max(actual, indice+2)`), así que confirmar módulos fuera de orden (si el gate lo permitiera) no corrompe el puntero.
+
+### Bloqueo secuencial (el gate)
+
+El bloqueo **no vive en `wizard_store.py`** — esa capa solo guarda datos, no juzga el orden. Vive en `wizard_api.py::_verificar_gate(borrador, modulo_key)`: antes de aceptar la confirmación del módulo N, revisa que el módulo N-1 esté en `modulos_confirmados`; si no, responde `409`. Cada endpoint `/modulo-N/confirmar` (y las variantes del módulo 7) llama a este gate antes de guardar nada.
+
+### Módulo 1 — documentos y extracción (la pieza no trivial)
+
+`POST /wizard/borradores/{id}/modulo-1/archivos` acepta cualquier subconjunto de 5 archivos (`rut`, `camara_comercio`, `cedula_rl` como PDF; `logo`, `firma_rl` como imagen). Por cada PDF subido:
+
+1. `engine/pdf_utils.py::extraer_texto_pdf()` saca el texto (pdfplumber, con fallback a pypdf; nunca lanza excepción — si el PDF es un escaneo sin capa de texto, retorna `""`).
+2. `engine/extraccion.py::extraer_datos_documento(tipo, texto)` le pide a Claude un JSON con los campos esperados para ese tipo de documento (6 campos para RUT, 9 para Cámara de Comercio, 2 para Cédula — ver `CAMPOS_POR_TIPO`). Mismo patrón que ya usaba `matriz_peligros.py::_generar_datos_cargo()`: prompt pidiendo JSON puro, se le quitan los fences de markdown con regex, `json.loads`, y **cualquier falla retorna `{}`** en vez de propagar la excepción (sin `ANTHROPIC_API_KEY`, sin saldo, texto vacío, o un JSON mal formado — todos caen al mismo camino silencioso, el usuario llena a mano lo que falte).
+3. Cada documento se guarda **por separado** en `extraccion_json` (`guardar_extraccion`) — nunca se combinan ahí. Combinarlos temprano perdería la posibilidad de detectar que, por ejemplo, la dirección del RUT no coincide con la de la Cámara de Comercio.
+
+`engine/extraccion.py::detectar_conflictos(extracciones)` compara los campos que aparecen en dos o más documentos (`razon_social`, `nit`, `direccion_empresa`, `ciudad_empresa`, `departamento_empresa`), normalizando espacios/mayúsculas, y devuelve la lista de discrepancias. El endpoint la incluye en la respuesta junto con la extracción cruda; `static/wizard/modulo1.html` la muestra al usuario para que elija un valor o escriba uno propio — **nunca se queda con un valor en silencio cuando hay dos fuentes que no coinciden**.
+
+`POST /wizard/borradores/{id}/modulo-1/confirmar` recibe los valores ya revisados/corregidos por el usuario (no vuelve a leer `extraccion_json`) y los valida con `engine/validacion.py::validar_cliente_dict()` antes de guardarlos — la misma validación que ya usan CLI y API.
+
+**Decisión de diseño (no reabrir)**: extracción con Claude leyendo **texto** de PDF, no imágenes ni un servicio de OCR aparte, y no Gemini. La mayoría de RUT/Cámara de Comercio descargados de la DIAN/Cámara traen texto real seleccionable, así que estructurar ese texto en campos es barato (input de texto, no de imagen). Se descartó la capa gratuita de Gemini por el riesgo de que datos personales (cédula, dirección) pasen por una política de datos que puede permitir entrenamiento.
+
+### Módulos 2 a 6
+
+Formularios simples, cada uno con su propio modelo Pydantic (`Modulo2Request`, `Modulo3Request` con `sedes: list[Sede]`, etc.) y su endpoint `/modulo-N/confirmar` que solo llama al gate y a `wizard_store.guardar_modulo()`. Dos endpoints de pre-llenado (`GET /defaults/modulo-4` con los datos fijos de MEDINA desde `engine/wizard_defaults.py`, `GET /defaults/modulo-5` con la fecha de hoy vía `engine/cliente.py::formatear_fecha_hoy()` — la misma función que usa `generar_contexto()`, para no tener dos cálculos de fecha que se puedan desincronizar) evitan que el usuario escriba de cero lo que ya se sabe. El módulo 4 además acepta `POST /modulo-4/archivos` para la firma del responsable SST.
+
+### Módulo 7 — cargos (opcional)
+
+A diferencia de los módulos 2-6, tiene **tres caminos**, todos terminando en `guardar_modulo(..., "modulo_7", {...})` con un campo `modo` que decide cómo se resuelve en `finalizar()`:
+
+| Endpoint | `modo` guardado | Efecto en el YAML final |
+|---|---|---|
+| `POST /modulo-7/manuales` | `"manuales"` | Guarda los manuales subidos en `wizard_uploads/<id>/manuales/`; al finalizar se copian a `clientes_config/<slug>_assets/manuales_cargos/` y el YAML recibe `manuales_cargos_dir` — el pipeline existente (`matriz_peligros.py::cargar_cargos_desde_manuales()`) detecta el cargo del contenido del manual, sin que el usuario escriba nada |
+| `POST /modulo-7/lista` | `"lista"` | Los cargos escritos a mano quedan directo como `cargos: [...]` en el YAML (rechaza con `400` si la lista viene vacía) |
+| `POST /modulo-7/saltar` | `"omitido"` | No agrega ni `cargos` ni `manuales_cargos_dir` — `generar_sgsst()` ya soporta ausencia total de cargos, simplemente omite la Matriz IPVR |
+
+Es el único módulo **excluido** de la lista `requeridos` en `finalizar()` — se puede finalizar el borrador sin haberlo tocado.
+
+### Finalizar (`POST /wizard/borradores/{id}/finalizar`)
+
+1. Verifica que todos los módulos obligatorios (1-6) estén confirmados (`409` si falta alguno).
+2. `_ensamblar_cliente(borrador)` mezcla los `datos_json` de cada módulo en un solo dict (equivalente a lo que hoy escribe un consultor a mano en el YAML).
+3. Valida el dict resultante con `validar_cliente_dict()` (misma validación de siempre).
+4. Calcula el `slug` desde `razon_social` y **copia** (no referencia) logo/firma_rl/firma_sst desde `wizard_uploads/<id>/` hacia `clientes_config/<slug>_assets/`, con rutas relativas al propio YAML — exactamente lo que ya espera `obtener_imagenes()` (`engine/cliente.py`). Si el módulo 7 vino en modo `"manuales"`, copia también esa carpeta.
+5. Escribe `clientes_config/<slug>.yaml` con `yaml.safe_dump()` y marca el borrador `finalizado` (`wizard_store.marcar_finalizado`).
+6. Responde `{"config_path": ..., "cliente_id": slug, "siguiente_paso": "POST /clientes/{slug}/generar"}` — el handoff explícito al endpoint de la Fase 4, sin duplicar la lógica de generación.
+
+**Por qué se copia y no se referencia**: `wizard_uploads/` es una carpeta de borrador desechable (se puede borrar con `DELETE /wizard/borradores/{id}`); `clientes_config/` es el destino permanente que ya usa el resto del sistema.
+
+### Endpoints completos
+
+| Método | Ruta | Para qué |
+|---|---|---|
+| `POST` | `/wizard/borradores` | Crea un borrador nuevo, `modulo_actual=1` |
+| `GET` | `/wizard/borradores/{id}` | Consulta el estado completo del borrador |
+| `DELETE` | `/wizard/borradores/{id}` | Borra el borrador y su carpeta de `wizard_uploads/` |
+| `POST` | `/wizard/borradores/{id}/modulo-1/archivos` | Sube cualquier subconjunto de rut/camara_comercio/cedula_rl/logo/firma_rl; extrae los PDF |
+| `GET` | `/wizard/borradores/{id}/modulo-1/extraccion` | Reconsulta la extracción ya guardada (recargar página sin perder progreso) |
+| `POST` | `/wizard/borradores/{id}/modulo-1/confirmar` | Guarda los datos ya revisados por el usuario |
+| `POST` | `/wizard/borradores/{id}/modulo-2/confirmar` | Riesgo, ARL, N° trabajadores, color |
+| `POST` | `/wizard/borradores/{id}/modulo-3/confirmar` | Lista de sedes |
+| `POST` | `/wizard/borradores/{id}/modulo-4/confirmar` | Responsable SST + consultora |
+| `POST` | `/wizard/borradores/{id}/modulo-4/archivos` | Firma del responsable SST |
+| `POST` | `/wizard/borradores/{id}/modulo-5/confirmar` | Fechas, versión, PESV, normograma |
+| `POST` | `/wizard/borradores/{id}/modulo-6/confirmar` | Descripción de la empresa |
+| `POST` | `/wizard/borradores/{id}/modulo-7/manuales` | Cargos vía manuales de funciones |
+| `POST` | `/wizard/borradores/{id}/modulo-7/lista` | Cargos escritos a mano |
+| `POST` | `/wizard/borradores/{id}/modulo-7/saltar` | Omite la Matriz IPVR |
+| `GET` | `/wizard/borradores/{id}/defaults/modulo-4` | Pre-llenado con los datos fijos de MEDINA |
+| `GET` | `/wizard/borradores/{id}/defaults/modulo-5` | Pre-llenado con la fecha de hoy |
+| `POST` | `/wizard/borradores/{id}/finalizar` | Ensambla y escribe el YAML final |
+
+Verificado con un flujo end-to-end real (2026-07-09/10): borrador → 7 módulos → `finalizar()` → YAML resultante cargado sin errores por `cargar_cliente()`/`generar_contexto()`/`obtener_imagenes()` → `POST /clientes/{id}/generar` disparado con ese `config_path` → 117 archivos generados, 0 errores.
 
 ---
 
@@ -397,6 +506,12 @@ Ver `tests/`. Se ejecutan con `python -m pytest`.
 - `test_listado_maestro.py` — matcher de links (30 tests)
 - `test_matriz_peligros.py` — IPVR (17 tests)
 - `test_matriz_peligros_viales.py` — vial + cleanup (33 tests)
+- `test_normativa.py` — correcciones legales filtradas por año (14 tests)
+- `test_extraccion.py` — extracción de datos de RUT/Cámara/Cédula con Claude mockeado (9 tests) + 1 `integration` real
+- `test_wizard_store.py` — CRUD del borrador sin HTTP (8 tests)
+- `test_wizard_api.py` — endpoints del asistente con `TestClient`, incluye bloqueo secuencial (`409`) y flujo completo hasta `finalizar()` (12 tests)
+
+122 tests en total: 117 corren por defecto, 4 están marcados `integration` (requieren `ANTHROPIC_API_KEY` con saldo real) y 1 marcado `slow`.
 
 **Política**: cada bug encontrado en producción debe convertirse en un regression test.
 
@@ -417,6 +532,8 @@ Ver `tests/`. Se ejecutan con `python -m pytest`.
 | `API_AUTH_TOKEN` | _(vacío)_ | Token que deben enviar los clientes de la API REST (`Authorization: Bearer <token>`) |
 | `API_BASE_URL` | `http://localhost:8000` | URL base de la API, usada para armar el redirect URI de OAuth |
 | `JOBS_DB_PATH` | `jobs.db` | Ruta al SQLite de estado de trabajos en segundo plano |
+| `WIZARD_DB_PATH` | `wizard_drafts.db` | Ruta al SQLite de borradores del asistente por módulos (Fase 5) |
+| `WIZARD_UPLOADS_DIR` | `wizard_uploads` | Carpeta donde quedan temporalmente los archivos subidos en el asistente |
 
 ---
 
@@ -426,6 +543,8 @@ Ver `tests/`. Se ejecutan con `python -m pytest`.
 credentials.json           # OAuth Google Cloud (flujo de escritorio/CLI)
 credentials_web.json       # OAuth Google Cloud (flujo web/API, Fase 4)
 jobs.db                    # Estado de trabajos en segundo plano de la API
+wizard_drafts.db           # Estado de los borradores del asistente por módulos (Fase 5)
+wizard_uploads/            # Archivos (RUT, Cámara, Cédula, logo, firmas) subidos en el asistente
 .env                       # API keys y tokens
 tokens/                    # Tokens de Drive de cada cliente
 clientes/                  # SG-SST generados (datos sensibles de clientes)
@@ -438,6 +557,8 @@ Sugerencia para `.gitignore`:
 credentials.json
 credentials_web.json
 jobs.db
+wizard_drafts.db
+wizard_uploads/
 .env
 tokens/
 clientes/
@@ -455,7 +576,7 @@ _demo_*.py
 
 - **Python 3.12+** (probado en 3.12.10)
 - Ver `requirements.txt` para versiones exactas
-- Principales: `python-docx`, `docxtpl`, `openpyxl`, `anthropic`, `click`, `rich`, `pyyaml`, `diskcache`, `google-api-python-client`, `fastapi`, `uvicorn` (Fase 4)
+- Principales: `python-docx`, `docxtpl`, `openpyxl`, `anthropic`, `click`, `rich`, `pyyaml`, `diskcache`, `google-api-python-client`, `fastapi`, `uvicorn` (Fase 4), `python-multipart` (subida de archivos en la API/asistente, Fase 4-5), `pdfplumber`/`pypdf` (extracción de texto de PDF, Fase 5)
 
 ---
 
@@ -477,5 +598,7 @@ _demo_*.py
 - [ ] Modo `--dry-run` para `subir-drive` (simular sin tocar Drive)
 - [ ] Migrar la subida a Drive a async para acelerar
 - [x] API REST (Fase 4) — `api.py`, ver sección dedicada arriba
-- [ ] Frontend web (Fase 5)
-- [ ] OCR de RUT y Cámara de Comercio (Fase 6)
+- [x] Portal/asistente por módulos (Fase 5) — `wizard_api.py` + `static/wizard/`, ver sección dedicada arriba
+- [ ] Login real por cliente (hoy el portal usa el mismo API key estático de la Fase 4)
+- [ ] Cobro/facturación de clientes cuando el software corra en un servidor
+- [ ] OCR de respaldo para PDFs escaneados sin capa de texto (Fase 6)

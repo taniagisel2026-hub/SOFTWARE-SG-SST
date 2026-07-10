@@ -1,6 +1,6 @@
 # SG-SST Generator
 
-**Herramienta CLI** (y, desde la Fase 4, también **API REST**) para generar Sistemas de Gestión de Seguridad y Salud en el Trabajo (SG-SST) personalizados a partir de una plantilla base, datos del cliente y manuales de funciones. Cumple Decreto 1072/2015 y Resolución 0312/2019 (Colombia).
+**Herramienta CLI** (y, desde la Fase 4, también **API REST**, con un **portal de autoservicio por módulos** desde la Fase 5) para generar Sistemas de Gestión de Seguridad y Salud en el Trabajo (SG-SST) personalizados a partir de una plantilla base, datos del cliente y manuales de funciones. Cumple Decreto 1072/2015 y Resolución 0312/2019 (Colombia).
 
 Diseñada para uso interno de **MEDINA SST EMPRESARIAL S.A.S** y consultores asociados.
 
@@ -16,6 +16,7 @@ Diseñada para uso interno de **MEDINA SST EMPRESARIAL S.A.S** y consultores aso
 6. **Genera la Matriz de Peligros IPVR (SST-MTZ-012)** según los cargos del cliente
 7. **Genera la Matriz de Peligros Viales (PESV-MTZ-002)** si el cliente solicita PESV
 8. **Sube todo a Google Drive** del cliente y deja el listado maestro con enlaces clicables a cada documento
+9. **Permite que el propio cliente llene sus datos** desde un portal web por módulos (Fase 5), con extracción automática de RUT/Cámara de Comercio/Cédula vía IA, en vez de que un consultor escriba el YAML a mano
 
 ---
 
@@ -161,13 +162,44 @@ Las generaciones (2-40 min) y subidas a Drive corren en segundo plano; su estado
 
 ---
 
+## Portal del cliente / Asistente por módulos (Fase 5)
+
+Formulario web de autoservicio para que el propio cliente cargue sus datos, en vez de que un consultor escriba el YAML a mano. Vive sobre la misma API REST (`api.py`), sin duplicar lógica: al final produce el mismo `config_path` que ya recibe `POST /clientes/{id}/generar` de la Fase 4.
+
+```cmd
+uvicorn api:app --reload --port 8000
+```
+
+Abrir en el navegador: `http://localhost:8000/portal/`
+
+**Cómo funciona**: 7 módulos secuenciales y bloqueados — no se puede pasar al módulo N sin haber confirmado el N-1 (la API responde `409` si se intenta saltar uno).
+
+| # | Módulo | Qué pide |
+|---|---|---|
+| 1 | Documentos legales | Sube RUT, Cámara de Comercio y Cédula del representante legal (PDF) + logo y firma (imágenes). Extrae los datos automáticamente con Claude y los muestra para que el usuario confirme o corrija — si el RUT y la Cámara de Comercio traen una dirección distinta, lo marca como **conflicto** en vez de quedarse con uno en silencio |
+| 2 | Riesgo y ARL | Nivel de riesgo, ARL, número de trabajadores, color corporativo |
+| 3 | Sedes | Lista de sedes (nombre, dirección, ciudad, teléfono) |
+| 4 | Responsable SST y consultora | Datos del responsable SST + los de MEDINA como consultora (formulario **pre-llenado**) |
+| 5 | Fechas, versión y opciones | Versión, fechas (pre-llenadas con la fecha de hoy), PESV sí/no, normograma actualizado sí/no |
+| 6 | Descripción de la empresa | Texto libre, contexto para la humanización con Claude |
+| 7 | Cargos (opcional) | Sube manuales de funciones, o escribe la lista de cargos a mano, o lo omite — alimenta la Matriz de Peligros IPVR |
+
+Al confirmar los 7 módulos, **"Finalizar"** ensambla todo en un YAML nuevo dentro de `clientes_config/` y devuelve su ruta, lista para generar el SG-SST con el mismo botón/endpoint de siempre.
+
+El estado de cada borrador se guarda en `wizard_drafts.db` (SQLite) y los archivos que se van subiendo quedan temporalmente en `wizard_uploads/<borrador_id>/` — ninguno de los dos se sube a git; al finalizar, el logo/firmas/manuales se copian a `clientes_config/<slug>_assets/` (destino permanente).
+
+Detalle de endpoints y decisiones de diseño (por qué Claude+texto y no OCR/Gemini, por qué HTML/JS plano y no React) en **[docs/ARQUITECTURA.md](docs/ARQUITECTURA.md)**.
+
+---
+
 ## Estructura del proyecto
 
 ```
 SOFTWARE SG-SST/
 ├── cli.py                          # Punto de entrada CLI
-├── api.py                          # Punto de entrada API REST (Fase 4)
+├── api.py                          # Punto de entrada API REST (Fase 4) + monta el portal (Fase 5)
 ├── api_auth.py                     # Autenticación por API key de la API REST
+├── wizard_api.py                   # Endpoints del asistente de onboarding por módulos (Fase 5)
 ├── verificar_links_listado.py      # Verificador de links del listado maestro
 ├── limpiar_cache.py                # Limpieza de caché de Claude
 ├── auditar_normativa.py            # Extrae y audita las normas citadas en la plantilla maestra
@@ -176,6 +208,7 @@ SOFTWARE SG-SST/
 ├── credentials.json                # OAuth Google, flujo de escritorio/CLI (no subir a git)
 ├── credentials_web.json            # OAuth Google, flujo web/API (no subir a git, paso manual)
 ├── jobs.db                         # Estado de trabajos en segundo plano de la API (no subir a git)
+├── wizard_drafts.db                # Estado de los borradores del portal (no subir a git)
 ├── .env                            # API keys y tokens (no subir a git)
 │
 ├── engine/                         # Motor principal
@@ -189,6 +222,10 @@ SOFTWARE SG-SST/
 │   ├── drive_service.py            # Autenticación y subida a Google Drive (flujo escritorio + web)
 │   ├── drive_upload.py             # Logica de subida a Drive, compartida por CLI y API
 │   ├── jobs.py                     # Persistencia SQLite de trabajos en segundo plano (API)
+│   ├── pdf_utils.py                # Extracción de texto de PDF (pdfplumber + fallback pypdf)
+│   ├── extraccion.py               # Extracción de datos (RUT/Cámara/Cédula) con Claude (Fase 5)
+│   ├── wizard_store.py             # Persistencia SQLite de los borradores del portal (Fase 5)
+│   ├── wizard_defaults.py          # Datos fijos de MEDINA para pre-llenar el módulo 4 (Fase 5)
 │   ├── listado_maestro.py          # Llena SST-MTZ-005 con links
 │   ├── matriz_documental.py        # Matriz documental del SG-SST
 │   ├── matriz_peligros.py          # Genera Matriz IPVR (SST-MTZ-012)
@@ -199,11 +236,13 @@ SOFTWARE SG-SST/
 │   ├── auditoria.py                # Reporte final
 │   └── utils.py
 │
+├── static/wizard/                  # Frontend del portal (HTML/JS plano, Fase 5)
 ├── Plantilla SG-SST 2026/          # Plantilla base (no modificar)
 ├── clientes_config/                # YAML por cliente
 │   └── ejemplo_cliente.yaml
 ├── clientes/                       # SG-SST generados (output)
 ├── tokens/                         # Tokens OAuth por cliente
+├── wizard_uploads/                 # Archivos subidos temporalmente en el portal (no subir a git)
 └── .cache/                         # Caché de respuestas Claude
 ```
 
@@ -223,7 +262,7 @@ SOFTWARE SG-SST/
 python -m pytest tests/
 ```
 
-93 tests automatizados que validan los puntos críticos del sistema. Ver `tests/` para detalle.
+122 tests automatizados que validan los puntos críticos del sistema (117 corren por defecto; 4 requieren saldo real de la API de Claude y están marcados `integration`; 1 marcado `slow`). Ver `tests/` para detalle.
 
 ---
 
