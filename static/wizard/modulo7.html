@@ -48,8 +48,8 @@
       const div = document.createElement("div");
       div.className = "sede-row";
       div.innerHTML = `
-        <label>Nombre del cargo <input class="c_nombre" required></label>
-        <label>Proceso <input class="c_proceso" value="ADMINISTRATIVO"></label>
+        <label>Nombre del cargo <input class="c_nombre" required placeholder="Ej: Gerente General, Contador, Conductor..."></label>
+        <label>Proceso <input class="c_proceso" value="ADMINISTRATIVO" placeholder="Ej: ADMINISTRATIVO, LOGÍSTICA, PRODUCCIÓN..."></label>
         <label>Zona <input class="c_zona" placeholder="Ej: Oficinas Administrativas, Bodega, Planta de Producción..."></label>
         <label>Tipo
           <select class="c_tipo">
@@ -60,7 +60,7 @@
           </select>
         </label>
         <label>N° de personas expuestas <input class="c_expuestos" type="number" value="1" min="1"></label>
-        <label>Actividades <textarea class="c_actividades"></textarea></label>
+        <label>Actividades <textarea class="c_actividades" placeholder="Ej: Elaboración de informes, atención a clientes, supervisión de personal..."></textarea></label>
         <button type="button" class="secundario" onclick="this.parentElement.remove()">Quitar</button>
       `;
       document.getElementById("cargos").appendChild(div);
