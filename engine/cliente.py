@@ -173,6 +173,8 @@ def generar_contexto(cliente: dict) -> dict:
         "EMPRESA_CONSULTORA_SST": cliente.get("empresa_consultora_sst", ""),
         "NIT_CONSULTORA_SST": str(cliente.get("nit_consultora_sst", "")),
         "LICENCIA_EMPRESA_CONSULTORA": cliente.get("licencia_empresa_consultora", ""),
+        "DESCRIPCION_EMPRESA": cliente.get("descripcion_empresa", ""),
+        "DESCRIPCIÓN_EMPRESA": cliente.get("descripcion_empresa", ""),
         "AÑO": año,
         "ANO": año,
         "REPRESENTANTE_LEGAL": cliente.get("representante_legal", ""),
