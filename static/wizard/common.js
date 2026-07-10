@@ -56,7 +56,7 @@ const MODULOS_NOMBRES = [
   }).join("");
   sidebar.innerHTML = `
     <div class="sidebar-brand">
-      <img src="logo-mark.png" alt="SG-SST Empresarial">
+      <span class="logo-chip"><img src="logo-mark.png" alt="SG-SST Empresarial"></span>
       <div class="text"><b>SG-SST EMPRESARIAL</b><span>Portal de autoservicio</span></div>
     </div>
     <nav class="sidebar-nav">${nav}</nav>

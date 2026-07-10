@@ -266,11 +266,15 @@ button.secundario:hover { filter: none; background: #f4f6f6; border-color: #c9d0
   display: flex; align-items: center; gap: 0.7rem;
   font-family: "Geist", sans-serif; font-weight: 800; font-size: 1rem;
 }
-.hero-nav .brand img,
-.sidebar-brand img {
-  height: 42px; width: auto; flex-shrink: 0;
-  filter: drop-shadow(0 2px 6px rgba(0,0,0,0.3));
+/* Base clara detras del logo -- sin esto, la mitad azul del escudo se
+   pierde contra el fondo navy del hero/barra lateral. */
+.logo-chip {
+  display: flex; align-items: center; justify-content: center;
+  width: 60px; height: 60px; border-radius: 12px;
+  background: #fff; padding: 6px; flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
 }
+.logo-chip img { height: 100%; width: 100%; object-fit: contain; }
 .hero-main {
   flex: 1;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -279,26 +283,26 @@ button.secundario:hover { filter: none; background: #f4f6f6; border-color: #c9d0
 .hero-badge {
   display: inline-flex; align-items: center; gap: 0.5rem;
   background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.18);
-  padding: 0.4rem 0.95rem; border-radius: 999px;
-  font-size: 0.76rem; font-weight: 600; color: rgba(255,255,255,0.85);
-  margin-bottom: 1.7rem;
+  padding: 0.55rem 1.2rem; border-radius: 999px;
+  font-size: 0.9rem; font-weight: 600; color: rgba(255,255,255,0.85);
+  margin-bottom: 2rem;
 }
 .hero h1 {
   font-family: "Inter", sans-serif;
-  font-size: clamp(2.1rem, 5vw, 3.3rem);
+  font-size: clamp(2.6rem, 6vw, 4.2rem);
   font-weight: 800; line-height: 1.1; letter-spacing: -0.02em;
-  color: #fff; margin: 0 0 1.1rem; max-width: 720px;
+  color: #fff; margin: 0 0 1.4rem; max-width: 920px;
 }
 .hero h1 span { color: var(--green); }
 .hero p.lead {
-  font-size: 1.05rem; color: rgba(255,255,255,0.72);
-  max-width: 560px; margin: 0 auto 2.2rem; line-height: 1.6;
+  font-size: 1.25rem; color: rgba(255,255,255,0.72);
+  max-width: 680px; margin: 0 auto 2.6rem; line-height: 1.6;
 }
 .hero-cta {
   display: inline-flex; align-items: center; gap: 0.5rem;
   background: linear-gradient(135deg, var(--green), var(--green-dark)); color: #fff; border: none;
-  padding: 0.9rem 1.9rem; border-radius: 10px;
-  font-family: "Geist", sans-serif; font-weight: 700; font-size: 1rem;
+  padding: 1.05rem 2.3rem; border-radius: 10px;
+  font-family: "Geist", sans-serif; font-weight: 700; font-size: 1.15rem;
   cursor: pointer; box-shadow: 0 10px 28px rgba(95, 168, 21, 0.4);
   transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
   margin-top: 0;
@@ -307,40 +311,49 @@ button.secundario:hover { filter: none; background: #f4f6f6; border-color: #c9d0
 .hero .error { color: #ffb4a8; margin-top: 1rem; }
 
 .hero-mockup {
-  margin-top: 3.5rem; width: 100%; max-width: 760px;
+  margin-top: 4rem; width: 100%; max-width: 960px;
   border-radius: 16px; overflow: hidden; text-align: left;
   background: #0f1f33; border: 1px solid rgba(255,255,255,0.12);
   box-shadow: 0 30px 80px rgba(0,0,0,0.45);
 }
-.mockup-bar { display: flex; gap: 6px; padding: 0.7rem 1rem; background: rgba(255,255,255,0.05); }
-.mockup-bar span { width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,0.18); }
-.mockup-body { display: flex; background: #eef1f4; min-height: 260px; }
+.mockup-bar { display: flex; gap: 6px; padding: 0.8rem 1.1rem; background: rgba(255,255,255,0.05); }
+.mockup-bar span { width: 11px; height: 11px; border-radius: 50%; background: rgba(255,255,255,0.18); }
+.mockup-body { display: flex; background: #eef1f4; min-height: 320px; }
 .mockup-side {
-  width: 130px; flex-shrink: 0; background: var(--primary-dark);
-  padding: 1.2rem 0.9rem; display: flex; flex-direction: column; gap: 0.7rem;
+  width: 165px; flex-shrink: 0; background: var(--primary-dark);
+  padding: 1.5rem 1.1rem; display: flex; flex-direction: column; gap: 0.85rem;
 }
-.mockup-dot { width: 22px; height: 22px; border-radius: 6px; background: var(--green); margin-bottom: 0.4rem; }
-.mockup-content { flex: 1; padding: 1.4rem 1.6rem; }
-.mockup-line { height: 8px; border-radius: 4px; background: #d7dee6; margin-bottom: 0.55rem; }
-.mockup-side .mockup-line { background: rgba(255,255,255,0.18); }
-.mockup-line.tall { height: 14px; }
+.mockup-dot { width: 26px; height: 26px; border-radius: 7px; background: var(--green); margin-bottom: 0.5rem; }
+.mockup-content { flex: 1; padding: 1.8rem 2rem; }
+.mockup-line { height: 9px; border-radius: 4px; background: #d7dee6; margin-bottom: 0.65rem; }
+.mockup-side .mockup-line { height: 10px; background: rgba(255,255,255,0.18); }
+.mockup-line.tall { height: 16px; }
 .mockup-line.w30 { width: 30%; } .mockup-line.w40 { width: 40%; } .mockup-line.w45 { width: 45%; }
 .mockup-line.w50 { width: 50%; } .mockup-line.w60 { width: 60%; } .mockup-line.w70 { width: 70%; }
 .mockup-line.w80 { width: 80%; } .mockup-line.w90 { width: 90%; }
-.mockup-card { margin-top: 1rem; background: #fff; border-radius: 10px; padding: 1rem; box-shadow: 0 4px 14px rgba(11,26,46,0.08); }
-.mockup-btn { width: 110px; height: 26px; border-radius: 7px; background: var(--green); margin-top: 0.6rem; }
+.mockup-card { margin-top: 1.2rem; background: #fff; border-radius: 10px; padding: 1.3rem; box-shadow: 0 4px 14px rgba(11,26,46,0.08); }
+.mockup-btn { width: 130px; height: 32px; border-radius: 7px; background: var(--green); margin-top: 0.8rem; }
 
 /* Franja de estadisticas dentro del hero (mismo patron que kondory.com,
    pero con datos reales de esta herramienta, no metricas inventadas). */
 .hero-stats {
-  display: flex; flex-wrap: wrap; justify-content: center; gap: 2.6rem;
-  margin-top: 3.2rem; padding-top: 2.4rem;
+  display: flex; flex-wrap: wrap; justify-content: center; gap: 3.2rem;
+  margin-top: 2.8rem; padding-top: 2rem;
   border-top: 1px solid rgba(255,255,255,0.14);
-  width: 100%; max-width: 640px;
+  width: 100%; max-width: 860px;
 }
-.hero-stat { text-align: center; }
-.hero-stat b { display: block; font-family: "Geist", sans-serif; font-size: 1.65rem; font-weight: 800; color: #fff; }
-.hero-stat span { display: block; font-size: 0.72rem; color: rgba(255,255,255,0.6); margin-top: 0.25rem; }
+.hero-stat { text-align: center; display: flex; flex-direction: column; align-items: center; }
+.hero-stat-icon {
+  width: 50px; height: 50px; border-radius: 50%;
+  background: rgba(255,255,255,0.08);
+  border: 2px solid var(--green);
+  color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 0.6rem;
+}
+.hero-stat-icon svg { width: 24px; height: 24px; }
+.hero-stat b { display: block; font-family: "Geist", sans-serif; font-size: 1.85rem; font-weight: 800; color: #fff; line-height: 1.1; }
+.hero-stat span { display: block; font-size: 0.85rem; color: rgba(255,255,255,0.6); margin-top: 0.2rem; }
 
 .section-label {
   display: block; text-align: center; font-size: 0.9rem; font-weight: 700; color: var(--primary);
