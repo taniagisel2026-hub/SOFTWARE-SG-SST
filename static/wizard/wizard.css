@@ -378,8 +378,9 @@ button.secundario:hover { filter: none; background: #f4f6f6; border-color: #c9d0
 }
 .paso:hover { border-color: #c3d2e0; box-shadow: 0 8px 20px rgba(11, 26, 46, 0.07); }
 .paso .num {
-  width: 58px; height: 58px; border-radius: 14px;
-  background: var(--primary-light); color: var(--primary-dark);
+  width: 58px; height: 58px; border-radius: 50%;
+  background: var(--green-light); color: var(--green-dark);
+  border: 2px solid var(--green);
   display: flex; align-items: center; justify-content: center;
   font-family: "Geist", sans-serif; font-weight: 800; font-size: 1.5rem; margin-bottom: 1.3rem;
 }
