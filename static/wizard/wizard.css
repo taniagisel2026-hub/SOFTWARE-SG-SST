@@ -312,28 +312,28 @@ button.secundario:hover { filter: none; background: #f4f6f6; border-color: #c9d0
 .hero .error { color: #ffb4a8; margin-top: 1rem; }
 
 .hero-mockup {
-  margin-top: 4rem; width: 100%; max-width: 960px;
-  border-radius: 16px; overflow: hidden; text-align: left;
+  margin-top: 4.5rem; width: 100%; max-width: 1180px;
+  border-radius: 18px; overflow: hidden; text-align: left;
   background: #0f1f33; border: 1px solid rgba(255,255,255,0.12);
-  box-shadow: 0 30px 80px rgba(0,0,0,0.45);
+  box-shadow: 0 40px 100px rgba(0,0,0,0.45);
 }
-.mockup-bar { display: flex; gap: 6px; padding: 0.8rem 1.1rem; background: rgba(255,255,255,0.05); }
-.mockup-bar span { width: 11px; height: 11px; border-radius: 50%; background: rgba(255,255,255,0.18); }
-.mockup-body { display: flex; background: #eef1f4; min-height: 320px; }
+.mockup-bar { display: flex; gap: 8px; padding: 1rem 1.4rem; background: rgba(255,255,255,0.05); }
+.mockup-bar span { width: 13px; height: 13px; border-radius: 50%; background: rgba(255,255,255,0.18); }
+.mockup-body { display: flex; background: #eef1f4; min-height: 400px; }
 .mockup-side {
-  width: 165px; flex-shrink: 0; background: var(--primary-dark);
-  padding: 1.5rem 1.1rem; display: flex; flex-direction: column; gap: 0.85rem;
+  width: 205px; flex-shrink: 0; background: var(--primary-dark);
+  padding: 1.9rem 1.4rem; display: flex; flex-direction: column; gap: 1.05rem;
 }
-.mockup-dot { width: 26px; height: 26px; border-radius: 7px; background: var(--green); margin-bottom: 0.5rem; }
-.mockup-content { flex: 1; padding: 1.8rem 2rem; }
-.mockup-line { height: 9px; border-radius: 4px; background: #d7dee6; margin-bottom: 0.65rem; }
-.mockup-side .mockup-line { height: 10px; background: rgba(255,255,255,0.18); }
-.mockup-line.tall { height: 16px; }
+.mockup-dot { width: 32px; height: 32px; border-radius: 9px; background: var(--green); margin-bottom: 0.6rem; }
+.mockup-content { flex: 1; padding: 2.3rem 2.6rem; }
+.mockup-line { height: 11px; border-radius: 5px; background: #d7dee6; margin-bottom: 0.8rem; }
+.mockup-side .mockup-line { height: 12px; background: rgba(255,255,255,0.18); }
+.mockup-line.tall { height: 20px; }
 .mockup-line.w30 { width: 30%; } .mockup-line.w40 { width: 40%; } .mockup-line.w45 { width: 45%; }
 .mockup-line.w50 { width: 50%; } .mockup-line.w60 { width: 60%; } .mockup-line.w70 { width: 70%; }
 .mockup-line.w80 { width: 80%; } .mockup-line.w90 { width: 90%; }
-.mockup-card { margin-top: 1.2rem; background: #fff; border-radius: 10px; padding: 1.3rem; box-shadow: 0 4px 14px rgba(11,26,46,0.08); }
-.mockup-btn { width: 130px; height: 32px; border-radius: 7px; background: var(--green); margin-top: 0.8rem; }
+.mockup-card { margin-top: 1.5rem; background: #fff; border-radius: 12px; padding: 1.7rem; box-shadow: 0 4px 14px rgba(11,26,46,0.08); }
+.mockup-btn { width: 160px; height: 40px; border-radius: 9px; background: var(--green); margin-top: 1rem; }
 
 /* Franja de estadisticas dentro del hero (mismo patron que kondory.com,
    pero con datos reales de esta herramienta, no metricas inventadas). */
