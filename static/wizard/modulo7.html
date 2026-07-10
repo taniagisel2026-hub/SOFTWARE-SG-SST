@@ -12,19 +12,30 @@
     <h1>Cargos de la empresa</h1>
     <p>Con esto se genera la Matriz de Peligros (IPVR) — es <b>obligatoria para todas las empresas</b>. Sube los manuales o escribe los cargos a mano.</p>
 
-    <h2>Opción A — Subir manuales de funciones</h2>
-    <p>Sube uno o más manuales (.docx, .xlsx o .pdf) — el nombre del cargo se detecta automáticamente del contenido, no hace falta escribirlo.</p>
-    <input type="file" id="f_manuales" accept=".docx,.xlsx,.pdf" multiple>
-    <button onclick="subirManuales()">Subir manuales y continuar</button>
+    <div class="opciones">
+      <div class="opcion">
+        <div class="opcion-icono">📄</div>
+        <h2>Subir manuales de funciones</h2>
+        <p>Sube uno o más manuales (.docx, .xlsx o .pdf) — el nombre del cargo se detecta automáticamente del contenido, no hace falta escribirlo.</p>
+        <input type="file" id="f_manuales" accept=".docx,.xlsx,.pdf" multiple>
+        <button onclick="subirManuales()">Subir manuales y continuar</button>
+      </div>
 
-    <h2>Opción B — Escribir los cargos a mano</h2>
-    <div id="cargos"></div>
-    <button type="button" class="secundario" onclick="agregarCargo()">+ Agregar cargo</button>
-    <button onclick="confirmarLista()">Guardar cargos y continuar</button>
+      <div class="opcion">
+        <div class="opcion-icono">✏️</div>
+        <h2>Escribir los cargos a mano</h2>
+        <div id="cargos"></div>
+        <button type="button" class="secundario" onclick="agregarCargo()">+ Agregar cargo</button>
+        <button onclick="confirmarLista()">Guardar cargos y continuar</button>
+      </div>
 
-    <h2>Opción C — Todavía no tengo esta información</h2>
-    <p>La matriz de peligros quedará pendiente hasta que agregues los cargos.</p>
-    <button class="secundario" onclick="omitir()">Omitir por ahora y continuar</button>
+      <div class="opcion omitir">
+        <div class="opcion-icono">⏭</div>
+        <h2>Todavía no tengo esta información</h2>
+        <p>La matriz de peligros quedará pendiente hasta que agregues los cargos.</p>
+        <button class="secundario" onclick="omitir()">Omitir por ahora y continuar</button>
+      </div>
+    </div>
 
     <p id="error" class="error"></p>
   </div>
