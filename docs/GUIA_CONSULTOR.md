@@ -1,10 +1,12 @@
 # Guía del Consultor SST
 
-Esta guía te explica **paso a paso** cómo generar el SG-SST completo de un cliente con la herramienta. No necesitas saber programar.
+Esta guía te explica **paso a paso** cómo generar el SG-SST completo de un cliente con la herramienta, ya sea usando el portal web o editando el YAML a mano. No necesitas saber programar.
 
 ---
 
 ## Tabla de contenido
+
+- [¿Portal web o edición manual del YAML?](#portal-web-o-edicion-manual-del-yaml)
 
 1. [Antes de empezar — qué necesitas](#1-antes-de-empezar)
 2. [Preparar el YAML del cliente](#2-preparar-el-yaml-del-cliente)
@@ -14,6 +16,28 @@ Esta guía te explica **paso a paso** cómo generar el SG-SST completo de un cli
 6. [Verificar que todo quedó bien](#6-verificar-que-todo-quedo-bien)
 7. [Casos especiales: PESV, COPASST vs Vigía](#7-casos-especiales)
 8. [Solución de problemas comunes](#8-solucion-de-problemas-comunes)
+
+---
+
+## ¿Portal web o edición manual del YAML?
+
+Desde la Fase 5 hay **dos caminos** para llegar al mismo archivo de configuración del cliente — el resto de esta guía (secciones 2 a 8) sirve para ambos, porque los dos terminan en el mismo YAML.
+
+**Opción A — Portal web (más rápido, menos errores de transcripción)**
+
+Si el administrador ya tiene el sistema corriendo, te dará un link parecido a `http://<servidor>/portal/`. Ahí:
+
+1. Creas un borrador nuevo.
+2. Módulo por módulo, subes los documentos y llenas los datos que pide cada uno (7 en total: documentos legales, riesgo/ARL, sedes, responsable SST y consultora, fechas/versión/opciones, descripción de la empresa, y cargos).
+3. En el módulo 1 subes el RUT, la Cámara de Comercio y la Cédula del representante legal (PDF) + el logo y la firma (imágenes) — el sistema **extrae los datos solo** y te los muestra para que confirmes o corrijas. Si el RUT y la Cámara de Comercio traen una dirección distinta, te lo señala como conflicto para que elijas cuál es la correcta en vez de adivinar.
+4. No puedes pasar al módulo siguiente sin confirmar el actual, así no se te olvida ningún dato.
+5. Al terminar los 7 módulos, el botón **"Finalizar"** te entrega el YAML ya armado (el mismo resultado que llenar la sección 2 a mano) — con eso puedes saltar directo a la [sección 4 (Generar el SG-SST)](#4-generar-el-sg-sst).
+
+**Opción B — Editar el YAML a mano**
+
+Si no tienes acceso al portal, o prefieres el control manual campo por campo, sigue con la sección 2 de esta guía tal como está.
+
+> El portal solo arma el archivo de configuración. La generación real (`python cli.py generar ...`), la subida a Drive y la verificación de links siguen siendo exactamente los mismos pasos sin importar cuál camino usaste para llegar al YAML.
 
 ---
 
