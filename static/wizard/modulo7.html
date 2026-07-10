@@ -10,7 +10,7 @@
   <div class="card">
     <p class="progreso">Módulo 7 de 7 — Cargos (matriz de peligros)</p>
     <h1>Cargos de la empresa</h1>
-    <p>Con esto se genera la Matriz de Peligros (IPVR) — es <b>obligatoria para todas las empresas</b> (a diferencia del PESV, esta no depende de si tienen vehículos). Sube los manuales o escribe los cargos a mano.</p>
+    <p>Con esto se genera la Matriz de Peligros (IPVR) — es <b>obligatoria para todas las empresas</b>. Sube los manuales o escribe los cargos a mano.</p>
 
     <h2>Opción A — Subir manuales de funciones</h2>
     <p>Sube uno o más manuales (.docx, .xlsx o .pdf) — el nombre del cargo se detecta automáticamente del contenido, no hace falta escribirlo.</p>
@@ -23,7 +23,7 @@
     <button onclick="confirmarLista()">Guardar cargos y continuar</button>
 
     <h2>Opción C — Todavía no tengo esta información</h2>
-    <p>La matriz de peligros quedará pendiente — podrás completarla más adelante regenerando el SG-SST con los cargos.</p>
+    <p>La matriz de peligros quedará pendiente hasta que agregues los cargos.</p>
     <button class="secundario" onclick="omitir()">Omitir por ahora y continuar</button>
 
     <p id="error" class="error"></p>
@@ -60,7 +60,7 @@
           </select>
         </label>
         <label>N° de personas expuestas <input class="c_expuestos" type="number" value="1" min="1"></label>
-        <label>Actividades (opcional, la IA las genera si lo dejas vacío) <textarea class="c_actividades"></textarea></label>
+        <label>Actividades <textarea class="c_actividades"></textarea></label>
         <button type="button" class="secundario" onclick="this.parentElement.remove()">Quitar</button>
       `;
       document.getElementById("cargos").appendChild(div);
