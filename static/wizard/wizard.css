@@ -175,6 +175,7 @@ button.secundario:hover { filter: none; background: #f4f6f6; border-color: #c9d0
 
 .sede-row { border: 1px solid var(--border); border-radius: 10px; padding: 1rem; background: #fbfcfc; }
 .error { color: var(--danger); font-size: 0.85rem; font-weight: 600; }
+.error:empty { display: none; }
 .ayuda { font-size: 0.8rem; font-weight: 400; color: var(--text-muted); margin: 0; }
 
 /* Tarjetas de opcion (ej. modulo 7: subir manuales / lista manual / omitir) */
@@ -338,7 +339,7 @@ button.secundario:hover { filter: none; background: #f4f6f6; border-color: #c9d0
    pero con datos reales de esta herramienta, no metricas inventadas). */
 .hero-stats {
   display: flex; flex-wrap: wrap; justify-content: center; gap: 3.2rem;
-  margin-top: 2.8rem; padding-top: 2rem;
+  margin-top: 0; padding-top: 0.3rem;
   border-top: 1px solid rgba(255,255,255,0.14);
   width: 100%; max-width: 860px;
 }
