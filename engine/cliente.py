@@ -107,10 +107,12 @@ def formatear_fecha_hoy() -> dict:
         "", "enero", "febrero", "marzo", "abril", "mayo", "junio",
         "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"
     ]
-    fecha_es = f"{now:%d} de {meses[now.month]} de {now.year}"
     return {
-        "fecha": fecha_es,
-        "fecha_emision": fecha_es,
+        # "fecha" va al inicio de los documentos que la escriben en letras
+        # (ej. "10 de julio de 2026"); "fecha_emision" va en encabezados,
+        # en formato numerico dd/mm/aaaa (ej. "10/07/2026").
+        "fecha": f"{now:%d} de {meses[now.month]} de {now.year}",
+        "fecha_emision": f"{now:%d/%m/%Y}",
         "mes_actual": meses[now.month].capitalize(),
         "año": str(now.year),
     }

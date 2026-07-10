@@ -364,7 +364,7 @@ def defaults_modulo5(borrador_id: str) -> dict:
     _obtener_o_404(borrador_id)
     hoy = formatear_fecha_hoy()
     return {
-        "version": "1",
+        "version": "001",
         "fecha_emision": hoy["fecha_emision"],
         "fecha": hoy["fecha"],
         "año": hoy["año"],
