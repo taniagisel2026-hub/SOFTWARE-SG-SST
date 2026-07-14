@@ -156,6 +156,17 @@ firma_sst: "C:/Users/bts19/OneDrive/Desktop/Medina industrial/firma sst.jpg"
 
 > **Importante**: usa **diagonales hacia adelante** `/` aunque sea Windows. Y comillas dobles `"..."`.
 
+#### Documentos de soporte del responsable SST (PDF, opcionales)
+
+```yaml
+hoja_vida_sst: "C:/Users/bts19/OneDrive/Desktop/Medina industrial/hoja_vida.pdf"
+licencia_sst_pdf: "C:/Users/bts19/OneDrive/Desktop/Medina industrial/licencia_sst.pdf"
+cedula_sst_pdf: "C:/Users/bts19/OneDrive/Desktop/Medina industrial/cedula_sst.pdf"
+diploma_cursos_sst: "C:/Users/bts19/OneDrive/Desktop/Medina industrial/diploma.pdf"
+```
+
+Estos 4 se copian tal cual (sin procesar) a la carpeta `1.1.1 RESPONSABLE DEL SG-SST/2. DOCUMENTOS` del SG-SST generado, como soporte de que el responsable SST cumple los requisitos. En el asistente por módulos son obligatorios (Módulo 4); si se escribe el YAML a mano, son opcionales.
+
 #### Fechas y versión
 
 ```yaml

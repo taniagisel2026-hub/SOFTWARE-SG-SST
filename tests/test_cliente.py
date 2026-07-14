@@ -2,7 +2,7 @@
 import os
 from pathlib import Path
 
-from engine.cliente import generar_contexto, obtener_imagenes
+from engine.cliente import generar_contexto, obtener_imagenes, obtener_documentos_soporte_responsable
 
 
 def test_descripcion_empresa_llega_al_contexto(cliente_minimo):
@@ -43,3 +43,19 @@ def test_obtener_imagenes_devuelve_ruta_absoluta_con_config_dir_relativo(tmp_pat
 
     assert os.path.isabs(imagenes["LOGO"])
     assert Path(imagenes["LOGO"]) == (assets_dir / "logo.jpeg").resolve()
+
+
+def test_obtener_documentos_soporte_responsable_solo_incluye_los_que_existen(tmp_path, cliente_minimo):
+    assets_dir = tmp_path / "X_assets"
+    assets_dir.mkdir()
+    (assets_dir / "hoja_vida.pdf").write_bytes(b"fake-pdf")
+
+    cliente_minimo["hoja_vida_sst"] = "X_assets/hoja_vida.pdf"
+    cliente_minimo["cedula_sst_pdf"] = "X_assets/no_existe.pdf"
+
+    documentos = obtener_documentos_soporte_responsable(cliente_minimo, config_dir=tmp_path)
+
+    assert "Hoja de Vida" in documentos
+    assert documentos["Hoja de Vida"] == (assets_dir / "hoja_vida.pdf").resolve()
+    assert "Cédula" not in documentos
+    assert "Licencia SST" not in documentos

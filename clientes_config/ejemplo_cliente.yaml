@@ -63,6 +63,14 @@ logo: "ruta/al/logo.png"
 firma_rl: "ruta/a/firma_rl.png"
 firma_sst: "ruta/a/firma_sst.jpg"
 
+# --- DOCUMENTOS DE SOPORTE DEL RESPONSABLE SST (PDF, opcionales) ---
+# Se copian tal cual (sin procesar) a la carpeta
+# "1.1.1 RESPONSABLE DEL SG-SST/2. DOCUMENTOS" del SG-SST generado.
+# hoja_vida_sst: "ruta/a/hoja_vida.pdf"
+# licencia_sst_pdf: "ruta/a/licencia_sst.pdf"
+# cedula_sst_pdf: "ruta/a/cedula_sst.pdf"
+# diploma_cursos_sst: "ruta/a/diploma_cursos.pdf"
+
 # --- FECHAS Y VERSIÓN ---
 version: "1"
 fecha_emision: "14/04/2026"

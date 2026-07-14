@@ -78,6 +78,26 @@ def test_subir_archivos_modulo_1_guarda_y_extrae(client, headers, monkeypatch):
     assert body["archivos"]["rut"]
 
 
+def test_subir_archivos_modulo_4_guarda_documentos_soporte(client, headers):
+    bid = client.post("/wizard/borradores", headers=headers).json()["borrador_id"]
+    r = client.post(
+        f"/wizard/borradores/{bid}/modulo-4/archivos",
+        headers=headers,
+        files={
+            "firma_sst": ("firma.png", io.BytesIO(b"fake-png"), "image/png"),
+            "hoja_vida_sst": ("hv.pdf", io.BytesIO(_pdf_falso("hoja de vida")), "application/pdf"),
+            "licencia_sst_pdf": ("lic.pdf", io.BytesIO(_pdf_falso("licencia")), "application/pdf"),
+            "cedula_sst_pdf": ("ced.pdf", io.BytesIO(_pdf_falso("cedula")), "application/pdf"),
+            "diploma_cursos_sst": ("dip.pdf", io.BytesIO(_pdf_falso("diploma")), "application/pdf"),
+        },
+    )
+    assert r.status_code == 200
+    body = r.json()
+    assert set(body["archivos"]) == {
+        "firma_sst", "hoja_vida_sst", "licencia_sst_pdf", "cedula_sst_pdf", "diploma_cursos_sst",
+    }
+
+
 def test_flujo_completo_hasta_finalizar_produce_yaml_valido(client, headers):
     bid = client.post("/wizard/borradores", headers=headers).json()["borrador_id"]
 
@@ -101,6 +121,12 @@ def test_flujo_completo_hasta_finalizar_produce_yaml_valido(client, headers):
     r = client.post(
         f"/wizard/borradores/{bid}/modulo-3/confirmar", headers=headers,
         json={"sedes": [{"nombre": "Principal", "direccion": "Calle 1", "ciudad": "Bogota", "telefono": "123"}]},
+    )
+    assert r.status_code == 200
+
+    r = client.post(
+        f"/wizard/borradores/{bid}/modulo-4/archivos", headers=headers,
+        files={"hoja_vida_sst": ("hv.pdf", io.BytesIO(_pdf_falso("hoja de vida")), "application/pdf")},
     )
     assert r.status_code == 200
 
@@ -135,7 +161,10 @@ def test_flujo_completo_hasta_finalizar_produce_yaml_valido(client, headers):
 
     # El YAML resultante debe cargar sin errores en el pipeline existente
     from pathlib import Path
-    from engine.cliente import cargar_cliente, generar_contexto, obtener_imagenes
+    from engine.cliente import (
+        cargar_cliente, generar_contexto, obtener_imagenes,
+        obtener_documentos_soporte_responsable,
+    )
     from engine.validacion import validar_cliente_dict
 
     config_path = Path(resultado["config_path"])
@@ -146,6 +175,11 @@ def test_flujo_completo_hasta_finalizar_produce_yaml_valido(client, headers):
     contexto = generar_contexto(cliente)
     assert contexto["RAZON_SOCIAL"] == "ACME PRUEBAS S.A.S"
     assert obtener_imagenes(cliente, config_path.parent) == {}  # no se subio logo/firma en este test
+
+    # La hoja de vida subida en el modulo 4 debe quedar copiada y referenciada
+    documentos = obtener_documentos_soporte_responsable(cliente, config_path.parent)
+    assert "Hoja de Vida" in documentos
+    assert documentos["Hoja de Vida"].exists()
 
 
 def test_finalizar_sin_todos_los_modulos_da_409(client, headers):

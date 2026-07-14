@@ -17,6 +17,7 @@ from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn
 from .config import PLANTILLA_PATH, OUTPUT_BASE_PATH, DOC_TYPES
 from .cliente import (
     cargar_cliente, generar_contexto, obtener_imagenes,
+    obtener_documentos_soporte_responsable,
     nivel_humanizacion, clasificar_documento
 )
 from .docx_engine import procesar_docx, extraer_secciones_contenido, extraer_texto_docx
@@ -232,6 +233,20 @@ def generar_sgsst(
     )
     if carpetas_pendientes > 0:
         console.print(f"   [dim]{carpetas_pendientes} carpeta(s) sin documento cargado aun (quedan vacias como recordatorio)[/dim]")
+
+    # 5d. Copiar documentos de soporte del responsable SST (hoja de vida,
+    # licencia, cedula, diploma de cursos) tal cual, sin procesar -- van a la
+    # misma carpeta donde la plantilla ya trae un ejemplo de licencia.
+    documentos_soporte = obtener_documentos_soporte_responsable(cliente, config_dir)
+    if documentos_soporte:
+        carpeta_documentos = (
+            output_base / "I. PLANEAR" / "1.1.1 RESPONSABLE DEL SG-SST" / "2. DOCUMENTOS"
+        )
+        carpeta_documentos.mkdir(parents=True, exist_ok=True)
+        for nombre_visible, ruta_origen in documentos_soporte.items():
+            destino = carpeta_documentos / f"{nombre_visible}{ruta_origen.suffix}"
+            shutil.copyfile(ruta_origen, destino)
+        console.print(f"   [dim]{len(documentos_soporte)} documento(s) de soporte del responsable SST copiados[/dim]")
 
     # 6. Correcciones legales (siempre) + normograma con Claude (opcional)
     console.print("\n[yellow]5.[/yellow] Actualizando normas legales...")

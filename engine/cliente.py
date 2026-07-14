@@ -225,6 +225,36 @@ def obtener_imagenes(cliente: dict, config_dir: Path) -> dict:
     return imagenes
 
 
+# Documentos de soporte del responsable SST (PDF) que el asistente permite
+# subir en el modulo 4. No son marcadores ni imagenes: se copian tal cual al
+# SG-SST generado (carpeta "1.1.1 RESPONSABLE DEL SG-SST/2. DOCUMENTOS"),
+# nunca se procesan como plantilla. El valor es el nombre visible del
+# archivo copiado (conserva la extension original).
+DOCUMENTOS_SOPORTE_RESPONSABLE = {
+    "hoja_vida_sst": "Hoja de Vida",
+    "licencia_sst_pdf": "Licencia SST",
+    "cedula_sst_pdf": "Cédula",
+    "diploma_cursos_sst": "Diploma Curso 50 horas",
+}
+
+
+def obtener_documentos_soporte_responsable(cliente: dict, config_dir: Path) -> dict:
+    """Retorna {nombre_visible: ruta_absoluta} de los documentos de soporte
+    del responsable SST que el cliente tenga configurados. Solo incluye los
+    que existan en disco -- si falta alguno, simplemente no se copia."""
+    documentos = {}
+    for key, nombre_visible in DOCUMENTOS_SOPORTE_RESPONSABLE.items():
+        ruta = cliente.get(key, "")
+        if not ruta:
+            continue
+        p = Path(ruta)
+        if not p.is_absolute():
+            p = config_dir / p
+        if p.exists():
+            documentos[nombre_visible] = p.resolve()
+    return documentos
+
+
 def clasificar_documento(filename: str) -> str | None:
     """Identifica el tipo de documento por su prefijo."""
     from .config import DOC_TYPES

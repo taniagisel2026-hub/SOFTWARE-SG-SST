@@ -235,11 +235,34 @@ def modulo4_confirmar(borrador_id: str, body: Modulo4Request) -> dict:
 
 
 @wizard_router.post("/borradores/{borrador_id}/modulo-4/archivos", dependencies=protegido)
-async def modulo4_subir_firma(borrador_id: str, firma_sst: UploadFile = File(...)) -> dict:
+async def modulo4_subir_archivos(
+    borrador_id: str,
+    firma_sst: UploadFile | None = File(None),
+    hoja_vida_sst: UploadFile | None = File(None),
+    licencia_sst_pdf: UploadFile | None = File(None),
+    cedula_sst_pdf: UploadFile | None = File(None),
+    diploma_cursos_sst: UploadFile | None = File(None),
+) -> dict:
+    """Sube cualquier subconjunto de los archivos del modulo 4: firma del
+    responsable (imagen, se inserta en los documentos) + hoja de vida,
+    licencia, cedula y diploma de cursos (PDF, soporte documental -- se
+    copian tal cual al SG-SST generado, no se procesan)."""
     _obtener_o_404(borrador_id)
-    destino = _guardar_archivo_subido(borrador_id, "firma_sst", firma_sst)
-    wizard_store.guardar_archivo(borrador_id, "firma_sst", str(destino))
-    return {"archivo": str(destino)}
+    subidos = {
+        "firma_sst": firma_sst,
+        "hoja_vida_sst": hoja_vida_sst,
+        "licencia_sst_pdf": licencia_sst_pdf,
+        "cedula_sst_pdf": cedula_sst_pdf,
+        "diploma_cursos_sst": diploma_cursos_sst,
+    }
+    destinos = {}
+    for rol, upload in subidos.items():
+        if upload is None:
+            continue
+        destino = _guardar_archivo_subido(borrador_id, rol, upload)
+        wizard_store.guardar_archivo(borrador_id, rol, str(destino))
+        destinos[rol] = str(destino)
+    return {"archivos": destinos}
 
 
 # ---------------------------------------------------------------------------
@@ -417,7 +440,10 @@ def finalizar(borrador_id: str) -> dict:
     # con rutas relativas al YAML -- exactamente lo que obtener_imagenes() espera.
     assets_dir = CLIENTES_CONFIG_PATH / f"{slug}_assets"
     assets_dir.mkdir(parents=True, exist_ok=True)
-    for rol in ("logo", "firma_rl", "firma_sst"):
+    for rol in (
+        "logo", "firma_rl", "firma_sst",
+        "hoja_vida_sst", "licencia_sst_pdf", "cedula_sst_pdf", "diploma_cursos_sst",
+    ):
         origen_str = borrador["archivos"].get(rol)
         if not origen_str:
             continue

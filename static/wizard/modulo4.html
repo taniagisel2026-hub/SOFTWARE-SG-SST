@@ -22,6 +22,19 @@
       <label>Firma del responsable SST (imagen)
         <input type="file" id="f_firma_sst" accept="image/*">
       </label>
+      <label>Hoja de vida del responsable SST (PDF)
+        <input type="file" id="f_hoja_vida_sst" accept="application/pdf">
+      </label>
+      <label>Licencia SST (PDF)
+        <input type="file" id="f_licencia_sst_pdf" accept="application/pdf">
+      </label>
+      <label>Cédula del responsable SST (PDF)
+        <input type="file" id="f_cedula_sst_pdf" accept="application/pdf">
+      </label>
+      <label>Diploma o certificado de cursos (PDF)
+        <input type="file" id="f_diploma_cursos_sst" accept="application/pdf">
+      </label>
+      <p class="ayuda">Estos 4 documentos se anexan tal cual al SG-SST, como soporte de que el responsable SST cumple los requisitos.</p>
       <button type="submit">Continuar</button>
     </form>
     <p id="error" class="error"></p>
@@ -41,11 +54,21 @@
       ev.preventDefault();
       document.getElementById("error").textContent = "";
       const form = ev.target;
-      const firmaFile = document.getElementById("f_firma_sst").files[0];
-      if (!firmaFile) {
-        document.getElementById("error").textContent = "Sube la firma del responsable SST.";
-        return false;
+
+      const archivos = {
+        firma_sst: { input: document.getElementById("f_firma_sst"), etiqueta: "la firma del responsable SST" },
+        hoja_vida_sst: { input: document.getElementById("f_hoja_vida_sst"), etiqueta: "la hoja de vida" },
+        licencia_sst_pdf: { input: document.getElementById("f_licencia_sst_pdf"), etiqueta: "la licencia SST en PDF" },
+        cedula_sst_pdf: { input: document.getElementById("f_cedula_sst_pdf"), etiqueta: "la cédula en PDF" },
+        diploma_cursos_sst: { input: document.getElementById("f_diploma_cursos_sst"), etiqueta: "el diploma o certificado de cursos" },
+      };
+      for (const { input, etiqueta } of Object.values(archivos)) {
+        if (!input.files[0]) {
+          document.getElementById("error").textContent = `Sube ${etiqueta}.`;
+          return false;
+        }
       }
+
       const datos = Object.fromEntries(new FormData(form).entries());
       delete datos.firma_sst_archivo;
       const pares = [
@@ -57,11 +80,17 @@
         ["Empresa consultora", datos.empresa_consultora_sst],
         ["NIT de la consultora", datos.nit_consultora_sst],
         ["Licencia de la consultora", datos.licencia_empresa_consultora],
-        ["Firma", firmaFile.name],
+        ["Firma", archivos.firma_sst.input.files[0].name],
+        ["Hoja de vida", archivos.hoja_vida_sst.input.files[0].name],
+        ["Licencia SST (PDF)", archivos.licencia_sst_pdf.input.files[0].name],
+        ["Cédula (PDF)", archivos.cedula_sst_pdf.input.files[0].name],
+        ["Diploma / certificado de cursos", archivos.diploma_cursos_sst.input.files[0].name],
       ];
       mostrarResumenConfirmacion(resumenFilas(pares), async () => {
         const fd = new FormData();
-        fd.append("firma_sst", firmaFile);
+        for (const [rol, { input }] of Object.entries(archivos)) {
+          fd.append(rol, input.files[0]);
+        }
         await api(`/borradores/${bid}/modulo-4/archivos`, { method: "POST", body: fd });
         await api(`/borradores/${bid}/modulo-4/confirmar`, { method: "POST", body: datos });
         irAModulo(5, bid);
