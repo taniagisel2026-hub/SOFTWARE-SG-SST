@@ -12,14 +12,15 @@
     <h1>Datos de riesgo laboral</h1>
     <form onsubmit="return confirmar(event)">
       <label>Nivel de riesgo
-        <select name="nivel_riesgo" required>
+        <select name="nivel_riesgo" required oninput="actualizarCategoria()">
           <option value="">Selecciona...</option>
           <option value="I">I</option><option value="II">II</option>
           <option value="III">III</option><option value="IV">IV</option><option value="V">V</option>
         </select>
       </label>
       <label>ARL <input name="arl" required></label>
-      <label>Número de trabajadores <input name="numero_trabajadores_empresa" required></label>
+      <label>Número de trabajadores <input name="numero_trabajadores_empresa" required oninput="actualizarCategoria()"></label>
+      <p id="info-categoria" class="ayuda"></p>
 
       <div class="campo-color">
         <span>Color corporativo</span>
@@ -52,6 +53,39 @@
   <script src="common.js"></script>
   <script>
     const bid = getBorradorId();
+
+    // Misma logica de engine/matriz_documental.py::determinar_categoria()
+    // (Res. 0312/2019, Arts. 3, 9 y 16) -- se replica aca para mostrar el
+    // mensaje al instante, sin ida y vuelta al servidor.
+    const INFO_CATEGORIA = {
+      I:   { estandares: 7,  articulo: "Artículo 3" },
+      II:  { estandares: 21, articulo: "Artículo 9" },
+      III: { estandares: 60, articulo: "Artículo 16" },
+    };
+
+    function determinarCategoria(nivelRiesgo, numTrabajadores) {
+      if (["IV", "V"].includes(nivelRiesgo)) return "III";
+      if (numTrabajadores > 50) return "III";
+      if (numTrabajadores >= 11 && numTrabajadores <= 50) return "II";
+      if (numTrabajadores >= 1 && numTrabajadores <= 10) return "I";
+      return null;
+    }
+
+    function actualizarCategoria() {
+      const nivelRiesgo = document.querySelector('[name="nivel_riesgo"]').value;
+      const numTrabajadores = parseInt(document.querySelector('[name="numero_trabajadores_empresa"]').value, 10);
+      const el = document.getElementById("info-categoria");
+      const cat = nivelRiesgo && numTrabajadores > 0
+        ? determinarCategoria(nivelRiesgo, numTrabajadores)
+        : null;
+      if (!cat) {
+        el.innerHTML = "";
+        return;
+      }
+      const info = INFO_CATEGORIA[cat];
+      el.innerHTML = `Según el nivel de riesgo y el número de trabajadores, tu empresa queda en <b>Categoría ${cat}</b> `
+        + `(${info.articulo}, Res. 0312/2019) — le aplican <b>${info.estandares} estándares mínimos</b>.`;
+    }
 
     // Mismas 5 paletas predefinidas de engine/colores.py::PALETAS (tono "medio").
     const TEMA = [
