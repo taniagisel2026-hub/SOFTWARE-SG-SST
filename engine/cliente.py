@@ -217,7 +217,11 @@ def obtener_imagenes(cliente: dict, config_dir: Path) -> dict:
             if not p.is_absolute():
                 p = config_dir / p
             if p.exists():
-                imagenes[key.upper()] = str(p)
+                # resolve() para dejarla absoluta incluso si config_dir vino
+                # relativo (ej. "clientes_config\..\logo.jpeg") -- si no, mas
+                # abajo docx_engine.resolve_image_path() la busca junto a la
+                # plantilla en vez de junto al YAML del cliente, y falla.
+                imagenes[key.upper()] = str(p.resolve())
     return imagenes
 
 

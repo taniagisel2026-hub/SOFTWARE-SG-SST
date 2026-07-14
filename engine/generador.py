@@ -332,20 +332,24 @@ def generar_sgsst(
             f"\n[yellow]10.[/yellow] Matriz IPVR: [dim]sin 'cargos' en YAML, se omite[/dim]"
         )
 
-    # 8. Adaptar texto COPASST→Vigía en SST-MTZ-005 si aplica
-    if usar_vigia:
-        try:
-            from .matriz_documental import _adaptar_vigia_xlsx
-            mtz005 = next(
-                (f for f in output_base.rglob("*.xlsx")
-                 if "MTZ-005" in f.name and not f.name.startswith("~$")),
-                None,
+    # 8. Filtrar estándares mínimos aplicables en SST-MTZ-005 según la
+    # categoría del cliente (Res. 0312/2019) y adaptar COPASST→Vigía si
+    # aplica -- ambas cosas las hace filtrar_matriz_documental() en un solo
+    # paso sobre la misma hoja.
+    try:
+        from .matriz_documental import filtrar_matriz_documental
+        resultado_mtz005 = filtrar_matriz_documental(
+            output_base, _nivel_riesgo, num_trab, usar_vigia=usar_vigia,
+        )
+        if resultado_mtz005.get("error"):
+            console.print(f"\n[yellow]11.[/yellow] [yellow]No se pudo filtrar MTZ-005: {resultado_mtz005['error']}[/yellow]")
+        else:
+            console.print(
+                f"\n[yellow]11.[/yellow] SST-MTZ-005 filtrado a Categoría {resultado_mtz005['categoria']} "
+                f"({resultado_mtz005['articulo']}): {resultado_mtz005['filas_eliminadas']} fila(s) de estándares no aplicables eliminada(s)"
             )
-            if mtz005:
-                _adaptar_vigia_xlsx(mtz005)
-                console.print(f"\n[yellow]11.[/yellow] SST-MTZ-005 adaptado: COPASST → Vigía SST")
-        except Exception as e:
-            console.print(f"\n[yellow]11.[/yellow] [yellow]No se pudo adaptar MTZ-005 para Vigía: {e}[/yellow]")
+    except Exception as e:
+        console.print(f"\n[yellow]11.[/yellow] [yellow]No se pudo filtrar MTZ-005: {e}[/yellow]")
 
     # 9. Generar reporte de auditoría
     console.print("\n[yellow]12.[/yellow] Generando reporte de auditoria...")
