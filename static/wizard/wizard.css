@@ -116,7 +116,8 @@ p { line-height: 1.65; font-size: 1.15rem; }
 .upload-grid, form { display: flex; flex-direction: column; gap: 1.4rem; }
 label { display: flex; flex-direction: column; gap: 0.5rem; font-size: 1.12rem; font-weight: 600; color: var(--ink); }
 
-input[type="text"], input:not([type]), input[type="file"], input[type="number"], select, textarea {
+input[type="text"], input:not([type]), input[type="file"], input[type="number"],
+input[type="email"], select, textarea {
   font: inherit;
   font-size: 1.1rem;
   padding: 0.9rem 1.05rem;
@@ -151,6 +152,20 @@ button {
 }
 button:hover { filter: brightness(1.08); transform: translateY(-1px); box-shadow: 0 3px 6px rgba(13, 47, 82, 0.3), 0 12px 22px rgba(13, 47, 82, 0.18); }
 button:active { transform: translateY(0); filter: brightness(0.97); }
+button:disabled { cursor: default; opacity: 0.85; transform: none; }
+
+/* Ruedita de carga dentro de un boton (ver common.js::conBotonCargando). */
+.spinner {
+  display: inline-block;
+  width: 1em; height: 1em;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-top-color: #fff;
+  border-radius: 50%;
+  margin-right: 0.6em;
+  vertical-align: -0.15em;
+  animation: girar 0.7s linear infinite;
+}
+@keyframes girar { to { transform: rotate(360deg); } }
 button.secundario { background: #fff; color: var(--text); border: 1px solid var(--border); box-shadow: none; }
 button.secundario:hover { filter: none; background: #f4f6f6; border-color: #c9d0cf; transform: none; box-shadow: none; }
 
@@ -198,6 +213,43 @@ button.secundario:hover { filter: none; background: #f4f6f6; border-color: #c9d0
 .opcion h2 { margin-top: 0; margin-bottom: 0.4rem; font-size: 1.2rem; }
 .opcion p { margin: 0 0 1.1rem; font-size: 1rem; color: var(--text-muted); }
 .opcion.omitir { background: #fafafa; }
+
+/* Checkbox como tarjeta propia (ej. modulo 5: "¿Genera PESV?") -- el label
+   generico queda en columna y hace que el checkbox se pierda solo y chico. */
+.campo-checkbox {
+  display: flex; flex-direction: row; align-items: center; gap: 1rem;
+  border: 1px solid var(--border); border-radius: 12px;
+  padding: 1.1rem 1.3rem; background: #fbfcfc;
+  font-size: 1.12rem; font-weight: 600; color: var(--ink);
+  cursor: pointer;
+}
+.campo-checkbox:hover { border-color: #c3d2e0; }
+.campo-checkbox input[type="checkbox"] {
+  width: 24px; height: 24px; flex-shrink: 0;
+  accent-color: var(--primary); cursor: pointer;
+}
+
+/* Pantalla de "revisa y confirma" antes de pasar al siguiente modulo. */
+.resumen-confirmacion { display: flex; flex-direction: column; gap: 1rem; }
+.resumen-confirmacion h2 { margin-top: 0; color: var(--green-dark); }
+.resumen-lista {
+  display: flex; flex-direction: column; gap: 0.2rem;
+  border: 1px solid var(--border); border-radius: 12px;
+  padding: 1.3rem 1.5rem; background: #fbfcfc;
+}
+.resumen-fila { padding: 0.6rem 0; border-bottom: 1px solid var(--border); }
+.resumen-fila:last-child { border-bottom: none; }
+.resumen-label {
+  display: block; color: var(--text-muted); font-weight: 700;
+  font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.03em;
+  margin-bottom: 0.15rem;
+}
+.resumen-valor { display: block; color: var(--text); font-size: 1.05rem; white-space: pre-wrap; }
+.resumen-grupo { border-bottom: 1px solid var(--border); padding-bottom: 0.9rem; margin-bottom: 0.9rem; }
+.resumen-grupo:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+.resumen-grupo > b { display: block; margin-bottom: 0.3rem; color: var(--primary-dark); font-size: 1.08rem; }
+.resumen-botones { display: flex; gap: 0.9rem; margin-top: 0.2rem; }
+.resumen-botones button { flex: 1; }
 
 /* Panel de color estilo Word: cuadritos en grilla por secciones */
 .color-picker {

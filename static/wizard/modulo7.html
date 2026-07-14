@@ -47,12 +47,14 @@
       document.getElementById("error").textContent = "";
       const archivos = document.getElementById("f_manuales").files;
       if (!archivos.length) { document.getElementById("error").textContent = "Selecciona al menos un archivo."; return; }
-      const fd = new FormData();
-      for (const f of archivos) fd.append("archivos", f);
-      try {
+      const nombres = Array.from(archivos).map(f => f.name);
+      const contenido = resumenFilas(nombres.map((n, i) => [`Archivo ${i + 1}`, n]));
+      mostrarResumenConfirmacion(contenido, async () => {
+        const fd = new FormData();
+        for (const f of archivos) fd.append("archivos", f);
         await api(`/borradores/${bid}/modulo-7/manuales`, { method: "POST", body: fd });
         irAFinalizar(bid);
-      } catch (e) { document.getElementById("error").textContent = e.message; }
+      });
     }
 
     function agregarCargo() {
@@ -92,17 +94,33 @@
         document.getElementById("error").textContent = "Agrega al menos un cargo con nombre.";
         return;
       }
-      try {
+      const contenido = cargos.map(c => `
+        <div class="resumen-grupo">
+          <b>${escaparHtml(c.nombre)}</b>
+          ${resumenFilas([
+            ["Proceso", c.proceso],
+            ["Zona", c.zona],
+            ["Tipo", c.tipo],
+            ["N° de personas expuestas", c.num_expuestos],
+            ["Actividades", c.actividades],
+          ])}
+        </div>
+      `).join("");
+      mostrarResumenConfirmacion(contenido, async () => {
         await api(`/borradores/${bid}/modulo-7/lista`, { method: "POST", body: { cargos } });
         irAFinalizar(bid);
-      } catch (e) { document.getElementById("error").textContent = e.message; }
+      });
     }
 
     async function omitir() {
-      try {
-        await api(`/borradores/${bid}/modulo-7/saltar`, { method: "POST" });
-        irAFinalizar(bid);
-      } catch (e) { document.getElementById("error").textContent = e.message; }
+      document.getElementById("error").textContent = "";
+      mostrarResumenConfirmacion(
+        `<p>No se cargó información de cargos. La matriz de peligros quedará pendiente hasta que la agregues más adelante. ¿Confirmas que quieres continuar así?</p>`,
+        async () => {
+          await api(`/borradores/${bid}/modulo-7/saltar`, { method: "POST" });
+          irAFinalizar(bid);
+        }
+      );
     }
   </script>
 </body>

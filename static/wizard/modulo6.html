@@ -24,10 +24,10 @@
     async function confirmar(ev) {
       ev.preventDefault();
       const datos = Object.fromEntries(new FormData(ev.target).entries());
-      try {
+      mostrarResumenConfirmacion(resumenFilas([["Descripción", datos.descripcion_empresa]]), async () => {
         await api(`/borradores/${bid}/modulo-6/confirmar`, { method: "POST", body: datos });
         irAModulo(7, bid);
-      } catch (e) { document.getElementById("error").textContent = e.message; }
+      });
       return false;
     }
   </script>

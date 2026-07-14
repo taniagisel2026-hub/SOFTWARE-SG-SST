@@ -22,7 +22,10 @@
       <label>Año <input name="año" required></label>
       <label>Ciudad <input name="ciudad" required></label>
       <label>Mes y año <input name="mes_año" required></label>
-      <label><input type="checkbox" name="generar_pesv" style="width:auto"> ¿Genera Plan Estratégico de Seguridad Vial (PESV)?</label>
+      <label class="campo-checkbox">
+        <input type="checkbox" name="generar_pesv">
+        ¿Genera Plan Estratégico de Seguridad Vial (PESV)?
+      </label>
       <button type="submit">Continuar</button>
     </form>
     <p id="error" class="error"></p>
@@ -44,10 +47,19 @@
       const form = ev.target;
       const datos = Object.fromEntries(new FormData(form).entries());
       datos.generar_pesv = form.generar_pesv.checked;
-      try {
+      const pares = [
+        ["Versión", datos.version],
+        ["Fecha de emisión", datos.fecha_emision],
+        ["Fecha", datos.fecha],
+        ["Año", datos.año],
+        ["Ciudad", datos.ciudad],
+        ["Mes y año", datos.mes_año],
+        ["¿Genera PESV?", datos.generar_pesv],
+      ];
+      mostrarResumenConfirmacion(resumenFilas(pares), async () => {
         await api(`/borradores/${bid}/modulo-5/confirmar`, { method: "POST", body: datos });
         irAModulo(6, bid);
-      } catch (e) { document.getElementById("error").textContent = e.message; }
+      });
       return false;
     }
   </script>

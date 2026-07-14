@@ -48,13 +48,24 @@
       }
       const datos = Object.fromEntries(new FormData(form).entries());
       delete datos.firma_sst_archivo;
-      try {
+      const pares = [
+        ["Nombre del responsable SST", datos.nombre_responsable_sst],
+        ["Cédula del responsable SST", datos.cedula_responsable_sst],
+        ["Cargo", datos.cargo_sst],
+        ["Ciudad de expedición de la cédula", datos.ciudad_cedula_sst],
+        ["Licencia SST", datos.licencia_sst],
+        ["Empresa consultora", datos.empresa_consultora_sst],
+        ["NIT de la consultora", datos.nit_consultora_sst],
+        ["Licencia de la consultora", datos.licencia_empresa_consultora],
+        ["Firma", firmaFile.name],
+      ];
+      mostrarResumenConfirmacion(resumenFilas(pares), async () => {
         const fd = new FormData();
         fd.append("firma_sst", firmaFile);
         await api(`/borradores/${bid}/modulo-4/archivos`, { method: "POST", body: fd });
         await api(`/borradores/${bid}/modulo-4/confirmar`, { method: "POST", body: datos });
         irAModulo(5, bid);
-      } catch (e) { document.getElementById("error").textContent = e.message; }
+      });
       return false;
     }
   </script>

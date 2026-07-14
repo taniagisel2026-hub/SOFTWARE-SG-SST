@@ -146,10 +146,16 @@
         return false;
       }
       const datos = Object.fromEntries(new FormData(ev.target).entries());
-      try {
+      const pares = [
+        ["Nivel de riesgo", datos.nivel_riesgo],
+        ["ARL", datos.arl],
+        ["Número de trabajadores", datos.numero_trabajadores_empresa],
+        ["Color corporativo", labelText.textContent],
+      ];
+      mostrarResumenConfirmacion(resumenFilas(pares), async () => {
         await api(`/borradores/${bid}/modulo-2/confirmar`, { method: "POST", body: datos });
         irAModulo(3, bid);
-      } catch (e) { document.getElementById("error").textContent = e.message; }
+      });
       return false;
     }
   </script>

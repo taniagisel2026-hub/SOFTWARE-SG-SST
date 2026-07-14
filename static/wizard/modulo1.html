@@ -30,7 +30,7 @@
       </label>
     </div>
     <p class="ayuda">RUT, Cámara de Comercio, logo y firma son obligatorios. La cédula es opcional si ya tienes los datos del representante legal.</p>
-    <button onclick="subir()">Extraer datos</button>
+    <button id="btn-extraer" onclick="subir()">Extraer datos</button>
     <p id="error" class="error"></p>
 
     <div id="conflictos"></div>
@@ -77,12 +77,15 @@
         if (el.files[0]) fd.append(campo, el.files[0]);
       }
 
-      try {
-        const data = await api(`/borradores/${bid}/modulo-1/archivos`, { method: "POST", body: fd });
-        mostrarExtraccion(data);
-      } catch (e) {
-        document.getElementById("error").textContent = e.message;
-      }
+      const btn = document.getElementById("btn-extraer");
+      await conBotonCargando(btn, "Extrayendo datos...", async () => {
+        try {
+          const data = await api(`/borradores/${bid}/modulo-1/archivos`, { method: "POST", body: fd });
+          mostrarExtraccion(data);
+        } catch (e) {
+          document.getElementById("error").textContent = e.message;
+        }
+      });
     }
 
     function mostrarExtraccion(data) {
@@ -125,12 +128,26 @@
       ev.preventDefault();
       document.getElementById("error").textContent = "";
       const datos = Object.fromEntries(new FormData(ev.target).entries());
-      try {
+      const pares = [
+        ["Razón social", datos.razon_social],
+        ["NIT", datos.nit],
+        ["Dirección", datos.direccion_empresa],
+        ["Ciudad", datos.ciudad_empresa],
+        ["Departamento", datos.departamento_empresa],
+        ["Barrio", datos.barrio_empresa],
+        ["Actividad económica", datos.actividad_economica],
+        ["Representante legal", datos.representante_legal],
+        ["Cédula del representante legal", datos.cedula_rl],
+        ["Cargo del representante legal", datos.cargo_rl],
+        ["Ciudad de expedición de la cédula", datos.ciudad_cedula_rl],
+        ["Correo de la empresa", datos.email_empresa],
+        ["Sitio web", datos.sitio_web],
+        ["Teléfono de la empresa", datos.telefono_empresa],
+      ];
+      mostrarResumenConfirmacion(resumenFilas(pares), async () => {
         await api(`/borradores/${bid}/modulo-1/confirmar`, { method: "POST", body: datos });
         irAModulo(2, bid);
-      } catch (e) {
-        document.getElementById("error").textContent = e.message;
-      }
+      });
       return false;
     }
   </script>

@@ -62,10 +62,16 @@
         document.getElementById("error").textContent = "Completa nombre, dirección, ciudad y teléfono de cada sede.";
         return;
       }
-      try {
+      const contenido = sedes.map(s => `
+        <div class="resumen-grupo">
+          <b>${escaparHtml(s.nombre)}</b>
+          ${resumenFilas([["Dirección", s.direccion], ["Ciudad", s.ciudad], ["Teléfono", s.telefono]])}
+        </div>
+      `).join("");
+      mostrarResumenConfirmacion(contenido, async () => {
         await api(`/borradores/${bid}/modulo-3/confirmar`, { method: "POST", body: { sedes } });
         irAModulo(4, bid);
-      } catch (e) { document.getElementById("error").textContent = e.message; }
+      });
     }
   </script>
 </body>

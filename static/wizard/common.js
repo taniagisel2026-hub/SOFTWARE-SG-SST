@@ -141,3 +141,82 @@ function rellenarFormulario(form, datos) {
     else el.value = datos[el.name];
   }
 }
+
+// Deshabilita el boton, le pone una ruedita + texto de "cargando" mientras
+// corre fn (async), y lo restaura al terminar (exito o error) para que el
+// usuario nunca se quede sin saber si el clic hizo algo.
+async function conBotonCargando(boton, textoCargando, fn) {
+  const textoOriginal = boton.textContent;
+  boton.disabled = true;
+  boton.innerHTML = `<span class="spinner"></span>${textoCargando}`;
+  try {
+    return await fn();
+  } finally {
+    boton.disabled = false;
+    boton.textContent = textoOriginal;
+  }
+}
+
+function escaparHtml(valor) {
+  return String(valor).replace(/&/g, "&amp;").replace(/</g, "&lt;");
+}
+
+// Arma las filas "campo: valor" para el resumen de confirmacion de cada
+// modulo. pares es un array de [etiqueta, valor]; los valores undefined se
+// omiten (campos que no aplican, ej. sitio web vacio).
+function resumenFilas(pares) {
+  return pares
+    .filter(([, valor]) => valor !== undefined)
+    .map(([label, valor]) => {
+      let texto;
+      if (valor === true) texto = "Sí";
+      else if (valor === false) texto = "No";
+      else if (valor === "" || valor === null) texto = "<em>(sin dato)</em>";
+      else texto = escaparHtml(valor);
+      return `<div class="resumen-fila"><span class="resumen-label">${label}</span><span class="resumen-valor">${texto}</span></div>`;
+    }).join("");
+}
+
+// Pantalla de "revisa y confirma" antes de avanzar al siguiente modulo.
+// contenidoHtml ya viene armado (resumenFilas() o HTML propio para listas
+// como sedes/cargos). onConfirmar hace el POST real + navega; si truena,
+// el error se muestra ahi mismo y se puede reintentar sin perder el resumen.
+function mostrarResumenConfirmacion(contenidoHtml, onConfirmar) {
+  const card = document.querySelector(".card");
+  const ocultos = Array.from(card.children).filter((el) => el.tagName !== "SCRIPT");
+  ocultos.forEach((el) => {
+    el.dataset.resumenDisplayPrevio = el.style.display;
+    el.style.display = "none";
+  });
+
+  const resumen = document.createElement("div");
+  resumen.className = "resumen-confirmacion";
+  resumen.innerHTML = `
+    <h2>✓ Revisa la información antes de continuar</h2>
+    <p class="ayuda">¿Estás de acuerdo con esta información?</p>
+    <div class="resumen-lista">${contenidoHtml}</div>
+    <div class="resumen-botones">
+      <button type="button" class="secundario" id="resumen-editar">Editar</button>
+      <button type="button" id="resumen-confirmar">Confirmar y continuar</button>
+    </div>
+    <p id="resumen-error" class="error"></p>
+  `;
+  card.appendChild(resumen);
+
+  resumen.querySelector("#resumen-editar").onclick = () => {
+    resumen.remove();
+    ocultos.forEach((el) => { el.style.display = el.dataset.resumenDisplayPrevio || ""; });
+  };
+  resumen.querySelector("#resumen-confirmar").onclick = async () => {
+    const btn = resumen.querySelector("#resumen-confirmar");
+    btn.disabled = true;
+    btn.textContent = "Guardando...";
+    try {
+      await onConfirmar();
+    } catch (e) {
+      resumen.querySelector("#resumen-error").textContent = e.message;
+      btn.disabled = false;
+      btn.textContent = "Confirmar y continuar";
+    }
+  };
+}
