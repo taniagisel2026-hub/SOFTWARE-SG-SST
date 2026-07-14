@@ -216,6 +216,30 @@ button.secundario:hover { filter: none; background: #f4f6f6; border-color: #c9d0
 
 /* Checkbox como tarjeta propia (ej. modulo 5: "¿Genera PESV?") -- el label
    generico queda en columna y hace que el checkbox se pierda solo y chico. */
+/* Modulo 8: posicion del numero de pagina + vista previa */
+.opciones-pie { display: flex; flex-wrap: wrap; gap: 0.9rem; }
+.opcion-pie {
+  display: flex; flex-direction: row; align-items: center; gap: 0.6rem;
+  border: 1px solid var(--border); border-radius: 12px;
+  padding: 0.9rem 1.2rem; background: #fbfcfc;
+  font-size: 1.05rem; font-weight: 600; color: var(--ink);
+  cursor: pointer; flex: 1; min-width: 150px;
+}
+.opcion-pie:has(input:checked) { border-color: var(--primary); background: var(--primary-light); }
+.opcion-pie input[type="radio"] { width: 20px; height: 20px; accent-color: var(--primary); cursor: pointer; }
+.pie-preview-marco {
+  border: 1px solid var(--border); border-radius: 12px;
+  padding: 1.4rem 1.6rem; background: #fbfcfc; margin-top: 0.4rem;
+}
+.pie-preview {
+  border-top: 2px solid var(--border); margin-top: 2.2rem; padding-top: 0.6rem;
+  font-size: 0.95rem; font-weight: 700; color: var(--text-muted); min-height: 1.4em;
+}
+.pie-preview.align-izquierda { text-align: left; }
+.pie-preview.align-centro { text-align: center; }
+.pie-preview.align-derecha { text-align: right; }
+.pie-preview.vacio { text-align: center; }
+
 .campo-checkbox {
   display: flex; flex-direction: row; align-items: center; gap: 1rem;
   border: 1px solid var(--border); border-radius: 12px;

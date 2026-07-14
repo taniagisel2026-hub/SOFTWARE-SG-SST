@@ -19,7 +19,7 @@ from engine.config import WIZARD_DB_PATH
 
 MODULOS_ORDEN = [
     "modulo_1", "modulo_2", "modulo_3", "modulo_4",
-    "modulo_5", "modulo_6", "modulo_7",
+    "modulo_5", "modulo_6", "modulo_7", "modulo_8",
 ]
 
 

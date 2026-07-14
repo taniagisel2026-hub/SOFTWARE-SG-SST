@@ -29,6 +29,11 @@ arl: ""
 numero_trabajadores_empresa: ""
 color_corporativo: ""
 
+# --- ESTILO DEL DOCUMENTO (opcional) ---
+# Posición del número de página en el pie de todos los .docx generados.
+# izquierda | centro | derecha | ninguno (deja "" para usar el de la plantilla, centro).
+pie_pagina_numero: ""
+
 # --- SEDES ---
 sedes:
   - nombre: "Sede Principal"

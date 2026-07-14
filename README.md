@@ -172,7 +172,7 @@ uvicorn api:app --reload --port 8000
 
 Abrir en el navegador: `http://localhost:8000/portal/`
 
-**Cómo funciona**: 7 módulos secuenciales y bloqueados — no se puede pasar al módulo N sin haber confirmado el N-1 (la API responde `409` si se intenta saltar uno).
+**Cómo funciona**: 8 módulos secuenciales y bloqueados — no se puede pasar al módulo N sin haber confirmado el N-1 (la API responde `409` si se intenta saltar uno).
 
 | # | Módulo | Qué pide |
 |---|---|---|
@@ -184,7 +184,7 @@ Abrir en el navegador: `http://localhost:8000/portal/`
 | 6 | Descripción de la empresa | Texto libre, contexto para la humanización con Claude |
 | 7 | Cargos (opcional) | Sube manuales de funciones, o escribe la lista de cargos a mano, o lo omite — alimenta la Matriz de Peligros IPVR |
 
-Al confirmar los 7 módulos, **"Finalizar"** ensambla todo en un YAML nuevo dentro de `clientes_config/` y devuelve su ruta, lista para generar el SG-SST con el mismo botón/endpoint de siempre.
+Al confirmar los 8 módulos, **"Finalizar"** ensambla todo en un YAML nuevo dentro de `clientes_config/` y devuelve su ruta, lista para generar el SG-SST con el mismo botón/endpoint de siempre.
 
 El estado de cada borrador se guarda en `wizard_drafts.db` (SQLite) y los archivos que se van subiendo quedan temporalmente en `wizard_uploads/<borrador_id>/` — ninguno de los dos se sube a git; al finalizar, el logo/firmas/manuales se copian a `clientes_config/<slug>_assets/` (destino permanente).
 

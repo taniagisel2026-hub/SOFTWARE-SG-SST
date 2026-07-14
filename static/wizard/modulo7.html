@@ -8,7 +8,7 @@
 </head>
 <body>
   <div class="card">
-    <p class="progreso">Módulo 7 de 7 — Cargos (matriz de peligros)</p>
+    <p class="progreso">Módulo 7 de 8 — Cargos (matriz de peligros)</p>
     <h1>Cargos de la empresa</h1>
     <p>Con esto se genera la Matriz de Peligros (IPVR) — es <b>obligatoria para todas las empresas</b>. Sube los manuales o escribe los cargos a mano.</p>
 
@@ -53,7 +53,7 @@
         const fd = new FormData();
         for (const f of archivos) fd.append("archivos", f);
         await api(`/borradores/${bid}/modulo-7/manuales`, { method: "POST", body: fd });
-        irAFinalizar(bid);
+        irAModulo(8, bid);
       });
     }
 
@@ -108,7 +108,7 @@
       `).join("");
       mostrarResumenConfirmacion(contenido, async () => {
         await api(`/borradores/${bid}/modulo-7/lista`, { method: "POST", body: { cargos } });
-        irAFinalizar(bid);
+        irAModulo(8, bid);
       });
     }
 
@@ -118,7 +118,7 @@
         `<p>No se cargó información de cargos. La matriz de peligros quedará pendiente hasta que la agregues más adelante. ¿Confirmas que quieres continuar así?</p>`,
         async () => {
           await api(`/borradores/${bid}/modulo-7/saltar`, { method: "POST" });
-          irAFinalizar(bid);
+          irAModulo(8, bid);
         }
       );
     }

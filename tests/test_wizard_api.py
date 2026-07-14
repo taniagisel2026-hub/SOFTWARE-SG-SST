@@ -153,6 +153,17 @@ def test_flujo_completo_hasta_finalizar_produce_yaml_valido(client, headers):
     )
     assert r.status_code == 200
 
+    # modulo_7 es opcional -- lo saltamos, pero igual queda "confirmado" y
+    # habilita el gate del modulo 8 (_verificar_gate exige el anterior).
+    r = client.post(f"/wizard/borradores/{bid}/modulo-7/saltar", headers=headers)
+    assert r.status_code == 200
+
+    r = client.post(
+        f"/wizard/borradores/{bid}/modulo-8/confirmar", headers=headers,
+        json={"pie_pagina_numero": "izquierda"},
+    )
+    assert r.status_code == 200
+
     r = client.post(f"/wizard/borradores/{bid}/finalizar", headers=headers)
     assert r.status_code == 200
     resultado = r.json()
@@ -175,6 +186,7 @@ def test_flujo_completo_hasta_finalizar_produce_yaml_valido(client, headers):
     contexto = generar_contexto(cliente)
     assert contexto["RAZON_SOCIAL"] == "ACME PRUEBAS S.A.S"
     assert obtener_imagenes(cliente, config_path.parent) == {}  # no se subio logo/firma en este test
+    assert cliente["pie_pagina_numero"] == "izquierda"
 
     # La hoja de vida subida en el modulo 4 debe quedar copiada y referenciada
     documentos = obtener_documentos_soporte_responsable(cliente, config_path.parent)
@@ -246,7 +258,13 @@ def test_modulo_7_lista_de_cargos_llega_al_yaml_final(client, headers):
         ]},
     )
     assert r.status_code == 200
-    assert r.json()["modulo_actual"] == 8  # avanza mas alla del ultimo modulo
+    assert r.json()["modulo_actual"] == 8  # avanza al ultimo modulo (estilo del documento)
+
+    r = client.post(
+        f"/wizard/borradores/{bid}/modulo-8/confirmar", headers=headers,
+        json={"pie_pagina_numero": "centro"},
+    )
+    assert r.status_code == 200
 
     r = client.post(f"/wizard/borradores/{bid}/finalizar", headers=headers)
     assert r.status_code == 200
@@ -270,6 +288,12 @@ def test_modulo_7_subir_manuales_llega_al_yaml_final(client, headers):
     )
     assert r.status_code == 200
     assert r.json()["datos"]["modulo_7"]["manuales_subidos"] == ["gerente.docx"]
+
+    r = client.post(
+        f"/wizard/borradores/{bid}/modulo-8/confirmar", headers=headers,
+        json={"pie_pagina_numero": "centro"},
+    )
+    assert r.status_code == 200
 
     r = client.post(f"/wizard/borradores/{bid}/finalizar", headers=headers)
     assert r.status_code == 200
@@ -296,6 +320,12 @@ def test_modulo_7_saltar_no_agrega_cargos_al_yaml(client, headers):
 
     bid = _avanzar_hasta_modulo_7(client, headers)
     r = client.post(f"/wizard/borradores/{bid}/modulo-7/saltar", headers=headers)
+    assert r.status_code == 200
+
+    r = client.post(
+        f"/wizard/borradores/{bid}/modulo-8/confirmar", headers=headers,
+        json={"pie_pagina_numero": "centro"},
+    )
     assert r.status_code == 200
 
     r = client.post(f"/wizard/borradores/{bid}/finalizar", headers=headers)

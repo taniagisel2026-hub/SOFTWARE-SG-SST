@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Módulo 8 — Estilo del documento</title>
+  <link rel="stylesheet" href="wizard.css">
+</head>
+<body>
+  <div class="card">
+    <p class="progreso">Módulo 8 de 8 — Estilo del documento</p>
+    <h1>Número de página en el pie</h1>
+    <p>Elige dónde va el número de página en el pie de todos los documentos Word del SG-SST.</p>
+    <form id="form" onsubmit="return confirmar(event)">
+      <div class="opciones-pie">
+        <label class="opcion-pie">
+          <input type="radio" name="pie_pagina_numero" value="izquierda" oninput="actualizarVista()">
+          <span>Izquierda</span>
+        </label>
+        <label class="opcion-pie">
+          <input type="radio" name="pie_pagina_numero" value="centro" checked oninput="actualizarVista()">
+          <span>Centro</span>
+        </label>
+        <label class="opcion-pie">
+          <input type="radio" name="pie_pagina_numero" value="derecha" oninput="actualizarVista()">
+          <span>Derecha</span>
+        </label>
+        <label class="opcion-pie">
+          <input type="radio" name="pie_pagina_numero" value="ninguno" oninput="actualizarVista()">
+          <span>Sin número</span>
+        </label>
+      </div>
+
+      <div class="pie-preview-marco">
+        <p class="ayuda">Vista previa del pie de página</p>
+        <div class="pie-preview" id="pie-preview">1</div>
+      </div>
+
+      <button type="submit">Continuar</button>
+    </form>
+    <p id="error" class="error"></p>
+  </div>
+  <script src="common.js"></script>
+  <script>
+    const bid = getBorradorId();
+
+    function actualizarVista() {
+      const valor = document.querySelector('[name="pie_pagina_numero"]:checked').value;
+      const preview = document.getElementById("pie-preview");
+      preview.className = "pie-preview " + (valor === "ninguno" ? "vacio" : "align-" + valor);
+      preview.textContent = valor === "ninguno" ? "" : "1";
+    }
+    actualizarVista();
+
+    async function confirmar(ev) {
+      ev.preventDefault();
+      document.getElementById("error").textContent = "";
+      const datos = Object.fromEntries(new FormData(ev.target).entries());
+      mostrarResumenConfirmacion(
+        resumenFilas([["Posición del número de página", document.querySelector('[name="pie_pagina_numero"]:checked').nextElementSibling.textContent]]),
+        async () => {
+          await api(`/borradores/${bid}/modulo-8/confirmar`, { method: "POST", body: datos });
+          irAFinalizar(bid);
+        }
+      );
+      return false;
+    }
+  </script>
+</body>
+</html>

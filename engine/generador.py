@@ -25,6 +25,7 @@ from .xlsx_engine import procesar_xlsx
 from .claude_service import humanizar_secciones, actualizar_normograma, obtener_uso_sesion, resetear_uso_sesion
 from .normativa import aplicar_correcciones_docx
 from .colores import aplicar_colores_corporativos
+from .pie_pagina import aplicar_posicion_pagina
 from .auditoria import generar_reporte
 from .utils import encontrar_ruta_logo
 
@@ -290,6 +291,16 @@ def generar_sgsst(
             console.print(f"   [dim]Sin cambios de color necesarios[/dim]")
     else:
         console.print(f"\n[yellow]7.[/yellow] Colores corporativos: [dim]usando plantilla original[/dim]")
+
+    # 6d. Posicion del numero de pagina en el pie
+    pie_pagina_pos = cliente.get("pie_pagina_numero", "")
+    if pie_pagina_pos:
+        pie_stats = aplicar_posicion_pagina(output_base, pie_pagina_pos)
+        if pie_stats["archivos"] > 0:
+            console.print(
+                f"   [dim]Número de página → {pie_pagina_pos}: "
+                f"{pie_stats['archivos']} archivo(s) actualizados[/dim]"
+            )
 
     # 7. PESV
     if not cliente.get("generar_pesv", False):

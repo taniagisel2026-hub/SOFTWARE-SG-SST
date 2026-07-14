@@ -28,10 +28,10 @@ Desde la Fase 5 hay **dos caminos** para llegar al mismo archivo de configuraci�
 Si el administrador ya tiene el sistema corriendo, te dará un link parecido a `http://<servidor>/portal/`. Ahí:
 
 1. Creas un borrador nuevo.
-2. Módulo por módulo, subes los documentos y llenas los datos que pide cada uno (7 en total: documentos legales, riesgo/ARL, sedes, responsable SST y consultora, fechas/versión/opciones, descripción de la empresa, y cargos).
+2. Módulo por módulo, subes los documentos y llenas los datos que pide cada uno (8 en total: documentos legales, riesgo/ARL, sedes, responsable SST y consultora, fechas/versión/opciones, descripción de la empresa, cargos, y estilo del documento).
 3. En el módulo 1 subes el RUT, la Cámara de Comercio y la Cédula del representante legal (PDF) + el logo y la firma (imágenes) — el sistema **extrae los datos solo** y te los muestra para que confirmes o corrijas. Si el RUT y la Cámara de Comercio traen una dirección distinta, te lo señala como conflicto para que elijas cuál es la correcta en vez de adivinar.
 4. No puedes pasar al módulo siguiente sin confirmar el actual, así no se te olvida ningún dato.
-5. Al terminar los 7 módulos, el botón **"Finalizar"** te entrega el YAML ya armado (el mismo resultado que llenar la sección 2 a mano) — con eso puedes saltar directo a la [sección 4 (Generar el SG-SST)](#4-generar-el-sg-sst).
+5. Al terminar los 8 módulos, el botón **"Finalizar"** te entrega el YAML ya armado (el mismo resultado que llenar la sección 2 a mano) — con eso puedes saltar directo a la [sección 4 (Generar el SG-SST)](#4-generar-el-sg-sst).
 
 **Opción B — Editar el YAML a mano**
 
@@ -186,6 +186,14 @@ generar_pesv: false                            # true si aplica PESV
 ```
 
 > Existe también `generar_normograma_actualizado` (revisa el normograma con Claude y sugiere normas adicionales según la actividad económica), pero el asistente y la plantilla `ejemplo_cliente.yaml` ya no lo usan por defecto — las correcciones legales de `engine/normativa.py` se mantienen actualizadas aparte y se aplican siempre, sin necesitar saldo de la API. Si quieres esa capa extra de todos modos, puedes agregar `generar_normograma_actualizado: true` al YAML a mano.
+
+#### Estilo del documento (opcional)
+
+```yaml
+pie_pagina_numero: "izquierda"                 # izquierda | centro | derecha | ninguno
+```
+
+Cambia la posición del número de página en el pie de **todos** los documentos Word generados (o lo quita, con `"ninguno"`). Si se deja vacío, usa la posición que ya trae la plantilla (centrado). En el asistente por módulos vive en el Módulo 8.
 
 #### Descripción para humanización con IA
 

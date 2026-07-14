@@ -19,7 +19,7 @@ from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
 from pydantic import BaseModel
 
 from api_auth import verify_api_key
-from engine import extraccion, pdf_utils, wizard_defaults, wizard_store
+from engine import extraccion, pdf_utils, pie_pagina, wizard_defaults, wizard_store
 from engine.cliente import formatear_fecha_hoy
 from engine.config import CLIENTES_CONFIG_PATH, WIZARD_UPLOADS_DIR
 from engine.validacion import validar_cliente_dict
@@ -373,6 +373,26 @@ def modulo7_saltar(borrador_id: str) -> dict:
 
 
 # ---------------------------------------------------------------------------
+# Modulo 8 -- Estilo del documento (posicion del numero de pagina)
+# ---------------------------------------------------------------------------
+# Reusa la tecnica de engine/colores.py (reemplazo directo en el XML del
+# .docx) para cambiar la alineacion del numero de pagina en TODOS los
+# documentos generados -- ver engine/pie_pagina.py.
+
+class Modulo8Request(BaseModel):
+    pie_pagina_numero: str = "centro"  # izquierda | centro | derecha | ninguno
+
+
+@wizard_router.post("/borradores/{borrador_id}/modulo-8/confirmar", dependencies=protegido)
+def modulo8_confirmar(borrador_id: str, body: Modulo8Request) -> dict:
+    borrador = _obtener_o_404(borrador_id)
+    _verificar_gate(borrador, "modulo_8")
+    if body.pie_pagina_numero not in pie_pagina.ALINEACIONES_VALIDAS:
+        raise HTTPException(400, f"pie_pagina_numero debe ser uno de: {pie_pagina.ALINEACIONES_VALIDAS}")
+    return wizard_store.guardar_modulo(borrador_id, "modulo_8", body.model_dump())
+
+
+# ---------------------------------------------------------------------------
 # Valores por defecto (pre-llenado)
 # ---------------------------------------------------------------------------
 
@@ -416,6 +436,7 @@ def _ensamblar_cliente(borrador: dict) -> dict:
     # y conocer el slug del cliente primero). modo "omitido" no agrega nada.
     if datos.get("modulo_7", {}).get("modo") == "lista":
         cliente["cargos"] = datos["modulo_7"]["cargos"]
+    cliente.update(datos.get("modulo_8", {}))
     return cliente
 
 

@@ -10,6 +10,7 @@ const MODULOS_NOMBRES = [
   "Fechas y opciones",
   "Descripción de la empresa",
   "Cargos",
+  "Estilo del documento",
 ];
 
 // Envuelve todo el contenido de la pagina en un shell de aplicacion: barra
