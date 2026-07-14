@@ -221,6 +221,18 @@ def generar_sgsst(
     if reparados > 0:
         console.print(f"   [dim]{reparados} archivo(s) .docx reparado(s) (Content_Types)[/dim]")
 
+    # 5c. Replicar carpetas de estandares que aplican al cliente pero que
+    # todavia no tienen ningun documento cargado en la plantilla (ej.
+    # "1.1.4 AFILIACION AL SGRL"). Sin este paso esas carpetas simplemente no
+    # aparecian en la salida -- el encargado del cliente no tenia forma de
+    # saber que ese estandar existe y falta subir el archivo.
+    carpetas_pendientes = _replicar_carpetas_vacias(
+        output_base, usar_vigia=usar_vigia, categoria=categoria_res0312,
+        estandares_validos=_estandares_validos,
+    )
+    if carpetas_pendientes > 0:
+        console.print(f"   [dim]{carpetas_pendientes} carpeta(s) sin documento cargado aun (quedan vacias como recordatorio)[/dim]")
+
     # 6. Correcciones legales (siempre) + normograma con Claude (opcional)
     console.print("\n[yellow]5.[/yellow] Actualizando normas legales...")
     anio_cliente = _obtener_anio_cliente(cliente)
@@ -481,6 +493,63 @@ def _listar_archivos_plantilla(
             archivos.append(archivo)
 
     return sorted(archivos)
+
+
+def _replicar_carpetas_vacias(
+    output_base: Path,
+    usar_vigia: bool,
+    categoria: str,
+    estandares_validos: "frozenset[str] | None",
+) -> int:
+    """Crea en el output las carpetas de estandares que aplican al cliente
+    pero que todavia no tienen ningun documento cargado en la plantilla
+    (ej. "1.1.4 AFILIACION AL SGRL").
+
+    _listar_archivos_plantilla() solo devuelve archivos, asi que una carpeta
+    sin ningun documento simplemente nunca aparecia en la salida -- esta
+    funcion aplica los mismos filtros de categoria/COPASST-Vigia para que la
+    carpeta quede como recordatorio solo cuando ese estandar sí le aplica al
+    cliente, y el encargado sepa que falta subir el documento ahi.
+
+    Returns:
+        Numero de carpetas nuevas creadas.
+    """
+    otras_cats = {"I", "II", "III"} - {categoria}
+    creadas = 0
+
+    for carpeta in PLANTILLA_PATH.rglob("*"):
+        if not carpeta.is_dir() or "PLAN ESTRAT" in str(carpeta):
+            continue
+        if any(f.is_file() for f in carpeta.rglob("*")):
+            continue  # tiene contenido -- ya se replico via el loop principal
+
+        ruta_str = str(carpeta)
+        if usar_vigia:
+            if "1.1.6 CONFORMACIÓN DEL COPASST" in ruta_str or "1.1.7 CAPACITACIÓN COPASST" in ruta_str:
+                continue
+        elif "1.1.6 DESIGNACIÓN DEL VIGÍA SST" in ruta_str:
+            continue
+
+        if any(f"[CAT-{otra}]" in carpeta.name for otra in otras_cats):
+            continue
+
+        if estandares_validos is not None:
+            ruta_rel = carpeta.relative_to(PLANTILLA_PATH)
+            codigo_carpeta = None
+            for parte in ruta_rel.parts:
+                m = _RE_CARPETA_ESTANDAR.match(parte)
+                if m:
+                    codigo_carpeta = m.group(1)
+                    break
+            if codigo_carpeta and codigo_carpeta not in estandares_validos:
+                continue
+
+        destino = output_base / carpeta.relative_to(PLANTILLA_PATH)
+        if not destino.exists():
+            destino.mkdir(parents=True, exist_ok=True)
+            creadas += 1
+
+    return creadas
 
 
 def _replicar_estructura_pesv(output_base: Path) -> int:
