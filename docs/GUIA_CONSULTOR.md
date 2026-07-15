@@ -199,7 +199,7 @@ tipo_letra: "Arial"                            # "" (Calibri original) | "Arial"
 
 `estilo_encabezado` reacomoda el logo, el título, el código, la versión y la fecha del encabezado en **todos** los documentos Word generados, en una de 4 grillas alternativas (nada se agrega ni se quita, solo cambia la ubicación). Si se deja vacío, usa el encabezado original de la plantilla.
 
-`tipo_letra` cambia la fuente de **todos** los documentos Word generados (títulos, subtítulos y contenido a la vez, ya que la plantilla no usa Estilos de Word separados por nivel). Por ahora no afecta las matrices de Excel. Los tres viven en el Módulo 8 del asistente por módulos, con vista previa antes de confirmar.
+`tipo_letra` cambia la fuente de **todos** los documentos Word y matrices de Excel generados (títulos, subtítulos y contenido a la vez, ya que la plantilla no usa Estilos de Word separados por nivel). Los tres viven en el Módulo 8 del asistente por módulos, con vista previa antes de confirmar.
 
 #### Descripción para humanización con IA
 
