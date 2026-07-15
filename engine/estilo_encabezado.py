@@ -26,6 +26,7 @@ output_base) -- para entonces {{LOGO}} ya es una imagen real embebida
 tabla nueva en vez de reconstruirse.
 """
 import os
+import re
 import time
 from pathlib import Path
 
@@ -96,6 +97,16 @@ def _escribir_dos_lineas(cell, linea1, linea2, *, tamano1=10, tamano2=10):
     r2.bold = True
     r2.font.size = Pt(tamano2)
     r2.font.name = "Arial"
+
+
+_RE_ETIQUETA = re.compile(r"^[^:]*:\s*")
+
+
+def _quitar_etiqueta(texto: str) -> str:
+    """Quita el prefijo "CÓDIGO: "/"VERSIÓN: "/"FECHA: " de un valor ya
+    extraido, para estilos que dibujan la etiqueta por separado (estilo 4)
+    -- sin esto el valor queda duplicado ("CÓDIGO" arriba y "CÓDIGO: X" abajo)."""
+    return _RE_ETIQUETA.sub("", texto, count=1).strip()
 
 
 def _mover_logo(celda_destino, logo_parrafos):
@@ -237,8 +248,8 @@ def _construir_estilo_4(header, c):
 
     _escribir(tabla.cell(0, 2), "CÓDIGO", tamano=7)
     _escribir(tabla.cell(0, 3), "VERSIÓN", tamano=7)
-    _escribir(tabla.cell(1, 2), c["codigo"], tamano=7)
-    _escribir(tabla.cell(1, 3), c["version"], tamano=7)
+    _escribir(tabla.cell(1, 2), _quitar_etiqueta(c["codigo"]), tamano=7)
+    _escribir(tabla.cell(1, 3), _quitar_etiqueta(c["version"]), tamano=7)
 
     celda_fecha_lbl = tabla.cell(2, 2)
     celda_fecha_lbl.merge(tabla.cell(2, 3))
@@ -246,7 +257,7 @@ def _construir_estilo_4(header, c):
 
     celda_fecha_val = tabla.cell(3, 2)
     celda_fecha_val.merge(tabla.cell(3, 3))
-    _escribir(celda_fecha_val, c["fecha"], tamano=7)
+    _escribir(celda_fecha_val, _quitar_etiqueta(c["fecha"]), tamano=7)
 
 
 _CONSTRUCTORES = {

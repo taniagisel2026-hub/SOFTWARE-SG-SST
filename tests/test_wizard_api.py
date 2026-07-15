@@ -98,6 +98,24 @@ def test_subir_archivos_modulo_4_guarda_documentos_soporte(client, headers):
     }
 
 
+def test_obtener_archivo_subido_sirve_el_logo(client, headers):
+    bid = client.post("/wizard/borradores", headers=headers).json()["borrador_id"]
+    client.post(
+        f"/wizard/borradores/{bid}/modulo-1/archivos",
+        headers=headers,
+        files={"logo": ("logo.png", io.BytesIO(b"fake-png-bytes"), "image/png")},
+    )
+    r = client.get(f"/wizard/borradores/{bid}/archivos/logo", headers=headers)
+    assert r.status_code == 200
+    assert r.content == b"fake-png-bytes"
+
+
+def test_obtener_archivo_subido_sin_subir_da_404(client, headers):
+    bid = client.post("/wizard/borradores", headers=headers).json()["borrador_id"]
+    r = client.get(f"/wizard/borradores/{bid}/archivos/logo", headers=headers)
+    assert r.status_code == 404
+
+
 def test_flujo_completo_hasta_finalizar_produce_yaml_valido(client, headers):
     bid = client.post("/wizard/borradores", headers=headers).json()["borrador_id"]
 

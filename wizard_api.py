@@ -16,6 +16,7 @@ from pathlib import Path
 
 import yaml
 from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
+from fastapi.responses import FileResponse
 from pydantic import BaseModel
 
 from api_auth import verify_api_key
@@ -76,6 +77,18 @@ def crear_borrador() -> dict:
 @wizard_router.get("/borradores/{borrador_id}", dependencies=protegido)
 def ver_borrador(borrador_id: str) -> dict:
     return _obtener_o_404(borrador_id)
+
+
+@wizard_router.get("/borradores/{borrador_id}/archivos/{rol}", dependencies=protegido)
+def obtener_archivo_subido(borrador_id: str, rol: str) -> FileResponse:
+    """Sirve un archivo ya subido por el usuario (ej. el logo) -- se usa para
+    la vista previa en vivo del Modulo 8, que muestra el logo real del
+    cliente en cada estilo de encabezado, no una imagen de ejemplo."""
+    borrador = _obtener_o_404(borrador_id)
+    ruta = borrador["archivos"].get(rol)
+    if not ruta or not Path(ruta).exists():
+        raise HTTPException(404, f"No hay archivo subido para: {rol}")
+    return FileResponse(ruta)
 
 
 @wizard_router.delete("/borradores/{borrador_id}", dependencies=protegido)

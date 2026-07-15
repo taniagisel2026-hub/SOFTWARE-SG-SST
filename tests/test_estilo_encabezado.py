@@ -66,6 +66,13 @@ def _texto_completo_header(ruta: Path) -> str:
     )
 
 
+def _header_tabla(ruta: Path):
+    doc = Document(str(ruta))
+    header = doc.sections[0].header
+    assert header.tables, "se esperaba una tabla en el header reconstruido"
+    return header.tables[0]
+
+
 def test_estilos_validos_son_1_a_4():
     assert ESTILOS_VALIDOS == ("1", "2", "3", "4")
 
@@ -115,6 +122,23 @@ def test_aplica_estilo_4_reordena_contenido_y_preserva_todo(tmp_path):
     assert "SST-FMT-001" in texto  # estilo 4 separa la etiqueta "CÓDIGO" del valor
     assert "{{VERSION}}" in texto
     assert "{{FECHA_EMISION}}" in texto
+
+
+def test_estilo_4_no_duplica_la_etiqueta_con_el_valor(tmp_path):
+    """Bug real: estilo 4 dibuja "CÓDIGO"/"VERSIÓN"/"FECHA" como etiqueta
+    aparte, pero el valor extraido YA trae el prefijo ("CÓDIGO: SST-FMT-001")
+    -- sin quitarlo, el resultado quedaba "CÓDIGO" seguido de
+    "CÓDIGO: SST-FMT-001" duplicado y con la letra corrida."""
+    ruta = _crear_docx_con_header_real(tmp_path)
+    aplicar_estilo_encabezado_docx(str(ruta), "4")
+    tabla = _header_tabla(ruta)
+    textos_celdas = [c.text for row in tabla.rows for c in row.cells]
+    assert "CÓDIGO: SST-FMT-001" not in textos_celdas
+    assert "VERSIÓN: {{VERSION}}" not in textos_celdas
+    assert "FECHA: {{FECHA_EMISION}}" not in textos_celdas
+    assert "SST-FMT-001" in textos_celdas
+    assert "{{VERSION}}" in textos_celdas
+    assert "{{FECHA_EMISION}}" in textos_celdas
 
 
 def test_categoria_no_literal_formato_se_preserva(tmp_path):

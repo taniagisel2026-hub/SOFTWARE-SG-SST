@@ -38,25 +38,97 @@
 
       <h1 style="margin-top: 2rem;">Estilo del encabezado</h1>
       <p>Elige cómo se reparten el logo, el título y los datos del documento (código, versión, fecha) en el encabezado. Los datos son los mismos, solo cambia la ubicación.</p>
+      <p class="mini-header-nota">La vista previa usa tu logo real y la versión/fecha que elegiste. El título y el código son de ejemplo -- cada documento del SG-SST trae el suyo propio.</p>
       <div class="opciones-encabezado">
         <label class="opcion-encabezado">
-          <span class="etiqueta"><input type="radio" name="estilo_encabezado" value="" checked> Mantener el actual</span>
+          <span class="etiqueta"><input type="radio" name="estilo_encabezado" value="" checked> Estilo 1</span>
+          <div class="mini-header-wrap">
+            <table class="mini-header">
+              <colgroup><col style="width:10.2%"><col style="width:27.7%"><col style="width:33.3%"><col style="width:28.8%"></colgroup>
+              <tr>
+                <td class="logo-cell" data-campo="logo" rowspan="3"></td>
+                <td class="titulo-cell" colspan="3"><span class="categoria">FORMATO</span></td>
+              </tr>
+              <tr>
+                <td class="titulo-cell" colspan="3"><span class="titulo">NOMBRE DEL DOCUMENTO</span></td>
+              </tr>
+              <tr>
+                <td>CÓDIGO: SST-XXX-000</td>
+                <td data-campo="version"></td>
+                <td data-campo="fecha"></td>
+              </tr>
+            </table>
+          </div>
         </label>
         <label class="opcion-encabezado">
-          <span class="etiqueta"><input type="radio" name="estilo_encabezado" value="1"> Estilo 1</span>
-          <img src="encabezado_1.png" alt="Estilo de encabezado 1">
+          <span class="etiqueta"><input type="radio" name="estilo_encabezado" value="1"> Estilo 2</span>
+          <div class="mini-header-wrap">
+            <table class="mini-header">
+              <colgroup><col style="width:14.6%"><col style="width:58.9%"><col style="width:26.5%"></colgroup>
+              <tr>
+                <td class="logo-cell" data-campo="logo" rowspan="3"></td>
+                <td class="titulo-cell" rowspan="2"><span class="categoria">FORMATO</span><span class="titulo">NOMBRE DEL DOCUMENTO</span></td>
+                <td data-campo="fecha" rowspan="2"></td>
+              </tr>
+              <tr></tr>
+              <tr>
+                <td>CÓDIGO: SST-XXX-000</td>
+                <td data-campo="version"></td>
+              </tr>
+            </table>
+          </div>
         </label>
         <label class="opcion-encabezado">
-          <span class="etiqueta"><input type="radio" name="estilo_encabezado" value="2"> Estilo 2</span>
-          <img src="encabezado_2.png" alt="Estilo de encabezado 2">
+          <span class="etiqueta"><input type="radio" name="estilo_encabezado" value="2"> Estilo 3</span>
+          <div class="mini-header-wrap">
+            <table class="mini-header">
+              <colgroup><col style="width:16.1%"><col style="width:55.9%"><col style="width:28.0%"></colgroup>
+              <tr>
+                <td class="logo-cell" data-campo="logo" rowspan="3"></td>
+                <td class="titulo-cell" rowspan="3"><span class="categoria">FORMATO</span><span class="titulo">NOMBRE DEL DOCUMENTO</span></td>
+                <td>CÓDIGO: SST-XXX-000</td>
+              </tr>
+              <tr><td data-campo="version"></td></tr>
+              <tr><td data-campo="fecha"></td></tr>
+            </table>
+          </div>
         </label>
         <label class="opcion-encabezado">
-          <span class="etiqueta"><input type="radio" name="estilo_encabezado" value="3"> Estilo 3</span>
-          <img src="encabezado_3.png" alt="Estilo de encabezado 3">
+          <span class="etiqueta"><input type="radio" name="estilo_encabezado" value="3"> Estilo 4</span>
+          <div class="mini-header-wrap">
+            <table class="mini-header">
+              <colgroup><col style="width:16.1%"><col style="width:24.8%"><col style="width:38.5%"><col style="width:20.6%"></colgroup>
+              <tr>
+                <td class="logo-cell" data-campo="logo" rowspan="2"></td>
+                <td class="titulo-cell" colspan="2"><span class="categoria">FORMATO</span><span class="titulo">NOMBRE DEL DOCUMENTO</span></td>
+                <td rowspan="2">CÓDIGO:<br>SST-XXX-000</td>
+              </tr>
+              <tr>
+                <td data-campo="version"></td>
+                <td data-campo="fecha"></td>
+              </tr>
+            </table>
+          </div>
         </label>
         <label class="opcion-encabezado">
-          <span class="etiqueta"><input type="radio" name="estilo_encabezado" value="4"> Estilo 4</span>
-          <img src="encabezado_4.png" alt="Estilo de encabezado 4">
+          <span class="etiqueta"><input type="radio" name="estilo_encabezado" value="4"> Estilo 5</span>
+          <div class="mini-header-wrap">
+            <table class="mini-header">
+              <colgroup><col style="width:19.1%"><col style="width:51.5%"><col style="width:14.7%"><col style="width:14.8%"></colgroup>
+              <tr>
+                <td class="logo-cell" data-campo="logo" rowspan="4"></td>
+                <td class="titulo-cell" rowspan="4"><span class="categoria">FORMATO</span><span class="titulo">NOMBRE DEL DOCUMENTO</span></td>
+                <td style="font-size:0.72rem">CÓDIGO</td>
+                <td style="font-size:0.72rem">VERSIÓN</td>
+              </tr>
+              <tr>
+                <td style="font-size:0.72rem">SST-XXX-000</td>
+                <td style="font-size:0.72rem" data-campo-plain="version"></td>
+              </tr>
+              <tr><td colspan="2" style="font-size:0.72rem">FECHA</td></tr>
+              <tr><td colspan="2" style="font-size:0.72rem" data-campo-plain="fecha"></td></tr>
+            </table>
+          </div>
         </label>
       </div>
 
@@ -76,9 +148,53 @@
     }
     actualizarVista();
 
+    const ETIQUETAS_ESTILO = {
+      "": "Estilo 1", "1": "Estilo 2", "2": "Estilo 3", "3": "Estilo 4", "4": "Estilo 5",
+    };
     function etiquetaEstilo(valor) {
-      return valor === "" ? "Mantener el actual" : `Estilo ${valor}`;
+      return ETIQUETAS_ESTILO[valor] || valor;
     }
+
+    async function cargarVistaPreviaEncabezado() {
+      let version = "1", fecha = "";
+      try {
+        const borrador = await api(`/borradores/${bid}`);
+        version = borrador.datos?.modulo_5?.version || version;
+        fecha = borrador.datos?.modulo_5?.fecha_emision || fecha;
+        var tieneLogo = !!(borrador.archivos && borrador.archivos.logo);
+      } catch (e) {
+        var tieneLogo = false;
+      }
+
+      document.querySelectorAll('[data-campo="version"]').forEach((el) => {
+        el.textContent = `VERSIÓN: ${version}`;
+      });
+      document.querySelectorAll('[data-campo="fecha"]').forEach((el) => {
+        el.textContent = `FECHA: ${fecha}`;
+      });
+      document.querySelectorAll('[data-campo-plain="version"]').forEach((el) => {
+        el.textContent = version;
+      });
+      document.querySelectorAll('[data-campo-plain="fecha"]').forEach((el) => {
+        el.textContent = fecha;
+      });
+
+      const celdasLogo = document.querySelectorAll('[data-campo="logo"]');
+      if (tieneLogo) {
+        try {
+          const res = await fetch(`/wizard/borradores/${bid}/archivos/logo`, {
+            headers: { Authorization: `Bearer ${getToken()}` },
+          });
+          if (res.ok) {
+            const url = URL.createObjectURL(await res.blob());
+            celdasLogo.forEach((el) => { el.innerHTML = `<img src="${url}" alt="Tu logo">`; });
+            return;
+          }
+        } catch (e) { /* cae al placeholder de abajo */ }
+      }
+      celdasLogo.forEach((el) => { el.innerHTML = '<span class="logo-placeholder">LOGO</span>'; });
+    }
+    cargarVistaPreviaEncabezado();
 
     async function confirmar(ev) {
       ev.preventDefault();
