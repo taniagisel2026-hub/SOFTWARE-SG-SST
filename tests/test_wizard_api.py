@@ -160,7 +160,7 @@ def test_flujo_completo_hasta_finalizar_produce_yaml_valido(client, headers):
 
     r = client.post(
         f"/wizard/borradores/{bid}/modulo-8/confirmar", headers=headers,
-        json={"pie_pagina_numero": "izquierda"},
+        json={"pie_pagina_numero": "izquierda", "estilo_encabezado": "2"},
     )
     assert r.status_code == 200
 
@@ -187,6 +187,7 @@ def test_flujo_completo_hasta_finalizar_produce_yaml_valido(client, headers):
     assert contexto["RAZON_SOCIAL"] == "ACME PRUEBAS S.A.S"
     assert obtener_imagenes(cliente, config_path.parent) == {}  # no se subio logo/firma en este test
     assert cliente["pie_pagina_numero"] == "izquierda"
+    assert cliente["estilo_encabezado"] == "2"
 
     # La hoja de vida subida en el modulo 4 debe quedar copiada y referenciada
     documentos = obtener_documentos_soporte_responsable(cliente, config_path.parent)

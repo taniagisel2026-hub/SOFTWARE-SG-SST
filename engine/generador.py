@@ -26,6 +26,7 @@ from .claude_service import humanizar_secciones, actualizar_normograma, obtener_
 from .normativa import aplicar_correcciones_docx
 from .colores import aplicar_colores_corporativos
 from .pie_pagina import aplicar_posicion_pagina
+from .estilo_encabezado import aplicar_estilo_encabezado
 from .auditoria import generar_reporte
 from .utils import encontrar_ruta_logo
 
@@ -300,6 +301,16 @@ def generar_sgsst(
             console.print(
                 f"   [dim]Número de página → {pie_pagina_pos}: "
                 f"{pie_stats['archivos']} archivo(s) actualizados[/dim]"
+            )
+
+    # 6e. Estilo del encabezado
+    estilo_enc = cliente.get("estilo_encabezado", "")
+    if estilo_enc:
+        enc_stats = aplicar_estilo_encabezado(output_base, estilo_enc)
+        if enc_stats["archivos"] > 0:
+            console.print(
+                f"   [dim]Estilo de encabezado {estilo_enc}: "
+                f"{enc_stats['archivos']} archivo(s) actualizados[/dim]"
             )
 
     # 7. PESV

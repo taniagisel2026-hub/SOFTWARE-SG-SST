@@ -36,6 +36,30 @@
         <div class="pie-preview" id="pie-preview">1</div>
       </div>
 
+      <h1 style="margin-top: 2rem;">Estilo del encabezado</h1>
+      <p>Elige cómo se reparten el logo, el título y los datos del documento (código, versión, fecha) en el encabezado. Los datos son los mismos, solo cambia la ubicación.</p>
+      <div class="opciones-encabezado">
+        <label class="opcion-encabezado">
+          <span class="etiqueta"><input type="radio" name="estilo_encabezado" value="" checked> Mantener el actual</span>
+        </label>
+        <label class="opcion-encabezado">
+          <span class="etiqueta"><input type="radio" name="estilo_encabezado" value="1"> Estilo 1</span>
+          <img src="encabezado_1.png" alt="Estilo de encabezado 1">
+        </label>
+        <label class="opcion-encabezado">
+          <span class="etiqueta"><input type="radio" name="estilo_encabezado" value="2"> Estilo 2</span>
+          <img src="encabezado_2.png" alt="Estilo de encabezado 2">
+        </label>
+        <label class="opcion-encabezado">
+          <span class="etiqueta"><input type="radio" name="estilo_encabezado" value="3"> Estilo 3</span>
+          <img src="encabezado_3.png" alt="Estilo de encabezado 3">
+        </label>
+        <label class="opcion-encabezado">
+          <span class="etiqueta"><input type="radio" name="estilo_encabezado" value="4"> Estilo 4</span>
+          <img src="encabezado_4.png" alt="Estilo de encabezado 4">
+        </label>
+      </div>
+
       <button type="submit">Continuar</button>
     </form>
     <p id="error" class="error"></p>
@@ -52,12 +76,19 @@
     }
     actualizarVista();
 
+    function etiquetaEstilo(valor) {
+      return valor === "" ? "Mantener el actual" : `Estilo ${valor}`;
+    }
+
     async function confirmar(ev) {
       ev.preventDefault();
       document.getElementById("error").textContent = "";
       const datos = Object.fromEntries(new FormData(ev.target).entries());
       mostrarResumenConfirmacion(
-        resumenFilas([["Posición del número de página", document.querySelector('[name="pie_pagina_numero"]:checked').nextElementSibling.textContent]]),
+        resumenFilas([
+          ["Posición del número de página", document.querySelector('[name="pie_pagina_numero"]:checked').nextElementSibling.textContent],
+          ["Estilo de encabezado", etiquetaEstilo(document.querySelector('[name="estilo_encabezado"]:checked').value)],
+        ]),
         async () => {
           await api(`/borradores/${bid}/modulo-8/confirmar`, { method: "POST", body: datos });
           irAFinalizar(bid);

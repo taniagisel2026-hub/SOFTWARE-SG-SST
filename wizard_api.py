@@ -19,7 +19,7 @@ from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
 from pydantic import BaseModel
 
 from api_auth import verify_api_key
-from engine import extraccion, pdf_utils, pie_pagina, wizard_defaults, wizard_store
+from engine import estilo_encabezado, extraccion, pdf_utils, pie_pagina, wizard_defaults, wizard_store
 from engine.cliente import formatear_fecha_hoy
 from engine.config import CLIENTES_CONFIG_PATH, WIZARD_UPLOADS_DIR
 from engine.validacion import validar_cliente_dict
@@ -373,14 +373,17 @@ def modulo7_saltar(borrador_id: str) -> dict:
 
 
 # ---------------------------------------------------------------------------
-# Modulo 8 -- Estilo del documento (posicion del numero de pagina)
+# Modulo 8 -- Estilo del documento (posicion del numero de pagina + estilo
+# de encabezado)
 # ---------------------------------------------------------------------------
 # Reusa la tecnica de engine/colores.py (reemplazo directo en el XML del
 # .docx) para cambiar la alineacion del numero de pagina en TODOS los
-# documentos generados -- ver engine/pie_pagina.py.
+# documentos generados -- ver engine/pie_pagina.py. El estilo de encabezado
+# reconstruye la tabla del header -- ver engine/estilo_encabezado.py.
 
 class Modulo8Request(BaseModel):
     pie_pagina_numero: str = "centro"  # izquierda | centro | derecha | ninguno
+    estilo_encabezado: str = ""  # "" (original) | "1" | "2" | "3" | "4"
 
 
 @wizard_router.post("/borradores/{borrador_id}/modulo-8/confirmar", dependencies=protegido)
@@ -389,6 +392,8 @@ def modulo8_confirmar(borrador_id: str, body: Modulo8Request) -> dict:
     _verificar_gate(borrador, "modulo_8")
     if body.pie_pagina_numero not in pie_pagina.ALINEACIONES_VALIDAS:
         raise HTTPException(400, f"pie_pagina_numero debe ser uno de: {pie_pagina.ALINEACIONES_VALIDAS}")
+    if body.estilo_encabezado and body.estilo_encabezado not in estilo_encabezado.ESTILOS_VALIDOS:
+        raise HTTPException(400, f"estilo_encabezado debe ser uno de: {estilo_encabezado.ESTILOS_VALIDOS}")
     return wizard_store.guardar_modulo(borrador_id, "modulo_8", body.model_dump())
 
 

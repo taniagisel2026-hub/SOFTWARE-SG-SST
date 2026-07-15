@@ -240,6 +240,24 @@ button.secundario:hover { filter: none; background: #f4f6f6; border-color: #c9d0
 .pie-preview.align-derecha { text-align: right; }
 .pie-preview.vacio { text-align: center; }
 
+/* Modulo 8: estilo de encabezado (miniaturas) */
+.opciones-encabezado { display: flex; flex-wrap: wrap; gap: 0.9rem; }
+.opcion-encabezado {
+  display: flex; flex-direction: column; gap: 0.5rem;
+  border: 1px solid var(--border); border-radius: 12px;
+  padding: 0.8rem; background: #fbfcfc;
+  cursor: pointer; flex: 1; min-width: 220px;
+}
+.opcion-encabezado:has(input:checked) { border-color: var(--primary); background: var(--primary-light); }
+.opcion-encabezado img {
+  width: 100%; border-radius: 6px; border: 1px solid var(--border); background: #fff;
+}
+.opcion-encabezado .etiqueta {
+  display: flex; align-items: center; gap: 0.5rem;
+  font-size: 0.98rem; font-weight: 600; color: var(--ink);
+}
+.opcion-encabezado input[type="radio"] { width: 18px; height: 18px; accent-color: var(--primary); cursor: pointer; }
+
 .campo-checkbox {
   display: flex; flex-direction: row; align-items: center; gap: 1rem;
   border: 1px solid var(--border); border-radius: 12px;
