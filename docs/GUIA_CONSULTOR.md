@@ -192,11 +192,14 @@ generar_pesv: false                            # true si aplica PESV
 ```yaml
 pie_pagina_numero: "izquierda"                 # izquierda | centro | derecha | ninguno
 estilo_encabezado: "2"                         # "" (original) | "1" | "2" | "3" | "4"
+tipo_letra: "Arial"                            # "" (Calibri original) | "Arial" | "Calibri" | "Times New Roman"
 ```
 
 `pie_pagina_numero` cambia la posición del número de página en el pie de **todos** los documentos Word generados (o lo quita, con `"ninguno"`). Si se deja vacío, usa la posición que ya trae la plantilla (centrado).
 
-`estilo_encabezado` reacomoda el logo, el título, el código, la versión y la fecha del encabezado en **todos** los documentos Word generados, en una de 4 grillas alternativas (nada se agrega ni se quita, solo cambia la ubicación). Si se deja vacío, usa el encabezado original de la plantilla. Ambos viven en el Módulo 8 del asistente por módulos, con miniaturas de cada estilo para elegir.
+`estilo_encabezado` reacomoda el logo, el título, el código, la versión y la fecha del encabezado en **todos** los documentos Word generados, en una de 4 grillas alternativas (nada se agrega ni se quita, solo cambia la ubicación). Si se deja vacío, usa el encabezado original de la plantilla.
+
+`tipo_letra` cambia la fuente de **todos** los documentos Word generados (títulos, subtítulos y contenido a la vez, ya que la plantilla no usa Estilos de Word separados por nivel). Por ahora no afecta las matrices de Excel. Los tres viven en el Módulo 8 del asistente por módulos, con vista previa antes de confirmar.
 
 #### Descripción para humanización con IA
 

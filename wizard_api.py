@@ -20,7 +20,7 @@ from fastapi.responses import FileResponse
 from pydantic import BaseModel
 
 from api_auth import verify_api_key
-from engine import estilo_encabezado, extraccion, pdf_utils, pie_pagina, wizard_defaults, wizard_store
+from engine import estilo_encabezado, extraccion, pdf_utils, pie_pagina, tipo_letra, wizard_defaults, wizard_store
 from engine.cliente import formatear_fecha_hoy
 from engine.config import CLIENTES_CONFIG_PATH, WIZARD_UPLOADS_DIR
 from engine.validacion import validar_cliente_dict
@@ -397,6 +397,7 @@ def modulo7_saltar(borrador_id: str) -> dict:
 class Modulo8Request(BaseModel):
     pie_pagina_numero: str = "centro"  # izquierda | centro | derecha | ninguno
     estilo_encabezado: str = ""  # "" (original) | "1" | "2" | "3" | "4"
+    tipo_letra: str = ""  # "" (original) | "Arial" | "Calibri" | "Times New Roman"
 
 
 @wizard_router.post("/borradores/{borrador_id}/modulo-8/confirmar", dependencies=protegido)
@@ -407,6 +408,8 @@ def modulo8_confirmar(borrador_id: str, body: Modulo8Request) -> dict:
         raise HTTPException(400, f"pie_pagina_numero debe ser uno de: {pie_pagina.ALINEACIONES_VALIDAS}")
     if body.estilo_encabezado and body.estilo_encabezado not in estilo_encabezado.ESTILOS_VALIDOS:
         raise HTTPException(400, f"estilo_encabezado debe ser uno de: {estilo_encabezado.ESTILOS_VALIDOS}")
+    if body.tipo_letra and body.tipo_letra not in tipo_letra.FUENTES_VALIDAS:
+        raise HTTPException(400, f"tipo_letra debe ser uno de: {tipo_letra.FUENTES_VALIDAS}")
     return wizard_store.guardar_modulo(borrador_id, "modulo_8", body.model_dump())
 
 

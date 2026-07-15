@@ -274,6 +274,26 @@ table.mini-header td.titulo-cell .categoria { display: block; font-size: 0.82rem
 table.mini-header td.titulo-cell .titulo { display: block; font-size: 0.98rem; margin-top: 0.15rem; }
 .mini-header-nota { font-size: 0.85rem; color: var(--text-muted); margin: 0.6rem 0 0; }
 
+/* Modulo 8: tipo de letra */
+.opciones-letra { display: flex; flex-wrap: wrap; gap: 0.9rem; }
+.opcion-letra {
+  display: flex; flex-direction: row; align-items: center; gap: 0.6rem;
+  border: 1px solid var(--border); border-radius: 12px;
+  padding: 0.9rem 1.2rem; background: #fbfcfc;
+  font-size: 1.1rem; font-weight: 600; color: var(--ink);
+  cursor: pointer; flex: 1; min-width: 170px;
+}
+.opcion-letra:has(input:checked) { border-color: var(--primary); background: var(--primary-light); }
+.opcion-letra input[type="radio"] { width: 20px; height: 20px; accent-color: var(--primary); cursor: pointer; }
+.letra-preview-marco {
+  border: 1px solid var(--border); border-radius: 12px;
+  padding: 1.4rem 1.6rem; background: #fbfcfc; margin-top: 0.4rem;
+}
+.letra-preview { transition: font-family 0.1s ease; }
+.letra-preview-titulo { font-size: 1.15rem; font-weight: 700; margin: 0 0 0.6rem; color: var(--ink); }
+.letra-preview-subtitulo { font-size: 1rem; font-weight: 700; margin: 0 0 0.4rem; color: var(--ink); }
+.letra-preview-contenido { font-size: 0.98rem; margin: 0; color: var(--text); line-height: 1.6; }
+
 .campo-checkbox {
   display: flex; flex-direction: row; align-items: center; gap: 1rem;
   border: 1px solid var(--border); border-radius: 12px;

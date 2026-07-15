@@ -36,6 +36,9 @@ pie_pagina_numero: ""
 # Estilo del encabezado (logo/título/código/versión/fecha reacomodados).
 # "" (encabezado original) | "1" | "2" | "3" | "4"
 estilo_encabezado: ""
+# Tipo de letra de todos los .docx generados (titulos, subtitulos y contenido).
+# "" (Calibri, la de la plantilla) | "Arial" | "Calibri" | "Times New Roman"
+tipo_letra: ""
 
 # --- SEDES ---
 sedes:

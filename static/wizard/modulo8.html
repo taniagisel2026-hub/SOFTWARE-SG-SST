@@ -132,6 +132,32 @@
         </label>
       </div>
 
+      <h1 style="margin-top: 2rem;">Tipo de letra</h1>
+      <p>Elige la fuente de todo el documento (títulos, subtítulos y contenido). Por ahora aplica a los documentos Word; las matrices de Excel siguen con su fuente original.</p>
+      <div class="opciones-letra">
+        <label class="opcion-letra">
+          <input type="radio" name="tipo_letra" value="" checked oninput="actualizarVistaLetra()">
+          <span style="font-family: Calibri, sans-serif;">Calibri</span>
+        </label>
+        <label class="opcion-letra">
+          <input type="radio" name="tipo_letra" value="Arial" oninput="actualizarVistaLetra()">
+          <span style="font-family: Arial, sans-serif;">Arial</span>
+        </label>
+        <label class="opcion-letra">
+          <input type="radio" name="tipo_letra" value="Times New Roman" oninput="actualizarVistaLetra()">
+          <span style="font-family: 'Times New Roman', serif;">Times New Roman</span>
+        </label>
+      </div>
+
+      <div class="letra-preview-marco">
+        <p class="ayuda">Vista previa</p>
+        <div class="letra-preview" id="letra-preview">
+          <p class="letra-preview-titulo">ASIGNACIÓN DEL RESPONSABLE DEL SG-SST</p>
+          <p class="letra-preview-subtitulo">1. Objetivo</p>
+          <p class="letra-preview-contenido">Este documento tiene como fin establecer los criterios para la designación del responsable del Sistema de Gestión de Seguridad y Salud en el Trabajo.</p>
+        </div>
+      </div>
+
       <button type="submit">Continuar</button>
     </form>
     <p id="error" class="error"></p>
@@ -147,6 +173,18 @@
       preview.textContent = valor === "ninguno" ? "" : "1";
     }
     actualizarVista();
+
+    const FUENTES_CSS = {
+      "": "Calibri, sans-serif",
+      "Arial": "Arial, sans-serif",
+      "Calibri": "Calibri, sans-serif",
+      "Times New Roman": "'Times New Roman', serif",
+    };
+    function actualizarVistaLetra() {
+      const valor = document.querySelector('[name="tipo_letra"]:checked').value;
+      document.getElementById("letra-preview").style.fontFamily = FUENTES_CSS[valor];
+    }
+    actualizarVistaLetra();
 
     const ETIQUETAS_ESTILO = {
       "": "Estilo 1", "1": "Estilo 2", "2": "Estilo 3", "3": "Estilo 4", "4": "Estilo 5",
@@ -204,6 +242,7 @@
         resumenFilas([
           ["Posición del número de página", document.querySelector('[name="pie_pagina_numero"]:checked').nextElementSibling.textContent],
           ["Estilo de encabezado", etiquetaEstilo(document.querySelector('[name="estilo_encabezado"]:checked').value)],
+          ["Tipo de letra", document.querySelector('[name="tipo_letra"]:checked').nextElementSibling.textContent],
         ]),
         async () => {
           await api(`/borradores/${bid}/modulo-8/confirmar`, { method: "POST", body: datos });

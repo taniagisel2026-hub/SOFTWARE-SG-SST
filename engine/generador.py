@@ -27,6 +27,7 @@ from .normativa import aplicar_correcciones_docx
 from .colores import aplicar_colores_corporativos
 from .pie_pagina import aplicar_posicion_pagina
 from .estilo_encabezado import aplicar_estilo_encabezado
+from .tipo_letra import aplicar_tipo_letra
 from .auditoria import generar_reporte
 from .utils import encontrar_ruta_logo
 
@@ -311,6 +312,16 @@ def generar_sgsst(
             console.print(
                 f"   [dim]Estilo de encabezado {estilo_enc}: "
                 f"{enc_stats['archivos']} archivo(s) actualizados[/dim]"
+            )
+
+    # 6f. Tipo de letra
+    tipo_letra = cliente.get("tipo_letra", "")
+    if tipo_letra:
+        letra_stats = aplicar_tipo_letra(output_base, tipo_letra)
+        if letra_stats["archivos"] > 0:
+            console.print(
+                f"   [dim]Tipo de letra → {tipo_letra}: "
+                f"{letra_stats['archivos']} archivo(s) actualizados[/dim]"
             )
 
     # 7. PESV
