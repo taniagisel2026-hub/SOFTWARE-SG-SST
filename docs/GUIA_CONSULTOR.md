@@ -197,7 +197,7 @@ tipo_letra: "Arial"                            # "" (Calibri original) | "Arial"
 
 `pie_pagina_numero` cambia la posición del número de página en el pie de **todos** los documentos Word generados (o lo quita, con `"ninguno"`). Si se deja vacío, usa la posición que ya trae la plantilla (centrado).
 
-`estilo_encabezado` reacomoda el logo, el título, el código, la versión y la fecha del encabezado en **todos** los documentos Word generados, en una de 4 grillas alternativas (nada se agrega ni se quita, solo cambia la ubicación). Si se deja vacío, usa el encabezado original de la plantilla.
+`estilo_encabezado` reacomoda el logo, el título, el código, la versión y la fecha del encabezado en **todos** los documentos Word y las matrices de Excel generados, en una de 4 grillas alternativas (nada se agrega ni se quita, solo cambia la ubicación). Si se deja vacío, usa el encabezado original de la plantilla. En Excel, las matrices con un bloque de encabezado no reconocible (algunos consolidados/indicadores) quedan sin cambios, sin dar error.
 
 `tipo_letra` cambia la fuente de **todos** los documentos Word y matrices de Excel generados (títulos, subtítulos y contenido a la vez, ya que la plantilla no usa Estilos de Word separados por nivel). Los tres viven en el Módulo 8 del asistente por módulos, con vista previa antes de confirmar.
 

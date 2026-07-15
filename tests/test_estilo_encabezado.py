@@ -1,16 +1,21 @@
 """Tests de engine/estilo_encabezado.py -- reconstruye la tabla del
 encabezado de los .docx generados en uno de 4 estilos, preservando el
 logo, categoria/"FORMATO", titulo, codigo, version y fecha ya presentes."""
+import io
 from pathlib import Path
 
+import openpyxl
 from docx import Document
 from docx.enum.table import WD_ALIGN_VERTICAL
 from docx.shared import Cm
+from openpyxl.drawing.image import Image as XlsxImage
+from PIL import Image as PILImage
 
 from engine.estilo_encabezado import (
     ESTILOS_VALIDOS,
     aplicar_estilo_encabezado,
     aplicar_estilo_encabezado_docx,
+    aplicar_estilo_encabezado_xlsx,
 )
 
 # Marcador distintivo que hace las veces de "imagen real" del logo (docxtpl
@@ -186,3 +191,113 @@ def test_aplicar_estilo_encabezado_estilo_invalido_no_recorre(tmp_path):
     _crear_docx_con_header_real(output_base)
     stats = aplicar_estilo_encabezado(output_base, "no-existe")
     assert stats == {"archivos": 0, "omitidos": 0}
+
+
+# ══════════════════════════════════════════════════════════════════════
+#  EXCEL -- misma logica pero el bloque de encabezado se ubica buscando
+#  la celda "CODIGO..." (columna variable), no por coordenada fija.
+# ══════════════════════════════════════════════════════════════════════
+
+def _imagen_xlsx_de_prueba():
+    buf = io.BytesIO()
+    PILImage.new("RGB", (20, 20), color="green").save(buf, format="PNG")
+    buf.seek(0)
+    return XlsxImage(buf)
+
+
+def _crear_xlsx_con_header_real(directorio: Path, nombre: str = "matriz.xlsx", *,
+                                 col_codigo: str = "F",
+                                 categoria: str = "MATRIZ",
+                                 titulo: str = "ROLES Y RESPONSABILIDADES",
+                                 codigo: str = "CÓDIGO: SST-MTZ-001",
+                                 version: str = "VERSIÓN: 002",
+                                 fecha: str = "FECHA: 20/01/2025") -> Path:
+    """Replica la estructura real confirmada sobre 53 archivos: categoria/
+    titulo/codigo apilados en una columna (variable), version y fecha en
+    la misma fila del codigo, mas una imagen (el logo)."""
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws[f"{col_codigo}1"] = categoria
+    ws[f"{col_codigo}2"] = titulo
+    ws[f"{col_codigo}3"] = codigo
+    col_version = chr(ord(col_codigo) + 3)
+    col_fecha = chr(ord(col_codigo) + 6)
+    ws[f"{col_version}3"] = version
+    ws[f"{col_fecha}3"] = fecha
+    ws.add_image(_imagen_xlsx_de_prueba(), "A1")
+    # Filas de "datos" despues del encabezado, para verificar que no se tocan
+    ws["A5"] = "CARGO"
+    ws["B5"] = "PROCESO"
+    ruta = directorio / nombre
+    wb.save(str(ruta))
+    return ruta
+
+
+def _leer_valores_xlsx(ruta: Path):
+    wb = openpyxl.load_workbook(str(ruta))
+    ws = wb.worksheets[0]
+    return [c.value for row in ws.iter_rows(min_row=1, max_row=6) for c in row if c.value not in (None, "")]
+
+
+def test_aplica_estilo_1_xlsx_columna_f(tmp_path):
+    ruta = _crear_xlsx_con_header_real(tmp_path, col_codigo="F")
+    cambiado = aplicar_estilo_encabezado_xlsx(str(ruta), "1")
+    assert cambiado == 1
+    valores = _leer_valores_xlsx(ruta)
+    texto = "\n".join(valores)
+    assert "MATRIZ" in texto
+    assert "ROLES Y RESPONSABILIDADES" in texto
+    assert "CÓDIGO: SST-MTZ-001" in texto
+    assert "VERSIÓN: 002" in texto
+    assert "FECHA: 20/01/2025" in texto
+
+
+def test_aplica_estilo_2_xlsx_columna_distinta_b(tmp_path):
+    """Misma prueba pero con el bloque empezando en otra columna (B en vez
+    de F) -- confirma que la ubicacion es por busqueda de texto, no por
+    coordenada fija."""
+    ruta = _crear_xlsx_con_header_real(tmp_path, col_codigo="B")
+    cambiado = aplicar_estilo_encabezado_xlsx(str(ruta), "2")
+    assert cambiado == 1
+    valores = _leer_valores_xlsx(ruta)
+    texto = "\n".join(valores)
+    assert "MATRIZ" in texto
+    assert "ROLES Y RESPONSABILIDADES" in texto
+    assert "CÓDIGO: SST-MTZ-001" in texto
+
+
+def test_xlsx_no_toca_las_filas_de_datos(tmp_path):
+    ruta = _crear_xlsx_con_header_real(tmp_path)
+    aplicar_estilo_encabezado_xlsx(str(ruta), "4")
+    wb = openpyxl.load_workbook(str(ruta))
+    ws = wb.worksheets[0]
+    assert ws["A5"].value == "CARGO"
+    assert ws["B5"].value == "PROCESO"
+
+
+def test_xlsx_estilo_invalido_no_hace_nada(tmp_path):
+    ruta = _crear_xlsx_con_header_real(tmp_path)
+    cambiado = aplicar_estilo_encabezado_xlsx(str(ruta), "9")
+    assert cambiado == 0
+
+
+def test_xlsx_sin_codigo_detectable_no_truena(tmp_path):
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws["C1"] = "MATRIZ DE REQUISITOS LEGALES"  # categoria+titulo juntos, sin "codigo" separado
+    ruta = tmp_path / "sin_codigo.xlsx"
+    wb.save(str(ruta))
+    cambiado = aplicar_estilo_encabezado_xlsx(str(ruta), "1")
+    assert cambiado == 0
+
+
+def test_aplicar_estilo_encabezado_recorre_xlsx_tambien(tmp_path):
+    output_base = tmp_path / "salida"
+    output_base.mkdir()
+    _crear_xlsx_con_header_real(output_base, "uno.xlsx", col_codigo="F")
+    _crear_xlsx_con_header_real(output_base, "dos.xlsx", col_codigo="C")
+    _crear_docx_con_header_real(output_base, "tres.docx")
+
+    stats = aplicar_estilo_encabezado(output_base, "3")
+
+    assert stats["archivos"] == 3

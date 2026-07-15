@@ -33,8 +33,8 @@ color_corporativo: ""
 # Posición del número de página en el pie de todos los .docx generados.
 # izquierda | centro | derecha | ninguno (deja "" para usar el de la plantilla, centro).
 pie_pagina_numero: ""
-# Estilo del encabezado (logo/título/código/versión/fecha reacomodados).
-# "" (encabezado original) | "1" | "2" | "3" | "4"
+# Estilo del encabezado (logo/título/código/versión/fecha reacomodados),
+# aplica a .docx y .xlsx. "" (encabezado original) | "1" | "2" | "3" | "4"
 estilo_encabezado: ""
 # Tipo de letra de todos los .docx y .xlsx generados (titulos, subtitulos y contenido).
 # "" (Calibri, la de la plantilla) | "Arial" | "Calibri" | "Times New Roman"

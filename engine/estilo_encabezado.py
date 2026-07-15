@@ -1,4 +1,5 @@
-"""Estilos de encabezado seleccionables para los documentos Word generados.
+"""Estilos de encabezado seleccionables para los documentos Word y las
+matrices de Excel generadas.
 
 Se configura en el YAML del cliente con:
 
@@ -24,10 +25,19 @@ punto del pipeline que pie_pagina.py, sobre las copias del cliente en
 output_base) -- para entonces {{LOGO}} ya es una imagen real embebida
 (InlineImage), así que el contenido de esa celda se MUEVE tal cual a la
 tabla nueva en vez de reconstruirse.
+
+En Excel el bloque de encabezado NO está en una posición fija (varía de
+columna según la matriz) -- se ubica buscando la celda que empieza con
+"CÓDIGO" en las primeras filas, y se reconstruye usando las MISMAS
+proporciones de Word pero como fracciones de columna, sin salir nunca de
+las filas que ya ocupaba el encabezado (para no invadir la fila de
+encabezados de la tabla de datos de abajo). Ver la sección "EXCEL" más
+abajo para el detalle.
 """
 import os
 import re
 import time
+import unicodedata
 from pathlib import Path
 
 from docx import Document
@@ -36,6 +46,9 @@ from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.oxml.ns import qn
 from docx.oxml import OxmlElement
 from docx.shared import Cm, Pt
+from openpyxl import load_workbook
+from openpyxl.styles import Alignment, Border, Font, Side
+from openpyxl.utils import get_column_letter
 from rich.console import Console
 
 console = Console(highlight=False)
@@ -324,8 +337,281 @@ def aplicar_estilo_encabezado_docx(docx_path: str, estilo: str) -> int:
     return 1
 
 
+# ══════════════════════════════════════════════════════════════════════
+#  EXCEL (.xlsx) -- mismos 5 estilos, adaptados a la realidad de Excel:
+#  el bloque de encabezado usa las MISMAS columnas que la tabla de datos
+#  de abajo (a diferencia de Word, que tiene su propia tabla con anchos en
+#  cm), así que las proporciones se aplican como fracciones de columna, y
+#  la reconstrucción NUNCA sale de las filas que ya ocupaba el encabezado
+#  original (para no invadir la fila de encabezados de la tabla de datos).
+#
+#  La posición del bloque tampoco es fija (varía de columna B a J según
+#  la matriz) -- se localiza buscando la celda que empieza con "CÓDIGO",
+#  confirmado sobre 53 archivos reales: 46 (87%) se detectan así, los
+#  demás (matrices tipo consolidado/indicador con estructura distinta)
+#  se omiten sin error, igual que los .docx sin tabla de encabezado.
+#
+#  Solo se procesa la PRIMERA hoja de cada archivo (la que trae el
+#  encabezado principal).
+# ══════════════════════════════════════════════════════════════════════
+
+# Fracciones (logo, título, bloque derecho) por estilo -- calcadas de los
+# anchos en cm de cada _construir_estilo_N de Word (logo/título/resto).
+_FRACCIONES_XLSX = {
+    "1": (0.1465, 0.5888, 0.2647),
+    "2": (0.1612, 0.5588, 0.2800),
+    "3": (0.1612, 0.6323, 0.2065),
+    "4": (0.1906, 0.5147, 0.2947),
+}
+
+_BORDE_FINO_XLSX = Side(style="thin", color="000000")
+
+
+def _normalizar_xlsx(texto: str) -> str:
+    t = unicodedata.normalize("NFD", texto)
+    t = "".join(c for c in t if unicodedata.category(c) != "Mn")
+    return t.strip().upper()
+
+
+def _buscar_celda_por_prefijo(ws, filas, prefijo, col_desde=None, col_hasta=None):
+    for fila in filas:
+        for celda in ws[fila]:
+            if col_desde is not None and celda.column < col_desde:
+                continue
+            if col_hasta is not None and celda.column > col_hasta:
+                continue
+            valor = celda.value
+            if isinstance(valor, str) and _normalizar_xlsx(valor).startswith(prefijo):
+                return celda
+    return None
+
+
+def _extraer_contenido_header_xlsx(ws):
+    """Ubica el bloque de encabezado buscando la celda "CÓDIGO..." en las
+    primeras 8 filas (sin asumir columna fija). Devuelve None si no la
+    encuentra (matriz con estructura distinta -- se omite sin error)."""
+    celda_codigo = _buscar_celda_por_prefijo(ws, range(1, 9), "CODIGO")
+    if celda_codigo is None:
+        return None
+
+    fila_codigo, col = celda_codigo.row, celda_codigo.column
+    celda_version = _buscar_celda_por_prefijo(ws, [fila_codigo], "VERSION")
+    celda_fecha = _buscar_celda_por_prefijo(ws, [fila_codigo], "FECHA")
+
+    def _valor_o_none(fila, columna):
+        if fila < 1:
+            return None
+        v = ws.cell(row=fila, column=columna).value
+        return v.strip() if isinstance(v, str) and v.strip() else None
+
+    titulo = _valor_o_none(fila_codigo - 1, col)
+    categoria = _valor_o_none(fila_codigo - 2, col) if titulo else None
+    fila_top = fila_codigo - (2 if categoria else 1 if titulo else 0)
+
+    # Ancho del bloque: columna mas a la derecha entre las combinaciones
+    # que tocan las filas del encabezado (fila_top..fila_codigo), y las
+    # propias celdas de version/fecha si existen (por si no vienen
+    # combinadas, esas celdas ya prueban que el encabezado llega hasta ahi).
+    col_derecha = col
+    if celda_version:
+        col_derecha = max(col_derecha, celda_version.column)
+    if celda_fecha:
+        col_derecha = max(col_derecha, celda_fecha.column)
+    for m in ws.merged_cells.ranges:
+        if m.min_row <= fila_codigo and m.max_row >= fila_top:
+            col_derecha = max(col_derecha, m.max_col)
+
+    imagen = ws._images[0] if getattr(ws, "_images", None) else None
+
+    return {
+        "fila_top": fila_top,
+        "fila_codigo": fila_codigo,
+        "col_izquierda": 1,
+        "col_derecha": col_derecha,
+        "categoria": categoria,
+        "titulo": titulo,
+        "codigo": celda_codigo.value.strip(),
+        "version": celda_version.value.strip() if celda_version else None,
+        "fecha": celda_fecha.value.strip() if celda_fecha else None,
+        "imagen": imagen,
+    }
+
+
+_ANCHO_COLUMNA_XLSX_POR_DEFECTO = 8.43  # ancho por defecto de Excel cuando la columna no trae uno propio
+
+
+def _ancho_columna_xlsx(ws, col_idx):
+    letra = get_column_letter(col_idx)
+    dim = ws.column_dimensions.get(letra)
+    if dim and dim.width:
+        return dim.width
+    return _ANCHO_COLUMNA_XLSX_POR_DEFECTO
+
+
+def _asignar_columnas(ws, fracciones, col_izq, col_der):
+    """Reparte el rango [col_izq, col_der] entre las fracciones dadas por
+    ANCHO REAL de columna (no por cantidad de columnas) -- las columnas de
+    una matriz varian mucho de ancho (ej. 6 vs 13), asi que repartir por
+    cantidad dejaba textos como "CÓDIGO: SST-MTZ-001" apretados en
+    columnas angostas mientras versión/fecha caian en columnas anchas.
+    Devuelve una lista de (col_ini, col_fin), una tupla por fraccion."""
+    anchos_col = [_ancho_columna_xlsx(ws, c) for c in range(col_izq, col_der + 1)]
+    n = len(anchos_col)
+    total_ancho = sum(anchos_col) or 1.0
+
+    cortes = []
+    acumulado = 0.0
+    objetivo = 0.0
+    idx = 0
+    for frac in fracciones:
+        objetivo += frac * total_ancho
+        inicio = idx
+        while idx < n - 1 and acumulado < objetivo:
+            acumulado += anchos_col[idx]
+            idx += 1
+        if idx == inicio:
+            idx = min(inicio + 1, n)
+        cortes.append(idx)
+    cortes[-1] = n
+
+    rangos = []
+    prev = 0
+    for corte in cortes:
+        fin = max(corte, prev + 1)
+        fin = min(fin, n)
+        rangos.append((prev, fin - 1))
+        prev = fin
+    return [(col_izq + a, col_izq + b) for a, b in rangos]
+
+
+def _limpiar_bloque_xlsx(ws, fila_top, fila_codigo, col_izq, col_der):
+    for m in [str(m) for m in ws.merged_cells.ranges
+              if m.min_row <= fila_codigo and m.max_row >= fila_top
+              and m.min_col <= col_der and m.max_col >= col_izq]:
+        ws.unmerge_cells(m)
+    for fila in range(fila_top, fila_codigo + 1):
+        for columna in range(col_izq, col_der + 1):
+            ws.cell(row=fila, column=columna).value = None
+
+
+def _escribir_celda_xlsx(ws, fila_ini, col_ini, fila_fin, col_fin, texto, *, tamano=10):
+    if fila_fin > fila_ini or col_fin > col_ini:
+        ws.merge_cells(start_row=fila_ini, start_column=col_ini, end_row=fila_fin, end_column=col_fin)
+    celda = ws.cell(row=fila_ini, column=col_ini)
+    celda.value = texto
+    celda.font = Font(name="Arial", bold=True, size=tamano)
+    celda.alignment = Alignment(horizontal="center", vertical="center", wrap_text=True)
+    for fila in range(fila_ini, fila_fin + 1):
+        for columna in range(col_ini, col_fin + 1):
+            c = ws.cell(row=fila, column=columna)
+            c.border = Border(
+                top=_BORDE_FINO_XLSX if fila == fila_ini else c.border.top,
+                bottom=_BORDE_FINO_XLSX if fila == fila_fin else c.border.bottom,
+                left=_BORDE_FINO_XLSX if columna == col_ini else c.border.left,
+                right=_BORDE_FINO_XLSX if columna == col_fin else c.border.right,
+            )
+
+
+def _mover_logo_xlsx(imagen, fila_top, col_izq):
+    """Reposiciona el ancla de la imagen ya embebida (no se toca el
+    archivo de imagen), igual criterio que mover el parrafo del logo en
+    Word: se reubica el objeto existente, no se reconstruye."""
+    if imagen is None:
+        return
+    ancla = imagen.anchor
+    origen = ancla._from if hasattr(ancla, "_from") else None
+    if origen is None:
+        return
+    origen.col = col_izq - 1
+    origen.row = fila_top - 1
+    origen.colOff = 0
+    origen.rowOff = 0
+
+
+def _construir_header_xlsx(ws, c, estilo):
+    fila_top, fila_codigo = c["fila_top"], c["fila_codigo"]
+    col_izq, col_der = c["col_izquierda"], c["col_derecha"]
+
+    frac_logo, frac_titulo, frac_resto = _FRACCIONES_XLSX[estilo]
+    (col_logo_ini, col_logo_fin), (col_titulo_ini, col_titulo_fin), (col_resto_ini, col_resto_fin) = (
+        _asignar_columnas(ws, (frac_logo, frac_titulo, frac_resto), col_izq, col_der)
+    )
+
+    _limpiar_bloque_xlsx(ws, fila_top, fila_codigo, col_izq, col_der)
+
+    # Logo: toda la altura del bloque
+    _escribir_celda_xlsx(ws, fila_top, col_logo_ini, fila_codigo, col_logo_fin, None)
+    _mover_logo_xlsx(c["imagen"], fila_top, col_logo_ini)
+
+    # Titulo (categoria + titulo): todas las filas menos la de codigo
+    fila_titulo_fin = max(fila_top, fila_codigo - 1)
+    texto_titulo = "\n".join(t for t in (c["categoria"], c["titulo"]) if t) or ""
+    _escribir_celda_xlsx(ws, fila_top, col_titulo_ini, fila_titulo_fin, col_titulo_fin, texto_titulo)
+
+    # Fila de codigo/version/fecha: se reparte el bloque derecho (por ancho
+    # real de columna) entre los que existan -- siempre hay codigo;
+    # version/fecha son opcionales.
+    etiquetas = [c["codigo"]]
+    if c["version"]:
+        etiquetas.append(c["version"])
+    if c["fecha"]:
+        etiquetas.append(c["fecha"])
+    rangos_resto = _asignar_columnas(ws, [1 / len(etiquetas)] * len(etiquetas), col_resto_ini, col_resto_fin)
+    for etiqueta, (col_ini, col_fin) in zip(etiquetas, rangos_resto):
+        _escribir_celda_xlsx(ws, fila_codigo, col_ini, fila_codigo, col_fin, etiqueta, tamano=9)
+
+
+def aplicar_estilo_encabezado_xlsx(xlsx_path: str, estilo: str) -> int:
+    """Reconstruye el encabezado de la primera hoja de un .xlsx con el
+    estilo elegido. Retorna 1 si se modificó, 0 si se omitió (estilo
+    inválido, o no se encontró un bloque de encabezado reconocible)."""
+    if estilo not in ESTILOS_VALIDOS:
+        return 0
+
+    try:
+        wb = load_workbook(xlsx_path)
+    except Exception as e:
+        console.print(f"   [yellow]Aviso estilo de encabezado ({xlsx_path}): {e}[/yellow]")
+        return 0
+
+    ws = wb.worksheets[0]
+    contenido = _extraer_contenido_header_xlsx(ws)
+    if contenido is None:
+        return 0
+
+    try:
+        _construir_header_xlsx(ws, contenido, estilo)
+    except Exception as e:
+        console.print(f"   [yellow]Aviso reconstruyendo encabezado ({xlsx_path}): {e}[/yellow]")
+        return 0
+
+    temp_path = xlsx_path + ".tmp_estilo_encabezado"
+    try:
+        wb.save(temp_path)
+    except Exception as e:
+        console.print(f"   [yellow]Aviso guardando estilo de encabezado ({xlsx_path}): {e}[/yellow]")
+        if os.path.exists(temp_path):
+            os.remove(temp_path)
+        return 0
+
+    for intento in range(5):
+        try:
+            os.replace(temp_path, xlsx_path)
+            break
+        except PermissionError:
+            if intento < 4:
+                time.sleep(0.5 * (intento + 1))
+            else:
+                if os.path.exists(temp_path):
+                    os.remove(temp_path)
+                console.print(f"   [yellow]No se pudo actualizar el encabezado (archivo bloqueado): {xlsx_path}[/yellow]")
+                return 0
+
+    return 1
+
+
 def aplicar_estilo_encabezado(output_base: Path, estilo: str) -> dict:
-    """Aplica el estilo de encabezado a TODOS los .docx generados.
+    """Aplica el estilo de encabezado a TODOS los .docx y .xlsx generados.
 
     Args:
         output_base: Directorio raíz del SG-SST generado
@@ -342,6 +628,15 @@ def aplicar_estilo_encabezado(output_base: Path, estilo: str) -> dict:
         if not archivo.is_file() or archivo.name.startswith("~$"):
             continue
         cambiado = aplicar_estilo_encabezado_docx(str(archivo), estilo)
+        if cambiado:
+            stats["archivos"] += 1
+        else:
+            stats["omitidos"] += 1
+
+    for archivo in output_base.rglob("*.xlsx"):
+        if not archivo.is_file() or archivo.name.startswith("~$"):
+            continue
+        cambiado = aplicar_estilo_encabezado_xlsx(str(archivo), estilo)
         if cambiado:
             stats["archivos"] += 1
         else:
