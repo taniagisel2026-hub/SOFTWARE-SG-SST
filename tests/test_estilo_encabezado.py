@@ -291,6 +291,75 @@ def test_xlsx_sin_codigo_detectable_no_truena(tmp_path):
     assert cambiado == 0
 
 
+def test_xlsx_columna_de_datos_no_se_confunde_con_encabezado(tmp_path):
+    """Regresion: una columna de datos que empieza con "codigo" (ej. una
+    columna "CÓDIGO CIE 10" en una tabla de diagnosticos) no trae los dos
+    puntos que si trae el bloque de encabezado real ("CÓDIGO: SST-..."),
+    asi que no debe tratarse como un bloque de encabezado."""
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws["F1"] = "MATRIZ"
+    ws["F2"] = "AUSENTISMO"
+    ws["F3"] = "CÓDIGO: SST-MTZ-011"
+    ws["O4"] = "CÓDIGO CIE 10"  # encabezado de columna, no un bloque nuevo
+    ruta = tmp_path / "ausentismo.xlsx"
+    wb.save(str(ruta))
+    cambiado = aplicar_estilo_encabezado_xlsx(str(ruta), "1")
+    assert cambiado == 1
+    wb2 = openpyxl.load_workbook(str(ruta))
+    ws2 = wb2.worksheets[0]
+    # La columna de datos debe seguir intacta, no reescrita como encabezado
+    assert ws2["O4"].value == "CÓDIGO CIE 10"
+
+
+def test_xlsx_reestila_todos_los_bloques_repetidos(tmp_path):
+    """Regresion: SST-MTZ-002 (y otras matrices reales) repiten el bloque
+    de encabezado completo varias veces en la misma hoja -- una por
+    seccion. Antes solo se ubicaba el primero (busqueda limitada a las
+    primeras 8 filas); ahora debe encontrar y restylar todos, cada uno con
+    su propio logo."""
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    # Bloque 1
+    ws["D1"] = "MATRIZ"
+    ws["D2"] = "RECURSOS Y PRESUPUESTO PARA EL SG-SST"
+    ws["H3"] = "CÓDIGO: SST-MTZ-002"
+    ws["I3"] = "VERSIÓN: 001"
+    ws["J3"] = "FECHA: 16/07/2026"
+    ws.add_image(_imagen_xlsx_de_prueba(), "A1")
+    ws["A5"] = "FINANCIEROS"
+    ws["C5"] = "Asesoría Medina SST"
+    # Bloque 2, mas abajo -- fuera del rango de busqueda anterior (filas 1-8)
+    ws["C13"] = "MATRIZ"
+    ws["C14"] = "RECURSOS Y PRESUPUESTO PARA EL SG-SST"
+    ws["C15"] = "CÓDIGO: SST-MTZ-002"
+    ws["E15"] = "VERSIÓN: 001"
+    ws["G15"] = "FECHA: 16/07/2026"
+    ws.add_image(_imagen_xlsx_de_prueba(), "A13")
+    ws["A16"] = "HUMANOS"
+    ws["C16"] = "Responsable SST"
+    ruta = tmp_path / "mtz002.xlsx"
+    wb.save(str(ruta))
+
+    cambiado = aplicar_estilo_encabezado_xlsx(str(ruta), "2")
+    assert cambiado == 1
+
+    wb2 = openpyxl.load_workbook(str(ruta))
+    ws2 = wb2.worksheets[0]
+    valores = [c.value for row in ws2.iter_rows() for c in row if c.value not in (None, "")]
+    texto = "\n".join(str(v) for v in valores)
+    # Ambos bloques deben seguir teniendo su contenido, reordenado
+    assert texto.count("MATRIZ") == 2
+    assert texto.count("CÓDIGO: SST-MTZ-002") == 2
+    assert "FINANCIEROS" in texto and "Asesoría Medina SST" in texto
+    assert "HUMANOS" in texto and "Responsable SST" in texto
+    # Cada bloque debe conservar su propia imagen, ninguna se pierde ni se
+    # reutiliza en el otro bloque
+    assert len(ws2._images) == 2
+    filas_logo = sorted(img.anchor._from.row for img in ws2._images)
+    assert filas_logo[0] != filas_logo[1]
+
+
 def test_xlsx_logo_se_centra_y_se_escala_al_bloque(tmp_path):
     """Regresion: antes, el logo solo se reubicaba (ancla en la esquina
     superior izquierda del bloque, colOff/rowOff=0) sin tocar su tamano

@@ -27,12 +27,15 @@ output_base) -- para entonces {{LOGO}} ya es una imagen real embebida
 tabla nueva en vez de reconstruirse.
 
 En Excel el bloque de encabezado NO está en una posición fija (varía de
-columna según la matriz) -- se ubica buscando la celda que empieza con
-"CÓDIGO" en las primeras filas, y se reconstruye usando las MISMAS
-proporciones de Word pero como fracciones de columna, sin salir nunca de
-las filas que ya ocupaba el encabezado (para no invadir la fila de
-encabezados de la tabla de datos de abajo). Ver la sección "EXCEL" más
-abajo para el detalle.
+columna según la matriz) -- se ubica buscando celdas con la forma
+"CÓDIGO: ..." en TODA la hoja, no solo al principio: algunas matrices
+repiten el bloque completo varias veces (una por sección/categoría, ej.
+SST-MTZ-002, o un formulario que se repite más abajo para una segunda
+entrada), cada una con su propio logo, y todas se reconstruyen igual. Se
+reconstruye usando las MISMAS proporciones de Word pero como fracciones de
+columna, sin que un bloque salga nunca de las filas que ya ocupaba (para
+no invadir la fila de encabezados de la tabla de datos de abajo, ni las
+filas de otro bloque). Ver la sección "EXCEL" más abajo para el detalle.
 """
 import os
 import re
@@ -386,14 +389,27 @@ def _buscar_celda_por_prefijo(ws, filas, prefijo, col_desde=None, col_hasta=None
     return None
 
 
-def _extraer_contenido_header_xlsx(ws):
-    """Ubica el bloque de encabezado buscando la celda "CÓDIGO..." en las
-    primeras 8 filas (sin asumir columna fija). Devuelve None si no la
-    encuentra (matriz con estructura distinta -- se omite sin error)."""
-    celda_codigo = _buscar_celda_por_prefijo(ws, range(1, 9), "CODIGO")
-    if celda_codigo is None:
-        return None
+_RE_CODIGO_XLSX = re.compile(r"^CODIGO\s*:")
 
+
+def _buscar_celdas_codigo_xlsx(ws):
+    """Encuentra TODAS las celdas que arrancan un bloque de encabezado en
+    la hoja completa -- una matriz puede repetir el bloque varias veces
+    (una por seccion/categoria, o un formulario que se repite mas abajo
+    para una segunda entrada; confirmado sobre archivos reales, ej.
+    SST-MTZ-002 lo repite 4 veces). Exige la forma "CÓDIGO: ..." (con dos
+    puntos) para no confundirlo con una columna de datos que casualmente
+    empiece con "código" (ej. una columna "CÓDIGO CIE 10")."""
+    celdas = []
+    for fila in ws.iter_rows(min_row=1, max_row=ws.max_row):
+        for celda in fila:
+            valor = celda.value
+            if isinstance(valor, str) and _RE_CODIGO_XLSX.match(_normalizar_xlsx(valor)):
+                celdas.append(celda)
+    return celdas
+
+
+def _extraer_bloque_desde_celda_codigo(ws, celda_codigo):
     fila_codigo, col = celda_codigo.row, celda_codigo.column
     celda_version = _buscar_celda_por_prefijo(ws, [fila_codigo], "VERSION")
     celda_fecha = _buscar_celda_por_prefijo(ws, [fila_codigo], "FECHA")
@@ -421,8 +437,6 @@ def _extraer_contenido_header_xlsx(ws):
         if m.min_row <= fila_codigo and m.max_row >= fila_top:
             col_derecha = max(col_derecha, m.max_col)
 
-    imagen = ws._images[0] if getattr(ws, "_images", None) else None
-
     return {
         "fila_top": fila_top,
         "fila_codigo": fila_codigo,
@@ -433,8 +447,40 @@ def _extraer_contenido_header_xlsx(ws):
         "codigo": celda_codigo.value.strip(),
         "version": celda_version.value.strip() if celda_version else None,
         "fecha": celda_fecha.value.strip() if celda_fecha else None,
-        "imagen": imagen,
+        "imagen": None,
     }
+
+
+def _asociar_imagenes_a_bloques(ws, bloques):
+    """Cada bloque toma la imagen mas cercana a su fila superior (en la
+    practica, el logo de cada bloque esta anclado justo en esa fila --
+    confirmado sobre archivos reales). Una imagen no se reutiliza en dos
+    bloques; si un bloque no tiene ninguna cerca (ej. un mini-formulario
+    interno sin logo propio), queda sin imagen."""
+    disponibles = list(getattr(ws, "_images", None) or [])
+    for bloque in bloques:
+        mejor, mejor_dist = None, None
+        for img in disponibles:
+            origen = getattr(img.anchor, "_from", None)
+            if origen is None:
+                continue
+            fila_img = origen.row + 1  # a 1-based
+            if bloque["fila_top"] - 1 <= fila_img <= bloque["fila_codigo"] + 1:
+                dist = abs(fila_img - bloque["fila_top"])
+                if mejor is None or dist < mejor_dist:
+                    mejor, mejor_dist = img, dist
+        bloque["imagen"] = mejor
+        if mejor is not None:
+            disponibles.remove(mejor)
+
+
+def _extraer_bloques_header_xlsx(ws):
+    """Ubica TODOS los bloques de encabezado de la hoja (ver
+    _buscar_celdas_codigo_xlsx). Devuelve una lista vacia si no encuentra
+    ninguno (matriz con estructura distinta -- se omite sin error)."""
+    bloques = [_extraer_bloque_desde_celda_codigo(ws, c) for c in _buscar_celdas_codigo_xlsx(ws)]
+    _asociar_imagenes_a_bloques(ws, bloques)
+    return bloques
 
 
 _ANCHO_COLUMNA_XLSX_POR_DEFECTO = 8.43  # ancho por defecto de Excel cuando la columna no trae uno propio
@@ -607,9 +653,11 @@ def _construir_header_xlsx(ws, c, estilo):
 
 
 def aplicar_estilo_encabezado_xlsx(xlsx_path: str, estilo: str) -> int:
-    """Reconstruye el encabezado de la primera hoja de un .xlsx con el
-    estilo elegido. Retorna 1 si se modificó, 0 si se omitió (estilo
-    inválido, o no se encontró un bloque de encabezado reconocible)."""
+    """Reconstruye TODOS los bloques de encabezado de la primera hoja de un
+    .xlsx con el estilo elegido (una matriz puede repetir el bloque varias
+    veces -- una por seccion, o un formulario que se repite mas abajo).
+    Retorna 1 si se modificó, 0 si se omitió (estilo inválido, o no se
+    encontró ningún bloque de encabezado reconocible)."""
     if estilo not in ESTILOS_VALIDOS:
         return 0
 
@@ -620,12 +668,13 @@ def aplicar_estilo_encabezado_xlsx(xlsx_path: str, estilo: str) -> int:
         return 0
 
     ws = wb.worksheets[0]
-    contenido = _extraer_contenido_header_xlsx(ws)
-    if contenido is None:
+    bloques = _extraer_bloques_header_xlsx(ws)
+    if not bloques:
         return 0
 
     try:
-        _construir_header_xlsx(ws, contenido, estilo)
+        for bloque in bloques:
+            _construir_header_xlsx(ws, bloque, estilo)
     except Exception as e:
         console.print(f"   [yellow]Aviso reconstruyendo encabezado ({xlsx_path}): {e}[/yellow]")
         return 0
