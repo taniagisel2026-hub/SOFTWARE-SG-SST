@@ -512,20 +512,65 @@ def _escribir_celda_xlsx(ws, fila_ini, col_ini, fila_fin, col_fin, texto, *, tam
             )
 
 
-def _mover_logo_xlsx(imagen, fila_top, col_izq):
-    """Reposiciona el ancla de la imagen ya embebida (no se toca el
-    archivo de imagen), igual criterio que mover el parrafo del logo en
-    Word: se reubica el objeto existente, no se reconstruye."""
+_EMU_POR_PIXEL = 9525
+_EMU_POR_PUNTO = 12700
+_ALTO_FILA_XLSX_POR_DEFECTO = 15.0  # puntos, alto de fila por defecto de Excel
+_MARGEN_LOGO_XLSX = 0.85  # deja margen dentro del bloque para que el logo no toque los bordes
+
+
+def _alto_fila_xlsx(ws, fila_idx):
+    dim = ws.row_dimensions.get(fila_idx)
+    if dim and dim.height:
+        return dim.height
+    return _ALTO_FILA_XLSX_POR_DEFECTO
+
+
+def _ancho_columna_xlsx_en_pixeles(ancho_caracteres):
+    # Aproximacion estandar de Excel (fuente Calibri 11, Maximum Digit Width=7)
+    return round(ancho_caracteres * 7 + 5)
+
+
+def _tamano_bloque_xlsx_en_emu(ws, fila_ini, fila_fin, col_ini, col_fin):
+    ancho_emu = sum(
+        _ancho_columna_xlsx_en_pixeles(_ancho_columna_xlsx(ws, c)) * _EMU_POR_PIXEL
+        for c in range(col_ini, col_fin + 1)
+    )
+    alto_emu = sum(_alto_fila_xlsx(ws, f) * _EMU_POR_PUNTO for f in range(fila_ini, fila_fin + 1))
+    return ancho_emu, alto_emu
+
+
+def _mover_logo_xlsx(ws, imagen, fila_top, fila_codigo, col_izq, col_der):
+    """Reposiciona y redimensiona la imagen ya embebida (no se toca el
+    archivo de imagen en si, solo su ancla/tamaño en el XML) para que
+    quede centrada y llene el bloque del logo. A diferencia de Word (donde
+    la celda del logo ya viene del tamaño correcto porque la trae la
+    plantilla), en Excel el logo original esta pensado para el ancho de
+    columna que traiga la matriz -- que varia por estilo y por matriz --
+    asi que hay que escalarlo al bloque real en vez de solo reubicarlo."""
     if imagen is None:
         return
     ancla = imagen.anchor
     origen = ancla._from if hasattr(ancla, "_from") else None
     if origen is None:
         return
+
+    ancho_bloque, alto_bloque = _tamano_bloque_xlsx_en_emu(ws, fila_top, fila_codigo, col_izq, col_der)
+    ext = getattr(ancla, "ext", None)
+    if ext is not None and ext.cx and ext.cy and ancho_bloque > 0 and alto_bloque > 0:
+        escala = min(
+            (ancho_bloque * _MARGEN_LOGO_XLSX) / ext.cx,
+            (alto_bloque * _MARGEN_LOGO_XLSX) / ext.cy,
+        )
+        nuevo_cx = round(ext.cx * escala)
+        nuevo_cy = round(ext.cy * escala)
+        ext.cx, ext.cy = nuevo_cx, nuevo_cy
+        origen.colOff = round(max(0, (ancho_bloque - nuevo_cx) / 2))
+        origen.rowOff = round(max(0, (alto_bloque - nuevo_cy) / 2))
+    else:
+        origen.colOff = 0
+        origen.rowOff = 0
     origen.col = col_izq - 1
     origen.row = fila_top - 1
-    origen.colOff = 0
-    origen.rowOff = 0
 
 
 def _construir_header_xlsx(ws, c, estilo):
@@ -541,7 +586,7 @@ def _construir_header_xlsx(ws, c, estilo):
 
     # Logo: toda la altura del bloque
     _escribir_celda_xlsx(ws, fila_top, col_logo_ini, fila_codigo, col_logo_fin, None)
-    _mover_logo_xlsx(c["imagen"], fila_top, col_logo_ini)
+    _mover_logo_xlsx(ws, c["imagen"], fila_top, fila_codigo, col_logo_ini, col_logo_fin)
 
     # Titulo (categoria + titulo): todas las filas menos la de codigo
     fila_titulo_fin = max(fila_top, fila_codigo - 1)

@@ -291,6 +291,30 @@ def test_xlsx_sin_codigo_detectable_no_truena(tmp_path):
     assert cambiado == 0
 
 
+def test_xlsx_logo_se_centra_y_se_escala_al_bloque(tmp_path):
+    """Regresion: antes, el logo solo se reubicaba (ancla en la esquina
+    superior izquierda del bloque, colOff/rowOff=0) sin tocar su tamano
+    original -- si ese tamano no correspondia al bloque real (que varia por
+    matriz/estilo), el logo quedaba desproporcionado y pegado a una esquina
+    en vez de centrado. Ahora debe escalarse al bloque y centrarse."""
+    ruta = _crear_xlsx_con_header_real(tmp_path, col_codigo="F")
+    aplicar_estilo_encabezado_xlsx(str(ruta), "1")
+    wb = openpyxl.load_workbook(str(ruta))
+    ws = wb.worksheets[0]
+    img = ws._images[0]
+    ancla = img.anchor
+    origen = ancla._from
+
+    # La imagen de prueba es cuadrada de 20x20px (190500 EMU) -- si el
+    # bloque del logo no es cuadrado, el tamano final no puede seguir
+    # siendo el original sin escalar.
+    assert (ancla.ext.cx, ancla.ext.cy) != (190500, 190500)
+    assert ancla.ext.cx > 0 and ancla.ext.cy > 0
+    # Debe quedar centrada dentro del bloque (offset > 0 en al menos una
+    # dimension), no pegada a la esquina superior izquierda como antes.
+    assert origen.colOff > 0 or origen.rowOff > 0
+
+
 def test_aplicar_estilo_encabezado_recorre_xlsx_tambien(tmp_path):
     output_base = tmp_path / "salida"
     output_base.mkdir()
