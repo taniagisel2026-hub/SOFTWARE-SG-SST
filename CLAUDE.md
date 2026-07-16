@@ -55,6 +55,9 @@ cli.py → engine/generador.py → engine/cliente.py   (YAML → contexto de mar
                              → engine/claude_service.py (Anthropic API + diskcache)
                              → engine/normativa.py    (correcciones legales)
                              → engine/colores.py      (colores corporativos)
+                             → engine/pie_pagina.py   (posición del número de página)
+                             → engine/estilo_encabezado.py (reacomoda logo/título/código/versión/fecha, .docx y .xlsx)
+                             → engine/tipo_letra.py   (fuente de todo el documento, .docx y .xlsx)
                              → engine/pesv_cleanup.py (elimina hojas PESV si no aplica)
                              → engine/matriz_peligros.py     (IPVR SST-MTZ-012)
                              → engine/matriz_peligros_viales.py (vial PESV-MTZ-002)
@@ -86,6 +89,10 @@ Fills `SST-MTZ-005` with Drive hyperlinks using fuzzy matching. The algorithm no
 ### Google Drive tokens
 
 OAuth 2.0 tokens per client stored in `tokens/token_<NIT>.json`. First run opens browser for authorization.
+
+### Document style options (optional YAML fields, applied late in the pipeline)
+
+`pie_pagina_numero`, `estilo_encabezado`, `tipo_letra` — all default to `""` (template's original look) and only run if set. `estilo_encabezado` and `tipo_letra` apply to both `.docx` and `.xlsx`; Excel headers are located by **text search** (a cell starting with "CÓDIGO" in the first ~8 rows) rather than a fixed column, since the header block's column position varies per matrix type. Matrices without a detectable header are skipped without error. Configurable live in the client portal's Módulo 8, with a preview that renders the user's real uploaded logo, versión, and fecha.
 
 ---
 

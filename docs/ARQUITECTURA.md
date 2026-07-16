@@ -55,6 +55,8 @@ Documento para desarrolladores que necesiten **mantener, depurar o extender** el
               │ • listado_maestro                 │
               │ • pesv_cleanup                    │
               │ • normativa, colores, auditoria   │
+              │ • pie_pagina, estilo_encabezado,  │
+              │   tipo_letra (Word + Excel)       │
               └──────────────────────────────────┘
 ```
 
@@ -75,6 +77,9 @@ Cuando se ejecuta `python cli.py generar clientes_config/X.yaml`, ocurre lo sigu
 | 5 | Aplicar correcciones legales al normograma, filtradas por el año del SG-SST (`anio_cliente`, tomado del campo `año` del YAML) | `normativa.py` |
 | 5b | Adaptar COPASST ↔ Vigía según N° trabajadores | `generador.py` |
 | 5c | Aplicar colores corporativos del cliente | `colores.py` |
+| 5d | Posición del número de página en el pie (opcional, `pie_pagina_numero`) | `pie_pagina.py` |
+| 5e | Estilo del encabezado: logo/título/código/versión/fecha reacomodados (opcional, `estilo_encabezado`), aplica a `.docx` y `.xlsx` | `estilo_encabezado.py` |
+| 5f | Tipo de letra de todo el documento (opcional, `tipo_letra`), aplica a `.docx` y `.xlsx` | `tipo_letra.py` |
 | 6 | Si `generar_pesv: false` → eliminar carpeta PESV + limpiar hojas PESV de matrices | `pesv_cleanup.py` |
 | 6b | Generar Matriz IPVR `SST-MTZ-012` | `matriz_peligros.py` |
 | 6c | Generar Matriz Vial `PESV-MTZ-002` (si aplica) | `matriz_peligros_viales.py` |
@@ -183,7 +188,7 @@ Cada sesión del asistente es un **borrador**, persistido en `wizard_drafts.db` 
 | `estado` | `en_progreso` / `finalizado` |
 | `config_path_final` | Ruta del YAML una vez que se llama a `/finalizar` |
 
-`MODULOS_ORDEN = ["modulo_1", ..., "modulo_7"]` define el orden. `guardar_modulo(borrador_id, modulo_key, datos)` agrega `modulo_key` a `modulos_confirmados` y avanza `modulo_actual` — nunca lo retrocede (`max(actual, indice+2)`), así que confirmar módulos fuera de orden (si el gate lo permitiera) no corrompe el puntero.
+`MODULOS_ORDEN = ["modulo_1", ..., "modulo_7", "modulo_8"]` define el orden. `guardar_modulo(borrador_id, modulo_key, datos)` agrega `modulo_key` a `modulos_confirmados` y avanza `modulo_actual` — nunca lo retrocede (`max(actual, indice+2)`), así que confirmar módulos fuera de orden (si el gate lo permitiera) no corrompe el puntero.
 
 ### Bloqueo secuencial (el gate)
 
@@ -219,9 +224,13 @@ A diferencia de los módulos 2-6, tiene **tres caminos**, todos terminando en `g
 
 Es el único módulo **excluido** de la lista `requeridos` en `finalizar()` — se puede finalizar el borrador sin haberlo tocado.
 
+### Módulo 8 — estilo del documento
+
+Formulario simple (`Modulo8Request`: `pie_pagina_numero`, `estilo_encabezado`, `tipo_letra`, los tres opcionales con default de plantilla), pero con una vista previa en vivo en `static/wizard/modulo8.html` que arma una tabla HTML del encabezado (`<table class="mini-header">`) usando el **logo real ya subido** (`GET /wizard/borradores/{id}/archivos/logo`, servido por `obtener_archivo_subido()`) y la **versión/fecha ya confirmadas** en el módulo 5 (`GET /borradores/{id}`), para que el usuario vea cómo quedará su propio encabezado antes de confirmar — no una imagen de ejemplo estática. Los tres valores se guardan tal cual (`guardar_modulo(..., "modulo_8", body.model_dump())`) y en `finalizar()` se vuelcan directo al YAML (`cliente.update(datos.get("modulo_8", {}))`); `engine/generador.py` los aplica en el pipeline (ver pasos 5d-5f más arriba) solo si vienen no vacíos.
+
 ### Finalizar (`POST /wizard/borradores/{id}/finalizar`)
 
-1. Verifica que todos los módulos obligatorios (1-6) estén confirmados (`409` si falta alguno).
+1. Verifica que todos los módulos obligatorios (1-6 y 8; el 7 es opcional) estén confirmados (`409` si falta alguno).
 2. `_ensamblar_cliente(borrador)` mezcla los `datos_json` de cada módulo en un solo dict (equivalente a lo que hoy escribe un consultor a mano en el YAML).
 3. Valida el dict resultante con `validar_cliente_dict()` (misma validación de siempre).
 4. Calcula el `slug` desde `razon_social` y **copia** (no referencia) logo/firma_rl/firma_sst desde `wizard_uploads/<id>/` hacia `clientes_config/<slug>_assets/`, con rutas relativas al propio YAML — exactamente lo que ya espera `obtener_imagenes()` (`engine/cliente.py`). Si el módulo 7 vino en modo `"manuales"`, copia también esa carpeta.
@@ -249,8 +258,10 @@ Es el único módulo **excluido** de la lista `requeridos` en `finalizar()` — 
 | `POST` | `/wizard/borradores/{id}/modulo-7/manuales` | Cargos vía manuales de funciones |
 | `POST` | `/wizard/borradores/{id}/modulo-7/lista` | Cargos escritos a mano |
 | `POST` | `/wizard/borradores/{id}/modulo-7/saltar` | Omite la Matriz IPVR |
+| `POST` | `/wizard/borradores/{id}/modulo-8/confirmar` | Posición del número de página, estilo de encabezado, tipo de letra |
 | `GET` | `/wizard/borradores/{id}/defaults/modulo-4` | Pre-llenado con los datos fijos de MEDINA |
 | `GET` | `/wizard/borradores/{id}/defaults/modulo-5` | Pre-llenado con la fecha de hoy |
+| `GET` | `/wizard/borradores/{id}/archivos/{rol}` | Sirve un archivo ya subido (ej. el logo, para la vista previa del módulo 8) |
 | `POST` | `/wizard/borradores/{id}/finalizar` | Ensambla y escribe el YAML final |
 
 Verificado con un flujo end-to-end real (2026-07-09/10): borrador → 7 módulos → `finalizar()` → YAML resultante cargado sin errores por `cargar_cliente()`/`generar_contexto()`/`obtener_imagenes()` → `POST /clientes/{id}/generar` disparado con ese `config_path` → 117 archivos generados, 0 errores.
@@ -366,6 +377,25 @@ Cuando `generar_pesv: false`, elimina hojas PESV de TODAS las matrices Excel del
 
 - `_es_hoja_pesv()` — detecta nombres de hoja con normalización (case-insensitive, sin tildes)
 - `limpiar_hojas_pesv_en_matrices()` — recorre `output_base/**/*.xlsx`
+
+### `engine/pie_pagina.py`
+
+Cambia la posición del número de página en el pie de todos los `.docx` generados (`izquierda`/`centro`/`derecha`/`ninguno`), manipulando directamente el XML de `word/footer*.xml` dentro del zip (mismo patrón de "abrir zip, sustituir XML con regex, reescribir zip" que usa `colores.py`).
+
+### `engine/estilo_encabezado.py`
+
+Reacomoda logo, título, código, versión y fecha del encabezado en 5 grillas alternativas (`ESTILOS_VALIDOS = "1".."4"`, más el original vacío). Aplica tanto a `.docx` como a `.xlsx`, con estrategias distintas por lo distinto de cada formato:
+
+- **Word**: el encabezado real vive en una tabla de 3 filas propia (confirmado en 147/149 documentos reales de la plantilla), con anchos de columna en cm — se reconstruye con la API de objetos de `python-docx` (`_construir_estilo_N`), moviendo el párrafo con el logo en vez de reconstruir la imagen.
+- **Excel**: el bloque de encabezado NO está en una columna fija (varía entre B, C, E, F, J... según la matriz) y comparte columnas con la tabla de datos de abajo. Se ubica por **búsqueda de texto** — la celda que empieza con "CÓDIGO" en las primeras 8 filas (`_buscar_celda_por_prefijo`) — en vez de coordenadas fijas; confirmado sobre 53 archivos reales de un cliente, 46 (87%) tienen el bloque detectable así. Los estilos se reconstruyen como fracciones del **ancho real de columna** (`_asignar_columnas`, suma de `ws.column_dimensions[...].width`, no cantidad de columnas) para no apretar textos largos en columnas angostas. Solo se procesa la primera hoja de cada libro (`wb.worksheets[0]`) y nunca se sale de las filas que ya ocupaba el encabezado, para no invadir la fila de encabezados de la tabla de datos. Las matrices sin "CÓDIGO" detectable (consolidados/indicadores) quedan sin cambios, sin error.
+
+`aplicar_estilo_encabezado(output_base, estilo)` recorre `*.docx` y `*.xlsx` de la carpeta de salida y agrega los contadores de ambos en un solo `{"archivos": n, "omitidos": m}`.
+
+### `engine/tipo_letra.py`
+
+Cambia la fuente de todo el documento (títulos, subtítulos y contenido a la vez — la plantilla no usa Estilos de Word por nivel, solo `w:docDefaults` en `styles.xml`, así que un único swap de fuente cubre todo el `.docx`). En Word sustituye `w:rFonts` en `document.xml`/`styles.xml`/headers/footers; en Excel sustituye `<name val="...">` en `xl/styles.xml` y los tipos de letra del tema en `xl/theme/*.xml`. `FUENTES_VALIDAS = ("Arial", "Calibri", "Times New Roman")`.
+
+**Decisión de alcance (no reabrir)**: no se implementó diferenciación de **tamaño** de letra por título/subtítulo/contenido. Se investigó una heurística de "título principal" (mayor tamaño de fuente cerca del inicio del documento) sobre una muestra real de 8 documentos y resultó **no confiable** — confundía líneas de firma, oraciones del cuerpo y encabezados de sección duplicados en 3-4 de los 8 casos. Se decidió no construir sobre una heurística frágil.
 
 ---
 
@@ -503,15 +533,21 @@ Hay dos sistemas de caché:
 Ver `tests/`. Se ejecutan con `python -m pytest`.
 
 - `conftest.py` — fixtures compartidas (clientes mock, copias temporales de plantillas, stub de Claude)
-- `test_listado_maestro.py` — matcher de links (30 tests)
+- `test_listado_maestro.py` — matcher de links (40 tests)
 - `test_matriz_peligros.py` — IPVR (17 tests)
-- `test_matriz_peligros_viales.py` — vial + cleanup (33 tests)
-- `test_normativa.py` — correcciones legales filtradas por año (14 tests)
+- `test_matriz_peligros_viales.py` — vial + cleanup (23 tests)
+- `test_matriz_documental.py` — matriz documental (4 tests)
+- `test_normativa.py` — correcciones legales filtradas por año (13 tests)
+- `test_cliente.py` — carga de YAML y contexto de marcadores (4 tests)
+- `test_generador.py` — orquestador del pipeline (2 tests)
 - `test_extraccion.py` — extracción de datos de RUT/Cámara/Cédula con Claude mockeado (9 tests) + 1 `integration` real
 - `test_wizard_store.py` — CRUD del borrador sin HTTP (8 tests)
-- `test_wizard_api.py` — endpoints del asistente con `TestClient`, incluye bloqueo secuencial (`409`) y flujo completo hasta `finalizar()` (12 tests)
+- `test_wizard_api.py` — endpoints del asistente con `TestClient`, incluye bloqueo secuencial (`409`) y flujo completo hasta `finalizar()` (14 tests)
+- `test_pie_pagina.py` — posición del número de página en el pie (5 tests)
+- `test_estilo_encabezado.py` — reacomodo del encabezado en Word y Excel, incluida la búsqueda por texto de "CÓDIGO" en distintas columnas (17 tests)
+- `test_tipo_letra.py` — cambio de fuente en Word y Excel (7 tests)
 
-122 tests en total: 117 corren por defecto, 4 están marcados `integration` (requieren `ANTHROPIC_API_KEY` con saldo real) y 1 marcado `slow`.
+170 tests en total: 165 corren por defecto, 4 están marcados `integration` (requieren `ANTHROPIC_API_KEY` con saldo real) y 1 marcado `slow`.
 
 **Política**: cada bug encontrado en producción debe convertirse en un regression test.
 

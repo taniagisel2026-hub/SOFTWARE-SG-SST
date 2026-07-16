@@ -183,6 +183,7 @@ Abrir en el navegador: `http://localhost:8000/portal/`
 | 5 | Fechas, versión y opciones | Versión, fechas (pre-llenadas con la fecha de hoy), PESV sí/no, normograma actualizado sí/no |
 | 6 | Descripción de la empresa | Texto libre, contexto para la humanización con Claude |
 | 7 | Cargos (opcional) | Sube manuales de funciones, o escribe la lista de cargos a mano, o lo omite — alimenta la Matriz de Peligros IPVR |
+| 8 | Estilo del documento | Posición del número de página, estilo del encabezado (logo/título/código/versión/fecha) y tipo de letra — con vista previa en vivo usando el logo, versión y fecha ya cargados. Aplica a los `.docx` y a las matrices `.xlsx` |
 
 Al confirmar los 8 módulos, **"Finalizar"** ensambla todo en un YAML nuevo dentro de `clientes_config/` y devuelve su ruta, lista para generar el SG-SST con el mismo botón/endpoint de siempre.
 
@@ -233,6 +234,9 @@ SOFTWARE SG-SST/
 │   ├── pesv_cleanup.py             # Limpia hojas PESV si no aplica
 │   ├── normativa.py                # Correcciones de normograma, filtradas por el año del SG-SST del cliente
 │   ├── colores.py                  # Aplica colores corporativos
+│   ├── pie_pagina.py               # Posición del número de página en el pie (Word)
+│   ├── estilo_encabezado.py        # Reacomoda logo/título/código/versión/fecha del encabezado (Word y Excel)
+│   ├── tipo_letra.py               # Cambia la fuente de todo el documento (Word y Excel)
 │   ├── auditoria.py                # Reporte final
 │   └── utils.py
 │
@@ -262,7 +266,7 @@ SOFTWARE SG-SST/
 python -m pytest tests/
 ```
 
-122 tests automatizados que validan los puntos críticos del sistema (117 corren por defecto; 4 requieren saldo real de la API de Claude y están marcados `integration`; 1 marcado `slow`). Ver `tests/` para detalle.
+170 tests automatizados que validan los puntos críticos del sistema (165 corren por defecto; 4 requieren saldo real de la API de Claude y están marcados `integration`; 1 marcado `slow`). Ver `tests/` para detalle.
 
 ---
 
