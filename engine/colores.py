@@ -38,6 +38,13 @@ _COLORES_VINOTINTO = {
     "CE7574",   # Rojo medio
     "DD7E6B",   # Salmón intermedio (Excel, 2 archivos)
     "C00000",   # Rojo corporativo (fuente + fondos)
+    # Azul propio de las plantillas PESV (Plan Estratégico de Seguridad Vial):
+    # esta familia NO es vino tinto, es un azul independiente que varias
+    # plantillas .docx del PESV usan para sus encabezados de tabla. Se incluye
+    # aquí para que tambien cambie con color_corporativo (antes se quedaba
+    # azul fijo sin importar el color elegido).
+    "1C4587",   # Fondo principal de encabezados PESV (16 archivos, 146 celdas)
+    "1F3864",   # Fondo secundario/acento PESV (12 celdas)
 }
 
 # Nota: los colores de fuente vinotinto (C00000, 632423, 990000) se cambian
@@ -136,6 +143,9 @@ def _construir_mapa_colores(paleta: dict) -> dict[str, str]:
         "CE7574": paleta["intermedio"],
         "DD7E6B": paleta["intermedio"],  # Salmón intermedio Excel
         "C00000": paleta["medio"],
+        # Azul propio de las plantillas PESV (no vino tinto, ver _COLORES_VINOTINTO)
+        "1C4587": paleta["oscuro"],
+        "1F3864": paleta["oscuro2"],
     }
 
 
@@ -260,22 +270,27 @@ def aplicar_colores_docx(docx_path: str, mapa_colores: dict[str, str]) -> int:
 
     # --- Paso 1: Reemplazo de fondos en XML ---
 
-    # Pre-compilar regex una sola vez (no dentro del loop de archivos XML)
-    _patrones_docx = []
-    for viejo, nuevo in colores_regex.items():
-        _patrones_docx.append((
-            re.compile(r'(w:fill\s*=\s*")' + viejo + r'(")', re.IGNORECASE),
-            re.compile(r'(<a:srgbClr\s+val\s*=\s*")' + viejo + r'(")', re.IGNORECASE),
-            nuevo,
-        ))
+    # Un solo patron generico por construccion XML + lookup en colores_regex,
+    # en vez de un patron por color encadenado sobre el mismo texto. Encadenar
+    # subn() por color es peligroso: si el color NUEVO de una regla coincide
+    # con el color VIEJO de otra (p.ej. paleta "azul" -> oscuro="1F3864", que
+    # tambien es un color propio de plantilla), la segunda regla vuelve a
+    # atrapar el texto que la primera acaba de escribir. Con un solo pase por
+    # construccion, cada ocurrencia se decide una vez contra el texto original.
+    _patron_fill_generico = re.compile(r'(w:fill\s*=\s*")([0-9A-Fa-f]{6})(")', re.IGNORECASE)
+    _patron_srgb_generico = re.compile(r'(<a:srgbClr\s+val\s*=\s*")([0-9A-Fa-f]{6})(")', re.IGNORECASE)
+
+    def _sub_color(m: re.Match) -> str:
+        viejo_up = m.group(2).upper()
+        nuevo = colores_regex.get(viejo_up)
+        if nuevo is None:
+            return m.group(0)
+        cambios[0] += 1
+        return m.group(1) + nuevo + m.group(3)
 
     def _reemplazar_colores_xml(xml_text: str) -> str:
-        resultado = xml_text
-        for patron_fill, patron_srgb, nuevo in _patrones_docx:
-            resultado, n = patron_fill.subn(r'\g<1>' + nuevo + r'\2', resultado)
-            cambios[0] += n
-            resultado, n = patron_srgb.subn(r'\g<1>' + nuevo + r'\2', resultado)
-            cambios[0] += n
+        resultado = _patron_fill_generico.sub(_sub_color, xml_text)
+        resultado = _patron_srgb_generico.sub(_sub_color, resultado)
         return resultado
 
     try:
@@ -455,14 +470,25 @@ def aplicar_colores_xlsx(xlsx_path: str, mapa_colores: dict[str, str]) -> int:
             return True
         return False
 
-    # Pre-compilar regex una sola vez para XLSX
-    _patrones_xlsx = []
-    for viejo, nuevo in colores_regex.items():
-        _patrones_xlsx.append((
-            re.compile(r'(<(?:fgColor|bgColor)\s+[^>]*rgb\s*=\s*"FF)' + viejo + r'(")', re.IGNORECASE),
-            re.compile(r'(<(?:fgColor|bgColor)\s+[^>]*rgb\s*=\s*")' + viejo + r'(")', re.IGNORECASE),
-            nuevo,
-        ))
+    # Un solo patron generico + lookup en colores_regex (ver comentario en
+    # aplicar_colores_docx sobre por que NO se encadenan N patrones por color
+    # sobre el mismo texto: el nuevo color de una regla puede coincidir con
+    # el viejo color de otra, p.ej. paleta "azul" -> oscuro="1F3864").
+    # El prefijo de alpha (2 hex) puede ser "FF", "00" u otro segun como lo
+    # haya escrito Excel/openpyxl; se preserva tal cual, solo se reemplaza
+    # el color RGB de 6 hex.
+    _patron_xlsx_generico = re.compile(
+        r'(<(?:fgColor|bgColor)\s+[^>]*rgb\s*=\s*")([0-9A-Fa-f]{2})?([0-9A-Fa-f]{6})(")',
+        re.IGNORECASE,
+    )
+
+    def _sub_color_xlsx(m: re.Match) -> str:
+        viejo_up = m.group(3).upper()
+        nuevo = colores_regex.get(viejo_up)
+        if nuevo is None:
+            return m.group(0)
+        cambios[0] += 1
+        return m.group(1) + (m.group(2) or "") + nuevo + m.group(4)
 
     def _reemplazar_colores_xlsx_xml(xml_text: str) -> str:
         """Reemplaza SOLO colores de fondo de celdas en Excel.
@@ -474,13 +500,7 @@ def aplicar_colores_xlsx(xlsx_path: str, mapa_colores: dict[str, str]) -> int:
         Tags que NO toca:
           - <color rgb="FFXXXXXX"/>    (color de fuente)
         """
-        resultado = xml_text
-        for patron_con_ff, patron_sin_ff, nuevo in _patrones_xlsx:
-            resultado, n = patron_con_ff.subn(r'\g<1>' + nuevo + r'\2', resultado)
-            cambios[0] += n
-            resultado, n = patron_sin_ff.subn(r'\g<1>' + nuevo + r'\2', resultado)
-            cambios[0] += n
-        return resultado
+        return _patron_xlsx_generico.sub(_sub_color_xlsx, xml_text)
 
     try:
         with ZipFile(xlsx_path, "r") as zin, ZipFile(temp_path, "w", compression=ZIP_DEFLATED) as zout:

@@ -198,6 +198,49 @@ class TestGenerarMatrizVial:
         # Debe haber al menos un color de cada o varios validos
         assert len(encontrados) >= 1
 
+    def test_banda_factor_usa_color_corporativo(self, cliente_con_pesv, output_pesv):
+        """Bug real: la banda roja de FACTOR quedaba fija en C00000 aunque el
+        cliente tuviera color_corporativo configurado, porque esta matriz se
+        genera DESPUES del paso aplicar_colores_corporativos (nunca la toca).
+        La banda debe seguir la paleta del cliente."""
+        import openpyxl
+        from engine.matriz_peligros_viales import generar_matriz_peligros_viales
+
+        cliente_con_pesv["color_corporativo"] = "azul"
+        generar_matriz_peligros_viales(cliente_con_pesv, output_pesv)
+        ruta = output_pesv / RUTA_MATRIZ_VIAL
+        wb = openpyxl.load_workbook(str(ruta))
+        ws = wb["Matriz de peligros"]
+
+        fila_factor = next(
+            r for r in range(7, ws.max_row + 1)
+            if ws.cell(row=r, column=1).value
+            and "FACTOR" in str(ws.cell(row=r, column=1).value).upper()
+        )
+        rgb = ws.cell(row=fila_factor, column=1).fill.fgColor.rgb
+        assert rgb != "00C00000", "La banda de factor sigue en rojo vinotinto pese a color_corporativo=azul"
+        assert rgb == "002E75B6"  # paleta azul -> "medio"
+
+    def test_banda_factor_sin_color_corporativo_es_roja(self, cliente_con_pesv, output_pesv):
+        """Sin color_corporativo configurado, la banda debe seguir siendo
+        el rojo original de la plantilla (comportamiento por defecto)."""
+        import openpyxl
+        from engine.matriz_peligros_viales import generar_matriz_peligros_viales
+
+        cliente_con_pesv.pop("color_corporativo", None)
+        generar_matriz_peligros_viales(cliente_con_pesv, output_pesv)
+        ruta = output_pesv / RUTA_MATRIZ_VIAL
+        wb = openpyxl.load_workbook(str(ruta))
+        ws = wb["Matriz de peligros"]
+
+        fila_factor = next(
+            r for r in range(7, ws.max_row + 1)
+            if ws.cell(row=r, column=1).value
+            and "FACTOR" in str(ws.cell(row=r, column=1).value).upper()
+        )
+        rgb = ws.cell(row=fila_factor, column=1).fill.fgColor.rgb
+        assert rgb == "00C00000"
+
 
 # ---------------------------------------------------------------------------
 # Limpieza de hojas PESV

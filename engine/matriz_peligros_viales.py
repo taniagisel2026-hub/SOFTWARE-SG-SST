@@ -572,13 +572,14 @@ def _escribir_fila_peligro(ws, row: int, peligro: dict):
         ws.row_dimensions[row].height = 75
 
 
-def _escribir_fila_factor(ws, row: int, factor: str, max_col: int = 26):
-    """Banda roja con el nombre del factor."""
+def _escribir_fila_factor(ws, row: int, factor: str, max_col: int = 26,
+                           fill: PatternFill = _FILL_FACTOR):
+    """Banda con el nombre del factor (rojo por defecto, o color corporativo)."""
     cel = ws.cell(row=row, column=1, value=factor)
     cel.alignment = Alignment(horizontal="center", vertical="center")
     cel.font = Font(name=FUENTE_NOMBRE, size=11, bold=True, color="FFFFFF")
     for c in range(1, max_col + 1):
-        ws.cell(row=row, column=c).fill = _FILL_FACTOR
+        ws.cell(row=row, column=c).fill = fill
         ws.cell(row=row, column=c).border = _BORDE
     if max_col > 1:
         ws.merge_cells(start_row=row, start_column=1, end_row=row, end_column=max_col)
@@ -669,6 +670,22 @@ def generar_matriz_peligros_viales(
         return None
     ws = wb[NOMBRE_HOJA]
 
+    # Banda de FACTOR: rojo por defecto, o color corporativo del cliente si
+    # esta definido. Esta matriz se llena DESPUES del paso de colores
+    # corporativos (aplicar_colores_corporativos), asi que ese paso nunca
+    # la toca; hay que resolver la paleta aqui directamente. El semaforo de
+    # riesgo (_FILL_RIESGO_CRITICO/MODERADO/BAJO) NO se toca: es semantico
+    # (rojo=critico, amarillo=moderado, verde=bajo), no decorativo.
+    fill_factor = _FILL_FACTOR
+    color_corp = cliente.get("color_corporativo", "")
+    if color_corp:
+        from .colores import resolver_paleta
+        paleta = resolver_paleta(color_corp)
+        if paleta:
+            fill_factor = PatternFill(
+                start_color=paleta["medio"], end_color=paleta["medio"], fill_type="solid"
+            )
+
     # Limpiar conditional formatting de la plantilla (la zona R8:R41) para que
     # nuestros fills explicitos del semaforo no se vean sobrescritos.
     try:
@@ -700,7 +717,7 @@ def generar_matriz_peligros_viales(
             continue
 
         # Banda del factor
-        _escribir_fila_factor(ws, fila_actual, factor)
+        _escribir_fila_factor(ws, fila_actual, factor, fill=fill_factor)
         fila_actual += 1
 
         for actor in actores_aplicables:
