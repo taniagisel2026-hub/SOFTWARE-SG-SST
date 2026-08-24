@@ -17,6 +17,15 @@
   --blue-bright: #4DE8FF;
   --danger: #FF6B5E;
   --danger-bg: rgba(255, 107, 94, 0.12);
+  /* Overlays "tinte de superficie" para inputs/tarjetas de opcion: blancos
+     translucidos por defecto (pensados para fondo oscuro). La .card los
+     redefine a oscuro-translucido porque su fondo es blanco. */
+  --surface-tint-weak: rgba(255, 255, 255, 0.015);
+  --surface-tint: rgba(255, 255, 255, 0.03);
+  --surface-tint-strong: rgba(255, 255, 255, 0.06);
+  --surface-ring: rgba(255, 255, 255, 0.18);
+  --border-strong: rgba(232, 241, 250, 0.24);
+  --spinner-ring: rgba(232, 241, 250, 0.3);
 }
 .font-display { font-family: "Geist", "Inter", sans-serif; }
 
@@ -82,13 +91,15 @@ body {
 .main-inner { width: 100%; max-width: 900px; }
 
 .card {
+  /* Tarjeta "oscura elevada": un azul mas claro que el fondo de la app
+     (#16283D vs #0A121F) para separarse, sin romper el ambiente nocturno. */
   position: relative;
   overflow: hidden;
-  background: #101B2B;
-  border: 1px solid var(--border);
+  background: #16283D;
+  border: 1px solid rgba(77, 232, 255, 0.16);
   border-radius: 20px;
   padding: 3.5rem 3.2rem 3rem;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3), 0 20px 45px rgba(0, 0, 0, 0.4);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 10px 28px rgba(0, 0, 0, 0.35), 0 20px 45px rgba(0, 0, 0, 0.4);
 }
 .card::before {
   content: "";
@@ -123,14 +134,14 @@ input[type="email"], select, textarea {
   padding: 0.9rem 1.05rem;
   border: 1px solid var(--border);
   border-radius: 10px;
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--surface-tint);
   color: var(--text);
   transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
 }
 input:focus, select:focus, textarea:focus {
   outline: none;
   border-color: var(--primary);
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--surface-tint-strong);
   box-shadow: 0 0 0 3px var(--primary-light);
 }
 textarea { min-height: 150px; }
@@ -166,9 +177,9 @@ button:disabled { cursor: default; opacity: 0.85; transform: none; }
   animation: girar 0.7s linear infinite;
 }
 @keyframes girar { to { transform: rotate(360deg); } }
-button.secundario { background: rgba(255, 255, 255, 0.03); color: var(--text); border: 1px solid var(--border); box-shadow: none; }
-button.secundario:hover { filter: none; background: rgba(255, 255, 255, 0.06); border-color: rgba(232, 241, 250, 0.24); transform: none; box-shadow: none; }
-button.secundario .spinner { border-color: rgba(232, 241, 250, 0.3); border-top-color: var(--text); }
+button.secundario { background: var(--surface-tint); color: var(--text); border: 1px solid var(--border); box-shadow: none; }
+button.secundario:hover { filter: none; background: var(--surface-tint-strong); border-color: var(--border-strong); transform: none; box-shadow: none; }
+button.secundario .spinner { border-color: var(--spinner-ring); border-top-color: var(--text); }
 
 .hidden { display: none; }
 
@@ -190,7 +201,7 @@ button.secundario .spinner { border-color: rgba(232, 241, 250, 0.3); border-top-
   margin-bottom: 1rem;
 }
 
-.sede-row { border: 1px solid var(--border); border-radius: 12px; padding: 1.3rem; background: rgba(255, 255, 255, 0.03); }
+.sede-row { border: 1px solid var(--border); border-radius: 12px; padding: 1.3rem; background: var(--surface-tint); }
 .error { color: var(--danger); font-size: 0.95rem; font-weight: 600; }
 .error:empty { display: none; }
 .ayuda { font-size: 0.9rem; font-weight: 400; color: var(--text-muted); margin: 0; }
@@ -201,10 +212,10 @@ button.secundario .spinner { border-color: rgba(232, 241, 250, 0.3); border-top-
   border: 1px solid var(--border);
   border-radius: 14px;
   padding: 1.6rem 1.7rem;
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--surface-tint);
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
-.opcion:hover { border-color: rgba(77, 232, 255, 0.35); box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3); }
+.opcion:hover { border-color: rgba(77, 232, 255, 0.35); box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12); }
 .opcion-icono {
   width: 44px; height: 44px; border-radius: 11px;
   display: flex; align-items: center; justify-content: center;
@@ -213,7 +224,7 @@ button.secundario .spinner { border-color: rgba(232, 241, 250, 0.3); border-top-
 }
 .opcion h2 { margin-top: 0; margin-bottom: 0.4rem; font-size: 1.2rem; }
 .opcion p { margin: 0 0 1.1rem; font-size: 1rem; color: var(--text-muted); }
-.opcion.omitir { background: rgba(255, 255, 255, 0.015); }
+.opcion.omitir { background: var(--surface-tint-weak); }
 
 /* Checkbox como tarjeta propia (ej. modulo 5: "¿Genera PESV?") -- el label
    generico queda en columna y hace que el checkbox se pierda solo y chico. */
@@ -222,7 +233,7 @@ button.secundario .spinner { border-color: rgba(232, 241, 250, 0.3); border-top-
 .opcion-pie {
   display: flex; flex-direction: row; align-items: center; gap: 0.6rem;
   border: 1px solid var(--border); border-radius: 12px;
-  padding: 0.9rem 1.2rem; background: rgba(255, 255, 255, 0.03);
+  padding: 0.9rem 1.2rem; background: var(--surface-tint);
   font-size: 1.05rem; font-weight: 600; color: var(--ink);
   cursor: pointer; flex: 1; min-width: 150px;
 }
@@ -251,7 +262,7 @@ button.secundario .spinner { border-color: rgba(232, 241, 250, 0.3); border-top-
 .opcion-encabezado {
   display: flex; flex-direction: column; gap: 0.8rem;
   border: 1px solid var(--border); border-radius: 12px;
-  padding: 1.2rem 1.4rem; background: rgba(255, 255, 255, 0.03);
+  padding: 1.2rem 1.4rem; background: var(--surface-tint);
   cursor: pointer; width: 100%;
 }
 .opcion-encabezado:has(input:checked) { border-color: var(--primary); background: var(--primary-light); }
@@ -286,7 +297,7 @@ table.mini-header td.titulo-cell .titulo { display: block; font-size: 0.98rem; m
 .opcion-letra {
   display: flex; flex-direction: row; align-items: center; gap: 0.6rem;
   border: 1px solid var(--border); border-radius: 12px;
-  padding: 0.9rem 1.2rem; background: rgba(255, 255, 255, 0.03);
+  padding: 0.9rem 1.2rem; background: var(--surface-tint);
   font-size: 1.1rem; font-weight: 600; color: var(--ink);
   cursor: pointer; flex: 1; min-width: 170px;
 }
@@ -307,7 +318,7 @@ table.mini-header td.titulo-cell .titulo { display: block; font-size: 0.98rem; m
 .campo-checkbox {
   display: flex; flex-direction: row; align-items: center; gap: 1rem;
   border: 1px solid var(--border); border-radius: 12px;
-  padding: 1.1rem 1.3rem; background: rgba(255, 255, 255, 0.03);
+  padding: 1.1rem 1.3rem; background: var(--surface-tint);
   font-size: 1.12rem; font-weight: 600; color: var(--ink);
   cursor: pointer;
 }
@@ -323,7 +334,7 @@ table.mini-header td.titulo-cell .titulo { display: block; font-size: 0.98rem; m
 .resumen-lista {
   display: flex; flex-direction: column; gap: 0.2rem;
   border: 1px solid var(--border); border-radius: 12px;
-  padding: 1.3rem 1.5rem; background: rgba(255, 255, 255, 0.03);
+  padding: 1.3rem 1.5rem; background: var(--surface-tint);
 }
 .resumen-fila { padding: 0.6rem 0; border-bottom: 1px solid var(--border); }
 .resumen-fila:last-child { border-bottom: none; }
@@ -342,7 +353,7 @@ table.mini-header td.titulo-cell .titulo { display: block; font-size: 0.98rem; m
 /* Panel de color estilo Word: cuadritos en grilla por secciones */
 .color-picker {
   border: 1px solid var(--border); border-radius: 12px;
-  padding: 1.2rem 1.3rem; background: rgba(255, 255, 255, 0.03);
+  padding: 1.2rem 1.3rem; background: var(--surface-tint);
 }
 .color-section-label {
   font-size: 0.85rem; font-weight: 700; color: var(--text-muted);
@@ -354,7 +365,7 @@ table.mini-header td.titulo-cell .titulo { display: block; font-size: 0.98rem; m
 .swatches-grid { display: flex; flex-wrap: wrap; gap: 16px; }
 .swatch {
   width: 44px; height: 44px; border-radius: 50%;
-  border: 1px solid rgba(255,255,255,0.18); cursor: pointer; padding: 0;
+  border: 1px solid var(--surface-ring); cursor: pointer; padding: 0;
   position: relative;
   transition: transform 0.1s ease;
 }
@@ -526,16 +537,21 @@ table.mini-header td.titulo-cell .titulo { display: block; font-size: 0.98rem; m
   max-width: 1280px; margin: 0 auto;
   display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.8rem;
 }
+/* Tarjeta "oscura elevada" (opcion elegida): un azul mas claro que el
+   fondo de su seccion, sin blanco -- mismo tratamiento que .card. */
 .paso {
-  border: 1px solid var(--land-line); border-radius: 14px;
-  padding: 1.8rem 1.7rem; background: rgba(255, 255, 255, 0.03);
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  border: 1px solid rgba(77, 232, 255, 0.16); border-radius: 14px;
+  padding: 1.8rem 1.7rem; background: #16283D;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 10px 28px rgba(0, 0, 0, 0.3);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+  text-align: center;
+  display: flex; flex-direction: column; align-items: center;
 }
-.paso:hover { border-color: rgba(77, 232, 255, 0.4); box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35); }
+.paso:hover { border-color: rgba(77, 232, 255, 0.4); transform: translateY(-2px); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 14px 34px rgba(0, 0, 0, 0.36); }
 .paso .num {
   width: 58px; height: 58px; border-radius: 50%;
-  background: rgba(77, 232, 255, 0.1); color: var(--cyan);
-  border: 1px solid rgba(77, 232, 255, 0.4);
+  background: rgba(77, 232, 255, 0.12); color: var(--cyan);
+  border: 1px solid rgba(77, 232, 255, 0.35);
   display: flex; align-items: center; justify-content: center;
   font-family: "JetBrains Mono", monospace; font-weight: 600; font-size: 1.4rem; margin-bottom: 1.3rem;
 }
@@ -548,14 +564,17 @@ table.mini-header td.titulo-cell .titulo { display: block; font-size: 0.98rem; m
   display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.8rem;
 }
 .feature {
-  background: rgba(255, 255, 255, 0.03); border: 1px solid var(--land-line); border-radius: 14px; padding: 1.8rem 1.7rem;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  background: #16283D; border: 1px solid rgba(77, 232, 255, 0.16); border-radius: 14px; padding: 1.8rem 1.7rem;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 10px 28px rgba(0, 0, 0, 0.3);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+  text-align: center;
+  display: flex; flex-direction: column; align-items: center;
 }
-.feature:hover { border-color: rgba(77, 232, 255, 0.4); box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35); }
+.feature:hover { border-color: rgba(77, 232, 255, 0.4); transform: translateY(-2px); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 14px 34px rgba(0, 0, 0, 0.36); }
 .feature .icon {
   width: 58px; height: 58px; border-radius: 50%;
-  background: rgba(77, 232, 255, 0.1); color: var(--cyan);
-  border: 1px solid rgba(77, 232, 255, 0.4);
+  background: rgba(77, 232, 255, 0.12); color: var(--cyan);
+  border: 1px solid rgba(77, 232, 255, 0.35);
   display: flex; align-items: center; justify-content: center;
   margin-bottom: 1.3rem;
 }
