@@ -34,6 +34,27 @@ ROLES_EXTRAIBLES = {"rut": "rut", "camara_comercio": "camara_comercio", "cedula_
 # Roles de archivo del modulo 1 que solo se suben, sin extraccion
 ROLES_IMAGEN_MODULO_1 = ("logo", "firma_rl")
 
+# Que tipo de archivo espera cada rol (modulos 1 y 4), para validar tanto la
+# extension como el contenido real -- no basta con confiar en el nombre que
+# manda el navegador.
+_ROLES_IMAGEN = {"logo", "firma_rl", "firma_sst"}
+_ROLES_PDF = {
+    "rut", "camara_comercio", "cedula_rl",
+    "hoja_vida_sst", "licencia_sst_pdf", "cedula_sst_pdf", "diploma_cursos_sst",
+}
+_EXTENSIONES_IMAGEN = {".png", ".jpg", ".jpeg"}
+_FIRMAS_IMAGEN = (b"\x89PNG\r\n\x1a\n", b"\xff\xd8\xff")  # PNG, JPEG
+_FIRMA_PDF = b"%PDF-"
+_TAMANO_MAXIMO_BYTES = 15 * 1024 * 1024  # 15 MB
+
+# Content-type explicito por extension al servir un archivo de vuelta: nunca
+# se infiere del nombre, para que un archivo que igual haya quedado guardado
+# con una extension no contemplada no se sirva como html/svg ejecutable.
+_MEDIA_TYPES = {
+    ".png": "image/png", ".jpg": "image/jpeg", ".jpeg": "image/jpeg",
+    ".pdf": "application/pdf",
+}
+
 
 def _obtener_o_404(borrador_id: str) -> dict:
     borrador = wizard_store.obtener_borrador(borrador_id)
@@ -55,12 +76,23 @@ def _verificar_gate(borrador: dict, modulo_key: str) -> None:
 
 
 def _guardar_archivo_subido(borrador_id: str, rol: str, upload: UploadFile) -> Path:
+    contenido = upload.file.read(_TAMANO_MAXIMO_BYTES + 1)
+    if len(contenido) > _TAMANO_MAXIMO_BYTES:
+        raise HTTPException(400, f"'{rol}' supera el tamaño máximo permitido (15 MB).")
+
+    ext = Path(upload.filename or "").suffix.lower()
+    if rol in _ROLES_IMAGEN:
+        if ext not in _EXTENSIONES_IMAGEN or not contenido.startswith(_FIRMAS_IMAGEN):
+            raise HTTPException(400, f"'{rol}' debe ser una imagen PNG o JPG valida.")
+    elif rol in _ROLES_PDF:
+        if ext != ".pdf" or not contenido.startswith(_FIRMA_PDF):
+            raise HTTPException(400, f"'{rol}' debe ser un archivo PDF valido.")
+
     carpeta = WIZARD_UPLOADS_DIR / borrador_id
     carpeta.mkdir(parents=True, exist_ok=True)
-    ext = Path(upload.filename or "").suffix or ""
     destino = carpeta / f"{rol}{ext}"
     with open(destino, "wb") as f:
-        shutil.copyfileobj(upload.file, f)
+        f.write(contenido)
     return destino
 
 
@@ -88,7 +120,8 @@ def obtener_archivo_subido(borrador_id: str, rol: str) -> FileResponse:
     ruta = borrador["archivos"].get(rol)
     if not ruta or not Path(ruta).exists():
         raise HTTPException(404, f"No hay archivo subido para: {rol}")
-    return FileResponse(ruta)
+    media_type = _MEDIA_TYPES.get(Path(ruta).suffix.lower(), "application/octet-stream")
+    return FileResponse(ruta, media_type=media_type)
 
 
 @wizard_router.delete("/borradores/{borrador_id}", dependencies=protegido)

@@ -40,11 +40,28 @@ python limpiar_cache.py
 
 # Verify Drive links in the master list
 python verificar_links_listado.py "clientes/<RAZON_SOCIAL>"
+
+# Run the web API + wizard portal locally
+uvicorn api:app --reload --port 8000
+# Interactive API docs: http://localhost:8000/docs
+# Wizard portal (client-facing, 8-step onboarding): http://localhost:8000/portal/
 ```
 
 ---
 
 ## Architecture
+
+### Web layer: `api.py` + `wizard_api.py` (second entry point, alongside the CLI)
+
+`api.py` is a FastAPI REST API that wraps the same `engine/` functions `cli.py` uses — it does not replace the CLI, it complements it. Endpoints (all except `/health` and the Drive OAuth callback require `Authorization: Bearer <API_AUTH_TOKEN>`, checked by `api_auth.verify_api_key`):
+
+- `POST /clientes/{cliente_id}/generar`, `POST /clientes/{cliente_id}/subir-drive` — async, backed by `engine/jobs.py` (SQLite-persisted job status, survives restarts; `GET /jobs/{job_id}` polls status).
+- `POST /clientes/validar`, `POST /clientes/verificar` — wrap `engine/validacion.py`.
+- `GET /auth/drive/{cliente_id}/start` + `GET /auth/drive/callback` — OAuth 2.0 web flow for Drive (the callback is unauthenticated by design, protected instead by Google's single-use `code`).
+
+`api.py` also mounts `wizard_router` (defined in `wizard_api.py`, a separate router by design to avoid regression risk on the Phase-4 routes above) and serves the static wizard portal at `/portal/` (`static/wizard/index.html` → `modulo1.html`...`modulo8.html` → `finalizar.html`). The wizard is a guided, client-facing onboarding flow that builds up a "borrador" (draft, persisted via `engine/wizard_store.py` in its own SQLite db) module by module — uploads (RUT, Cámara de Comercio, cédula, logo, firma) are extracted with Claude via `engine/extraccion.py`, gated sequentially (`modulo_N` can't be confirmed before `modulo_{N-1}`), and assembled into a client YAML on `POST /wizard/borradores/{id}/finalizar`, which then feeds the same `generar_sgsst()` pipeline as the CLI.
+
+### CLI pipeline
 
 The pipeline is orchestrated by `engine/generador.py::generar_sgsst()` and driven by `cli.py` (Click).
 
@@ -119,12 +136,17 @@ OAuth 2.0 tokens per client stored in `tokens/token_<NIT>.json`. First run opens
 | `CACHE_DIR` | `.cache` | Claude cache directory |
 | `CACHE_EXPIRY_DAYS` | `30` | Cache TTL |
 | `CLAUDE_PRECIO_INPUT` / `CLAUDE_PRECIO_OUTPUT` | `1` / `5` | $/MTok for cost tracking |
+| `API_AUTH_TOKEN` | `""` | Bearer token required by `api.py`/`wizard_api.py` endpoints |
+| `API_BASE_URL` | `http://localhost:8000` | Base URL used to build the Drive OAuth redirect |
+| `JOBS_DB_PATH` | `jobs.db` | SQLite db for `engine/jobs.py` (async generate/subir-drive job status) |
+| `WIZARD_DB_PATH` | `wizard_drafts.db` | SQLite db for `engine/wizard_store.py` (wizard portal drafts) |
+| `WIZARD_UPLOADS_DIR` | `wizard_uploads` | Where the wizard portal stores files clients upload |
 
 ---
 
 ## Files not to commit
 
-`credentials.json`, `.env`, `tokens/`, `clientes/`, `.cache/`
+`credentials.json`, `.env`, `tokens/`, `clientes/`, `.cache/`, `jobs.db`, `wizard_drafts.db`, `wizard_uploads/`
 
 ---
 

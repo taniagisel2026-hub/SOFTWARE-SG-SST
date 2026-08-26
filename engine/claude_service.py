@@ -124,8 +124,19 @@ def _crear_client():
     return anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
 
 
+# Errores transitorios: rate limit, corte de red/timeout, o 5xx del lado de
+# Anthropic. Ninguno de estos significa que la solicitud esté mal formada,
+# así que vale la pena reintentar en vez de fallar al primer intento.
+_ERRORES_REINTENTABLES = (
+    anthropic.RateLimitError,
+    anthropic.APIConnectionError,  # incluye APITimeoutError (es subclase)
+    anthropic.InternalServerError,
+)
+
+
 def _llamar_claude(prompt: str, max_tokens: int = 8192, max_reintentos: int = 3):
-    """Llama a Claude API con reintentos y backoff exponencial ante rate limits.
+    """Llama a Claude API con reintentos y backoff exponencial ante errores
+    transitorios (rate limit, red/timeout, 5xx).
 
     Reintenta hasta max_reintentos veces con esperas 30s → 60s → 120s.
     Relanza la excepción si se agotan los reintentos.
@@ -139,11 +150,11 @@ def _llamar_claude(prompt: str, max_tokens: int = 8192, max_reintentos: int = 3)
                 max_tokens=max_tokens,
                 messages=[{"role": "user", "content": prompt}],
             )
-        except anthropic.RateLimitError:
+        except _ERRORES_REINTENTABLES as e:
             if intento < max_reintentos - 1:
                 logger.warning(
-                    "Rate limit. Esperando %ds (intento %d/%d)...",
-                    espera, intento + 1, max_reintentos,
+                    "%s. Esperando %ds (intento %d/%d)...",
+                    type(e).__name__, espera, intento + 1, max_reintentos,
                 )
                 time.sleep(espera)
                 espera *= 2

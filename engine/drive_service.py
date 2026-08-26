@@ -14,6 +14,11 @@ from .config import BASE_DIR
 # Permisos necesarios
 SCOPES = ["https://www.googleapis.com/auth/drive"]
 
+# Reintentos con backoff exponencial aleatorio ante errores transitorios
+# (5xx, rate limit, corte de red) -- mecanismo propio de googleapiclient,
+# no hace falta reimplementarlo. Ver HttpRequest.execute(num_retries=...).
+_NUM_REINTENTOS = 3
+
 # Ruta a las credenciales OAuth (flujo de escritorio, usado por el CLI)
 CREDENTIALS_PATH = BASE_DIR / "credentials.json"
 # Ruta a las credenciales OAuth "Web application" (flujo web, usado por la API).
@@ -163,7 +168,7 @@ def crear_carpeta(service, nombre: str, parent_id: str = None) -> str:
 
     results = service.files().list(
         q=query, fields="files(id, name)", pageSize=1
-    ).execute()
+    ).execute(num_retries=_NUM_REINTENTOS)
 
     if results.get("files"):
         return results["files"][0]["id"]
@@ -173,7 +178,7 @@ def crear_carpeta(service, nombre: str, parent_id: str = None) -> str:
     if parent_id:
         metadata["parents"] = [parent_id]
 
-    folder = service.files().create(body=metadata, fields="id").execute()
+    folder = service.files().create(body=metadata, fields="id").execute(num_retries=_NUM_REINTENTOS)
     return folder["id"]
 
 
@@ -227,7 +232,7 @@ def subir_archivo(service, archivo_local: Path, parent_id: str) -> dict:
     query = (
         f"name='{safe_name}' and '{parent_id}' in parents and trashed=false"
     )
-    existente = service.files().list(q=query, fields="files(id)").execute()
+    existente = service.files().list(q=query, fields="files(id)").execute(num_retries=_NUM_REINTENTOS)
 
     if existente.get("files"):
         # Actualizar archivo existente
@@ -235,14 +240,14 @@ def subir_archivo(service, archivo_local: Path, parent_id: str) -> dict:
         media = MediaFileUpload(str(archivo_local), mimetype=mime_type, resumable=True)
         archivo = service.files().update(
             fileId=file_id, media_body=media, fields="id, name, webViewLink"
-        ).execute()
+        ).execute(num_retries=_NUM_REINTENTOS)
     else:
         # Subir nuevo
         metadata = {"name": archivo_local.name, "parents": [parent_id]}
         media = MediaFileUpload(str(archivo_local), mimetype=mime_type, resumable=True)
         archivo = service.files().create(
             body=metadata, media_body=media, fields="id, name, webViewLink"
-        ).execute()
+        ).execute(num_retries=_NUM_REINTENTOS)
 
     return archivo
 
@@ -335,7 +340,7 @@ def obtener_link_carpeta(service, folder_id: str) -> str:
     try:
         folder = service.files().get(
             fileId=folder_id, fields="webViewLink"
-        ).execute()
+        ).execute(num_retries=_NUM_REINTENTOS)
         return folder.get("webViewLink", "")
     except Exception:
         return f"https://drive.google.com/drive/folders/{folder_id}"
@@ -352,7 +357,7 @@ def listar_archivos_carpeta(service, folder_id: str) -> list[dict]:
             fields="nextPageToken, files(id, name, mimeType, webViewLink, modifiedTime)",
             pageToken=page_token,
             pageSize=100,
-        ).execute()
+        ).execute(num_retries=_NUM_REINTENTOS)
 
         results.extend(response.get("files", []))
         page_token = response.get("nextPageToken")

@@ -46,6 +46,12 @@ def _pdf_falso(texto: str) -> bytes:
     return b"%PDF-1.4\n%mock\n" + texto.encode()
 
 
+def _png_falso(texto: str = "logo") -> bytes:
+    """PNG minimo pero con la firma real -- _guardar_archivo_subido valida
+    los primeros bytes, no solo la extension."""
+    return b"\x89PNG\r\n\x1a\n" + texto.encode()
+
+
 def test_crear_borrador(client, headers):
     r = client.post("/wizard/borradores", headers=headers)
     assert r.status_code == 200
@@ -84,7 +90,7 @@ def test_subir_archivos_modulo_4_guarda_documentos_soporte(client, headers):
         f"/wizard/borradores/{bid}/modulo-4/archivos",
         headers=headers,
         files={
-            "firma_sst": ("firma.png", io.BytesIO(b"fake-png"), "image/png"),
+            "firma_sst": ("firma.png", io.BytesIO(_png_falso("firma")), "image/png"),
             "hoja_vida_sst": ("hv.pdf", io.BytesIO(_pdf_falso("hoja de vida")), "application/pdf"),
             "licencia_sst_pdf": ("lic.pdf", io.BytesIO(_pdf_falso("licencia")), "application/pdf"),
             "cedula_sst_pdf": ("ced.pdf", io.BytesIO(_pdf_falso("cedula")), "application/pdf"),
@@ -98,16 +104,52 @@ def test_subir_archivos_modulo_4_guarda_documentos_soporte(client, headers):
     }
 
 
+def test_subir_logo_con_contenido_que_no_es_imagen_da_400(client, headers):
+    """Bug real: antes se confiaba en la extension del nombre del archivo.
+    Un archivo .png cuyo contenido es en realidad html/script (posible XSS
+    almacenado, ya que este mismo archivo se sirve de vuelta en la vista
+    previa del Modulo 8) debe rechazarse por el contenido, no solo aceptarse
+    porque el nombre termina en .png."""
+    bid = client.post("/wizard/borradores", headers=headers).json()["borrador_id"]
+    r = client.post(
+        f"/wizard/borradores/{bid}/modulo-1/archivos",
+        headers=headers,
+        files={"logo": ("logo.png", io.BytesIO(b"<script>alert(1)</script>"), "image/png")},
+    )
+    assert r.status_code == 400
+
+
+def test_subir_rut_con_contenido_que_no_es_pdf_da_400(client, headers):
+    bid = client.post("/wizard/borradores", headers=headers).json()["borrador_id"]
+    r = client.post(
+        f"/wizard/borradores/{bid}/modulo-1/archivos",
+        headers=headers,
+        files={"rut": ("rut.pdf", io.BytesIO(b"esto no es un pdf"), "application/pdf")},
+    )
+    assert r.status_code == 400
+
+
+def test_subir_logo_que_supera_el_tamano_maximo_da_400(client, headers):
+    bid = client.post("/wizard/borradores", headers=headers).json()["borrador_id"]
+    demasiado_grande = _png_falso() + b"\x00" * (15 * 1024 * 1024)
+    r = client.post(
+        f"/wizard/borradores/{bid}/modulo-1/archivos",
+        headers=headers,
+        files={"logo": ("logo.png", io.BytesIO(demasiado_grande), "image/png")},
+    )
+    assert r.status_code == 400
+
+
 def test_obtener_archivo_subido_sirve_el_logo(client, headers):
     bid = client.post("/wizard/borradores", headers=headers).json()["borrador_id"]
     client.post(
         f"/wizard/borradores/{bid}/modulo-1/archivos",
         headers=headers,
-        files={"logo": ("logo.png", io.BytesIO(b"fake-png-bytes"), "image/png")},
+        files={"logo": ("logo.png", io.BytesIO(_png_falso("logo-bytes")), "image/png")},
     )
     r = client.get(f"/wizard/borradores/{bid}/archivos/logo", headers=headers)
     assert r.status_code == 200
-    assert r.content == b"fake-png-bytes"
+    assert r.content == _png_falso("logo-bytes")
 
 
 def test_obtener_archivo_subido_sin_subir_da_404(client, headers):
