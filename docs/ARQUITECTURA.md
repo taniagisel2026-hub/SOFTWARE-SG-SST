@@ -154,8 +154,8 @@ Estado persistido en **SQLite** (`jobs.db`, tabla `jobs`) — mismo patrón que 
 
 `autenticar_drive()` (usada por el CLI) abre un navegador **en la misma máquina donde corre el proceso** (`InstalledAppFlow.run_local_server()`) — funciona en una PC, es imposible en un servidor remoto. Para la API se agregó un segundo flujo en `engine/drive_service.py`, sin tocar `autenticar_drive()`:
 
-- `iniciar_auth_web(cliente_id, redirect_uri)` — genera la URL de consentimiento de Google (`google_auth_oauthlib.flow.Flow`, no `InstalledAppFlow`).
-- `completar_auth_web(cliente_id, code, redirect_uri)` — intercambia el código por un token y lo guarda en **la misma ruta/formato** que ya usa `autenticar_drive()` (`tokens/token_<id>.json`) — por eso `autenticar_drive()` no necesitó ningún cambio: no le importa si el token se creó por el flujo de escritorio o el web.
+- `iniciar_auth_web(cliente_id, redirect_uri)` — genera la URL de consentimiento de Google (`google_auth_oauthlib.flow.Flow`, no `InstalledAppFlow`); el `state` que le pasa a Google es `cliente_id` firmado con HMAC (`_firmar_state`), no el valor crudo.
+- `completar_auth_web(state, code, redirect_uri)` — verifica la firma del `state` (`_verificar_state`, rechaza uno falsificado o con un `cliente_id` inválido), intercambia el código por un token y lo guarda en **la misma ruta/formato** que ya usa `autenticar_drive()` (`tokens/token_<id>.json`) — por eso `autenticar_drive()` no necesitó ningún cambio: no le importa si el token se creó por el flujo de escritorio o el web. Devuelve el `cliente_id` verificado.
 
 **Prerrequisito manual** (no se puede hacer por código): crear un Client ID de tipo **"Web application"** en Google Cloud Console (el `credentials.json` actual es tipo "Desktop", se deja intacto), con el redirect URI `<API_BASE_URL>/auth/drive/callback` registrado, y descargarlo como `credentials_web.json` en la raíz. Sin ese archivo, `/auth/drive/{id}/start` falla con `FileNotFoundError` (mensaje explícito, no crashea el servidor).
 

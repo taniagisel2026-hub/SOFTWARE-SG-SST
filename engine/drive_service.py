@@ -1,6 +1,9 @@
 """Servicio de Google Drive - gestiona carpetas y archivos por cliente."""
+import hashlib
+import hmac
 import os
 import mimetypes
+import re
 from pathlib import Path
 
 from google.auth.transport.requests import Request
@@ -9,7 +12,7 @@ from google_auth_oauthlib.flow import Flow, InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
 
-from .config import BASE_DIR
+from .config import API_AUTH_TOKEN, BASE_DIR
 
 # Permisos necesarios
 SCOPES = ["https://www.googleapis.com/auth/drive"]
@@ -47,10 +50,49 @@ MIME_MAP = {
 }
 
 
+# cliente_id termina en un nombre de archivo (token_<cliente_id>.json) -- sin
+# esta validacion, un cliente_id con "/" o ".." permitiria escribir el token
+# fuera de TOKENS_DIR (path traversal). Se valida aqui porque _token_path()
+# es el unico punto de paso tanto del flujo de escritorio (autenticar_drive,
+# cliente_id siempre confiable, viene del CLI local) como del flujo web
+# (completar_auth_web, cliente_id viene de un parametro HTTP).
+_CLIENTE_ID_VALIDO = re.compile(r"^[A-Za-z0-9_+.-]{1,100}$")
+
+
 def _token_path(cliente_id: str) -> Path:
     """Ruta al token de autenticacion de un cliente."""
+    if not _CLIENTE_ID_VALIDO.match(cliente_id):
+        raise ValueError(f"cliente_id invalido: {cliente_id!r}")
     TOKENS_DIR.mkdir(parents=True, exist_ok=True)
     return TOKENS_DIR / f"token_{cliente_id}.json"
+
+
+def _firmar_state(cliente_id: str) -> str:
+    """Firma cliente_id para usarlo como `state` en el flujo OAuth web.
+
+    Sin esto, cualquiera que llegue a /auth/drive/callback con un `state`
+    de su invencion podria hacer que completar_auth_web() guarde el token
+    de Drive bajo el cliente_id que quiera. Al firmar con API_AUTH_TOKEN
+    (el mismo secreto que ya protege el resto de la API), solo un `state`
+    generado por iniciar_auth_web() -- que ya requiere la API key -- pasa
+    la verificacion en el callback.
+    """
+    firma = hmac.new(API_AUTH_TOKEN.encode(), cliente_id.encode(), hashlib.sha256).hexdigest()[:32]
+    return f"{cliente_id}.{firma}"
+
+
+def _verificar_state(state: str) -> str:
+    """Verifica el `state` firmado por _firmar_state() y devuelve el cliente_id.
+
+    Lanza ValueError si el formato es invalido o la firma no coincide.
+    """
+    cliente_id, _, firma = state.rpartition(".")
+    if not cliente_id or not firma:
+        raise ValueError("state con formato invalido")
+    esperada = hmac.new(API_AUTH_TOKEN.encode(), cliente_id.encode(), hashlib.sha256).hexdigest()[:32]
+    if not hmac.compare_digest(firma, esperada):
+        raise ValueError("state con firma invalida")
+    return cliente_id
 
 
 def autenticar_drive(cliente_id: str) -> object:
@@ -127,18 +169,35 @@ def iniciar_auth_web(cliente_id: str, redirect_uri: str) -> str:
     auth_url, _ = flow.authorization_url(
         access_type="offline",  # necesario para recibir refresh_token
         prompt="consent",       # fuerza a que Google lo reenvie incluso en re-autorizaciones
-        state=cliente_id,
+        state=_firmar_state(cliente_id),
     )
     return auth_url
 
 
-def completar_auth_web(cliente_id: str, code: str, redirect_uri: str) -> None:
+def completar_auth_web(state: str, code: str, redirect_uri: str) -> str:
     """Intercambia el codigo de autorizacion por un token y lo guarda.
+
+    `state` es el valor firmado por _firmar_state() en iniciar_auth_web() --
+    se verifica aqui antes de confiar en el cliente_id que trae, porque este
+    es el unico endpoint de la API que Google llama sin pasar por la API key
+    (ver api.py::auth_drive_callback). Sin la firma, cualquiera que llegara
+    a este endpoint con un `state` de su invencion podria hacer que el token
+    de Drive se guarde bajo el cliente_id que quisiera.
 
     Escribe en el MISMO formato/ruta que autenticar_drive() (tokens/token_<id>.json),
     asi que una vez guardado, autenticar_drive() lo usa sin ningun cambio --
     no le importa si el token se creo por el flujo de escritorio o el web.
+
+    Returns:
+        El cliente_id verificado (para que el llamador lo pueda mostrar).
     """
+    cliente_id = _verificar_state(state)
+    if not _CLIENTE_ID_VALIDO.match(cliente_id):
+        # No deberia poder pasar (_firmar_state solo firma cliente_id ya
+        # validos), pero se revisa aqui -- antes de la llamada de red a
+        # Google -- por si el secreto de firma se filtrara alguna vez.
+        raise ValueError(f"cliente_id invalido: {cliente_id!r}")
+
     flow = Flow.from_client_secrets_file(
         str(CREDENTIALS_WEB_PATH), SCOPES, redirect_uri=redirect_uri,
         autogenerate_code_verifier=False,
@@ -149,6 +208,7 @@ def completar_auth_web(cliente_id: str, code: str, redirect_uri: str) -> None:
     token_file = _token_path(cliente_id)
     with open(token_file, "w") as f:
         f.write(creds.to_json())
+    return cliente_id
 
 
 def crear_carpeta(service, nombre: str, parent_id: str = None) -> str:

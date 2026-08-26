@@ -221,20 +221,23 @@ def auth_drive_start(cliente_id: str, redirect: bool = True):
 
 @app.get("/auth/drive/callback", response_class=HTMLResponse)
 def auth_drive_callback(code: str, state: str) -> str:
-    """Google redirige aqui tras el consentimiento. `state` trae el cliente_id.
+    """Google redirige aqui tras el consentimiento. `state` trae el cliente_id,
+    firmado por iniciar_auth_web() (ver completar_auth_web/_verificar_state).
 
     Sin autenticacion por API key -- la seguridad viene del `code` de Google,
-    que es de un solo uso e irrepetible (practica estandar de OAuth).
+    que es de un solo uso e irrepetible (practica estandar de OAuth), y de la
+    firma del `state` (que solo pudo generar quien ya tenia la API key, en
+    /auth/drive/{cliente_id}/start).
     """
+    import html
     from engine.drive_service import completar_auth_web
 
-    cliente_id = state
     try:
-        completar_auth_web(cliente_id, code, _redirect_uri())
+        cliente_id = completar_auth_web(state, code, _redirect_uri())
     except Exception as e:
-        return f"<h1>Error autorizando Drive</h1><p>{e}</p>"
+        return f"<h1>Error autorizando Drive</h1><p>{html.escape(str(e))}</p>"
 
     return (
         f"<h1>Autorizacion completada</h1>"
-        f"<p>Cliente: {cliente_id}. Ya puedes cerrar esta pestana.</p>"
+        f"<p>Cliente: {html.escape(cliente_id)}. Ya puedes cerrar esta pestana.</p>"
     )
