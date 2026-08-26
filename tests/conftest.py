@@ -108,11 +108,22 @@ def output_pesv(tmp_path) -> Path:
 
 @pytest.fixture
 def output_listado_maestro(tmp_path) -> Path:
-    """Carpeta temporal con SST-MTZ-005 copiado desde la plantilla."""
-    src = (PLANTILLA / "I. PLANEAR" / "2.5.1 ARCHIVO Y RETENCIÓN DOCUMENTAL"
-           / "SST-MTZ-005 MATRIZ DE GESTIÓN DOCUMENTAL.xlsx")
-    if not src.exists():
-        pytest.skip(f"No existe la plantilla del listado maestro: {src}")
+    """Carpeta temporal con SST-MTZ-005 copiado desde la plantilla.
+
+    La plantilla ya no tiene un SST-MTZ-005 sin etiqueta -- desde que se
+    agrego el filtro por categoria Res. 0312 (ver generador.py, tag [CAT-I]/
+    [CAT-II]/[CAT-III], mismo mecanismo que [COPASST]/[VIGIA]) solo existen
+    las 3 variantes etiquetadas; generador.py elige la que aplica y le quita
+    la etiqueta al copiarla. Estos tests no dependen de la categoria (prueban
+    el matcher de links, no el filtrado por estandares), asi que cualquiera
+    de las 3 sirve -- se copia a un nombre sin etiqueta, igual que quedaria
+    en una generacion real."""
+    carpeta = PLANTILLA / "I. PLANEAR" / "2.5.1 ARCHIVO Y RETENCIÓN DOCUMENTAL"
+    candidatos = sorted(carpeta.glob("SST-MTZ-005 MATRIZ DE GESTIÓN DOCUMENTAL*.xlsx"))
+    candidatos = [c for c in candidatos if not c.name.startswith("~$")]
+    if not candidatos:
+        pytest.skip(f"No existe ninguna plantilla de SST-MTZ-005 en: {carpeta}")
+    src = candidatos[0]
     dst = (tmp_path / "I. PLANEAR" / "2.5.1 ARCHIVO Y RETENCIÓN DOCUMENTAL"
            / "SST-MTZ-005 MATRIZ DE GESTIÓN DOCUMENTAL.xlsx")
     dst.parent.mkdir(parents=True, exist_ok=True)

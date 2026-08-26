@@ -211,6 +211,23 @@ Estos archivos no recibían las correcciones legales (Decreto viejo → Decreto 
 
 ---
 
+### BUG-009: Texto casi invisible en los desplegables (`<select>`) del portal (RESUELTO)
+
+**Fecha**: 2026-08-26
+**Reportado por**: bts19 (probando el Módulo 2 — Riesgo y ARL)
+**Severidad**: 🟢 Baja
+**Estado**: ✅ Resuelto
+
+**Lo que pasaba**: Al abrir el desplegable de "Nivel de riesgo", el texto de las opciones se veía muy tenue, casi ilegible.
+
+**Causa**: el `<select>` hereda bien el fondo oscuro del tema, pero la lista desplegable la dibuja el navegador aparte (casi siempre sobre un fondo blanco por defecto) — el texto claro pensado para el tema oscuro quedaba casi invisible ahí.
+
+**Resolución**:
+- Fondo oscuro explícito para `select option` en `static/wizard/wizard.css`
+- Afecta a todos los `<select>` del asistente, no solo el de nivel de riesgo
+
+---
+
 ## Cómo se convierte un bug en test
 
 Cuando resuelvas un bug:
@@ -250,3 +267,5 @@ Esto garantiza que el bug **no vuelva a aparecer** silenciosamente.
 | BUG-005 Validación de nombre | 2026-05-07 | 2026-05-07 | < 1 |
 | BUG-006 SEGURIDAD VIAL borrada | 2026-05-08 | 2026-05-08 | < 1 |
 | BUG-007 Auxiliar Motorizado | 2026-05-08 | 2026-05-08 | < 1 |
+| BUG-008 Content_Types watermark | 2026-05-11 | 2026-05-11 | < 1 |
+| BUG-009 Desplegables ilegibles | 2026-08-26 | 2026-08-26 | < 1 |

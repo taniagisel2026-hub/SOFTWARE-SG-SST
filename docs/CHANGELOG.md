@@ -4,6 +4,15 @@ Registro de cambios del SG-SST Generator. Formato basado en [Keep a Changelog](h
 
 ## [No publicado]
 
+### Agregado (auditoría técnica y endurecimiento, 2026-08-26)
+- **Validación real de archivos subidos en el portal** (`wizard_api.py`): antes solo se confiaba en la extensión del nombre del archivo. Ahora se valida la firma binaria real (PNG/JPG/PDF) y un límite de 15 MB, y el archivo se sirve de vuelta con un `Content-Type` explícito por extensión — cierra un vector de XSS almacenado vía la vista previa del Módulo 8.
+- **Callback de OAuth de Drive blindado** (`engine/drive_service.py`, `api.py`): `/auth/drive/callback` es la única ruta pública de la API (Google la llama sin API key) y antes confiaba en el `state` tal cual. Ahora `iniciar_auth_web()` firma el `state` con HMAC y `completar_auth_web()` verifica esa firma; `cliente_id` se valida contra una lista blanca antes de usarse para nombrar cualquier archivo (evita path traversal); la respuesta HTML escapa cualquier valor que muestre (evita XSS reflejado).
+- **Reintentos ante fallos de red**: `claude_service._llamar_claude()` ahora reintenta también ante `APIConnectionError`/`InternalServerError`, no solo `RateLimitError`. Las 7 llamadas a la API de Drive usan `execute(num_retries=3)`, el mecanismo propio de `googleapiclient`.
+- **Tests nuevos**: `tests/test_docx_engine.py` (31), ampliación de `tests/test_claude_service.py` (+10), `tests/test_drive_service.py` (17, incluye la firma del state y la validación de cliente_id), `tests/test_api_drive_callback.py` (2). Total: 122 → 250 tests.
+- **Limpieza de normas de COVID-19 obsoletas** en 3 plantillas Word (`PESV-PLN-003`, `SST-FMT-073`, `SST-PLN-004`) — la emergencia sanitaria terminó el 30-jun-2022, estas eran medidas exclusivas de esa coyuntura. Quedan pendientes 7 documentos más con la Circular 015/2024 y la Resolución 132/2004 (ver `auditoria_normativa_2026-07-08.html`), y 5 normas más que solo viven en `SST-MTZ-006 MATRIZ DE REQUISITOS LEGALES.xlsx` (el motor de corrección no procesa `.xlsx` todavía).
+- **Contraste de los `<select>` del portal**: el texto heredaba el color claro del tema oscuro, pero el navegador dibuja la lista desplegable con su propio fondo (casi siempre blanco) — quedaba casi ilegible. Fix en `static/wizard/wizard.css`.
+- **Fixture de tests desactualizada**: `tests/conftest.py::output_listado_maestro` buscaba un `SST-MTZ-005` sin etiqueta que ya no existe en la plantilla (ahora ships `[CAT-I]`/`[CAT-II]`/`[CAT-III]`, mismo mecanismo que `[COPASST]`/`[VIGÍA]` en `generador.py`) — 4 tests quedaban saltados en silencio. Corregida para tomar cualquiera de las 3 variantes.
+
 ### Agregado
 - Documentación inicial: `README.md`, `docs/GUIA_CONSULTOR.md`, `docs/ARQUITECTURA.md`, `docs/CHANGELOG.md`
 - Suite de tests automatizados (122 tests) en `tests/`

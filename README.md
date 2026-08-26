@@ -266,7 +266,7 @@ SOFTWARE SG-SST/
 python -m pytest tests/
 ```
 
-170 tests automatizados que validan los puntos críticos del sistema (165 corren por defecto; 4 requieren saldo real de la API de Claude y están marcados `integration`; 1 marcado `slow`). Ver `tests/` para detalle.
+250 tests automatizados que validan los puntos críticos del sistema (249 corren por defecto con `pytest -m "not slow and not integration"`; 1 requiere saldo real de la API de Claude y está marcado `integration`). Ver `tests/` para detalle.
 
 ---
 
