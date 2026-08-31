@@ -29,13 +29,14 @@ def test_error_con_caracteres_html_se_escapa_en_la_respuesta(monkeypatch):
     assert "&lt;script&gt;alert(1)&lt;/script&gt;" in r.text
 
 
-def test_exito_muestra_el_cliente_id_verificado(monkeypatch):
+def test_exito_muestra_el_cliente_id_y_el_correo_autorizado(monkeypatch):
     monkeypatch.setattr(
         "engine.drive_service.completar_auth_web",
-        lambda state, code, redirect_uri: "EMPRESA_DE_PRUEBA_SAS",
+        lambda state, code, redirect_uri: ("EMPRESA_DE_PRUEBA_SAS", "cliente@gmail.com"),
     )
 
     r = client.get("/auth/drive/callback", params={"code": "x", "state": "cualquiera"})
     assert r.status_code == 200
     assert "EMPRESA_DE_PRUEBA_SAS" in r.text
+    assert "cliente@gmail.com" in r.text
     assert "Autorizacion completada" in r.text or "Autorización completada" in r.text

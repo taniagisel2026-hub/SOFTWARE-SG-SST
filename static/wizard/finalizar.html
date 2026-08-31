@@ -19,6 +19,14 @@
       <button onclick="generarSGSST()">Generar SG-SST ahora</button>
       <p id="estado-job"></p>
     </div>
+
+    <div id="bloque-drive" class="hidden">
+      <h2>Subir a Google Drive</h2>
+      <p>Si es la primera vez que subes documentos de este cliente, autoriza el acceso a Drive antes de subir.</p>
+      <button class="secundario" onclick="autorizarDrive()">Autorizar Google Drive</button>
+      <button onclick="subirADrive()">Subir a Google Drive</button>
+      <p id="estado-drive"></p>
+    </div>
   </div>
   <script src="common.js"></script>
   <script>
@@ -62,11 +70,62 @@
       }).then(r => r.json());
       if (r.status === "done") {
         estadoEl.textContent = `¡Listo! SG-SST generado en: ${r.resultado.output_dir}`;
+        window._outputDir = r.resultado.output_dir;
+        document.getElementById("bloque-drive").classList.remove("hidden");
       } else if (r.status === "failed") {
         estadoEl.textContent = `Error generando: ${r.error}`;
       } else {
         estadoEl.textContent = `Estado: ${r.status}...`;
         setTimeout(() => consultarEstado(jobId), 5000);
+      }
+    }
+
+    // Abre el consentimiento de Google en otra pestaña. Solo hace falta la
+    // primera vez por cliente (o si el token expira sin refresh_token) --
+    // subirADrive() ya avisa si falta autorizar.
+    async function autorizarDrive() {
+      const estadoEl = document.getElementById("estado-drive");
+      try {
+        const r = await fetch(`/auth/drive/${clienteId}/start?redirect=false`, {
+          headers: { Authorization: `Bearer ${getToken()}` },
+        }).then(r => r.json());
+        window.open(r.auth_url, "_blank");
+        estadoEl.textContent = "Autoriza el acceso en la pestaña que se abrió y luego vuelve aquí para subir.";
+      } catch (e) {
+        estadoEl.textContent = "";
+        document.getElementById("error").textContent = e.message;
+      }
+    }
+
+    async function subirADrive() {
+      const estadoEl = document.getElementById("estado-drive");
+      estadoEl.textContent = "Subiendo a Drive... esto puede tardar varios minutos.";
+      try {
+        const r = await fetch(`/clientes/${clienteId}/subir-drive`, {
+          method: "POST",
+          headers: { Authorization: `Bearer ${getToken()}`, "Content-Type": "application/json" },
+          body: JSON.stringify({ config_path: window._configPath, directorio: window._outputDir }),
+        }).then(r => r.json());
+        estadoEl.textContent = `Trabajo iniciado (job_id: ${r.job_id}). Consultando estado...`;
+        consultarEstadoDrive(r.job_id);
+      } catch (e) {
+        estadoEl.textContent = "";
+        document.getElementById("error").textContent = e.message;
+      }
+    }
+
+    async function consultarEstadoDrive(jobId) {
+      const estadoEl = document.getElementById("estado-drive");
+      const r = await fetch(`/jobs/${jobId}`, {
+        headers: { Authorization: `Bearer ${getToken()}` },
+      }).then(r => r.json());
+      if (r.status === "done") {
+        estadoEl.textContent = "¡Listo! Documentos subidos a Google Drive.";
+      } else if (r.status === "failed") {
+        estadoEl.textContent = `Error subiendo a Drive: ${r.error}. Si nunca autorizaste este cliente, usa "Autorizar Google Drive" arriba y vuelve a intentar.`;
+      } else {
+        estadoEl.textContent = `Estado: ${r.status}...`;
+        setTimeout(() => consultarEstadoDrive(jobId), 5000);
       }
     }
   </script>

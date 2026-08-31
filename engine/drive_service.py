@@ -168,13 +168,19 @@ def iniciar_auth_web(cliente_id: str, redirect_uri: str) -> str:
     )
     auth_url, _ = flow.authorization_url(
         access_type="offline",  # necesario para recibir refresh_token
-        prompt="consent",       # fuerza a que Google lo reenvie incluso en re-autorizaciones
+        # "select_account" obliga a Google a mostrar SIEMPRE el selector de
+        # cuenta, incluso si el navegador ya tiene una sesion de Google
+        # abierta -- sin esto, con una sola cuenta logueada Google la usa en
+        # silencio y es facil terminar autorizando la cuenta equivocada
+        # (la de quien hace clic, no la del cliente). "consent" fuerza a que
+        # Google reenvie el refresh_token incluso en re-autorizaciones.
+        prompt="select_account consent",
         state=_firmar_state(cliente_id),
     )
     return auth_url
 
 
-def completar_auth_web(state: str, code: str, redirect_uri: str) -> str:
+def completar_auth_web(state: str, code: str, redirect_uri: str) -> tuple[str, str]:
     """Intercambia el codigo de autorizacion por un token y lo guarda.
 
     `state` es el valor firmado por _firmar_state() en iniciar_auth_web() --
@@ -189,7 +195,9 @@ def completar_auth_web(state: str, code: str, redirect_uri: str) -> str:
     no le importa si el token se creo por el flujo de escritorio o el web.
 
     Returns:
-        El cliente_id verificado (para que el llamador lo pueda mostrar).
+        (cliente_id, email) -- el cliente_id verificado y el correo de la
+        cuenta de Google que se acaba de autorizar, para que quien autorizo
+        pueda confirmar en pantalla que fue la cuenta correcta.
     """
     cliente_id = _verificar_state(state)
     if not _CLIENTE_ID_VALIDO.match(cliente_id):
@@ -208,7 +216,14 @@ def completar_auth_web(state: str, code: str, redirect_uri: str) -> str:
     token_file = _token_path(cliente_id)
     with open(token_file, "w") as f:
         f.write(creds.to_json())
-    return cliente_id
+
+    # about.get(fields="user") no requiere scope adicional al de Drive --
+    # devuelve el usuario autenticado, el mismo mecanismo que usa la propia
+    # consola de Drive para mostrar "conectado como".
+    service = build("drive", "v3", credentials=creds)
+    email = service.about().get(fields="user").execute()["user"]["emailAddress"]
+
+    return cliente_id, email
 
 
 def crear_carpeta(service, nombre: str, parent_id: str = None) -> str:

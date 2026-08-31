@@ -233,11 +233,15 @@ def auth_drive_callback(code: str, state: str) -> str:
     from engine.drive_service import completar_auth_web
 
     try:
-        cliente_id = completar_auth_web(state, code, _redirect_uri())
+        cliente_id, email = completar_auth_web(state, code, _redirect_uri())
     except Exception as e:
         return f"<h1>Error autorizando Drive</h1><p>{html.escape(str(e))}</p>"
 
     return (
         f"<h1>Autorizacion completada</h1>"
-        f"<p>Cliente: {html.escape(cliente_id)}. Ya puedes cerrar esta pestana.</p>"
+        f"<p>Cliente: {html.escape(cliente_id)}</p>"
+        f"<p>Cuenta de Google Drive conectada: <b>{html.escape(email)}</b></p>"
+        f"<p>Si esa NO es la cuenta correcta, vuelve a hacer clic en "
+        f"\"Autorizar Google Drive\" y elige la cuenta correcta en el paso de Google.</p>"
+        f"<p>Ya puedes cerrar esta pestana.</p>"
     )
