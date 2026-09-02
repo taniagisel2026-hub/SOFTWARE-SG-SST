@@ -29,7 +29,7 @@
         <input type="file" id="f_firma" accept="image/*">
       </label>
     </div>
-    <p class="ayuda">RUT, Cámara de Comercio, logo y firma son obligatorios. La cédula es opcional si ya tienes los datos del representante legal.</p>
+    <p class="ayuda">RUT, Cámara de Comercio y logo son obligatorios. La cédula y la firma son opcionales — si no tienes la firma todavía, puedes continuar sin ella y agregarla más adelante (el documento queda con ese espacio en blanco hasta entonces).</p>
     <button id="btn-extraer" onclick="subir()">Extraer datos</button>
     <p id="error" class="error"></p>
 
@@ -60,13 +60,13 @@
 
     async function subir() {
       document.getElementById("error").textContent = "";
-      const obligatorios = { rut: "f_rut", camara_comercio: "f_camara", logo: "f_logo", firma_rl: "f_firma" };
+      const obligatorios = { rut: "f_rut", camara_comercio: "f_camara", logo: "f_logo" };
       const faltantes = Object.entries(obligatorios)
         .filter(([, id]) => !document.getElementById(id).files[0])
         .map(([campo]) => campo);
       if (faltantes.length) {
         document.getElementById("error").textContent =
-          "Faltan archivos obligatorios: " + faltantes.join(", ") + " (la cédula es opcional).";
+          "Faltan archivos obligatorios: " + faltantes.join(", ") + " (la cédula y la firma son opcionales).";
         return;
       }
 
